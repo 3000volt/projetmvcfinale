@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace projetmvcfinale.Models
 {
@@ -9,13 +10,18 @@ namespace projetmvcfinale.Models
         {
             Exercice = new HashSet<Exercice>();
         }
-
+        [Display(Name = "Numéro du document")]
         public int IdDocument { get; set; }
+        [Display(Name = "Nom du document")]
         public string NomNote { get; set; }
         public string Lien { get; set; }
+        [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }
+        [Display(Name = "Courriel")]
         public string AdresseCourriel { get; set; }
+        [Display(Name = "Numéro de catégorie")]
         public int IdCateg { get; set; }
+        [Display(Name = "Numéro de sous-catégorie")]
         public int IdSousCategorie { get; set; }
 
         public Utilisateur AdresseCourrielNavigation { get; set; }
