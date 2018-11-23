@@ -11,6 +11,10 @@ namespace projetmvcfinale.Controllers
     {
         private readonly ProjetFrancaisContext _context;
         
+        public NoteDeCoursController(ProjetFrancaisContext context)
+        {
+            _context = context;
+        }
 
         public IActionResult Index()
         {

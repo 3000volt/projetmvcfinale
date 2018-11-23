@@ -13,6 +13,11 @@ namespace projetmvcfinale.Controllers
     {
         private readonly ProjetFrancaisContext _context;
 
+        public ExerciceController(ProjetFrancaisContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult ListeExercice()
         {
             return View();
