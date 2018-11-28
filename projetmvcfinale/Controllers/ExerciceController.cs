@@ -44,31 +44,61 @@ namespace projetmvcfinale.Controllers
         /// <param name="exercice"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AjoutExercice([Bind("Idexercice,NomExercices,Lien,DateInsertion,TypeExercice,AdresseCourriel,IdDifficulte,Idcorrige,IdDocument,IdCateg")]Exercice exercice,IFormFile file)
+        public async Task<IActionResult> AjoutExercice([Bind("Idexercice,NomExercices,Lien,TypeExercice,AdresseCourriel,IdDifficulte,Idcorrige,IdDocument,IdCateg")]Exercice exercice)
         {
             if(ModelState.IsValid)
             {
+                exercice.DateInsertion = DateTime.Today;
+
                 provider.Add(exercice);
                 await provider.SaveChangesAsync();
-      
-                if(file != null || file.Length == 0)
-                {
-                    var chemin = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/Exercice",file.FileName);
-
-                    using (var stream = new FileStream(chemin, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    return Ok("Fichier téléversé avec succès!");
-                }
-                else
-                {
-                    return BadRequest("Il y a une erreur avec le fichier");
-                }
             }
 
             return RedirectToAction(nameof(ListeExercice));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult UploadExercice()
+        {
+            return View();
+        }
+        /// <summary>
+        /// téléverser le fichier dans le dossier d'exercice
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> UploadExercice(IFormFile Lien)
+        { 
+            if (Lien == null || Lien.Length == 0)
+                return Content("Aucun fichier sélectionné");
+                
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", Lien.FileName);
+
+                    using (var stream = new FileStream(chemin, FileMode.Create))
+                    {
+                        await Lien.CopyToAsync(stream);
+
+                    }
+                    return Ok("Fichier téléversé avec succès!");    
+        }
+
+        public async Task<IActionResult> DownloadExercice(string fileName)
+        {
+            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", fileName);
+
+            var memoire = new MemoryStream();
+
+            using (var stream = new FileStream(chemin, FileMode.Open))
+            {
+                await stream.CopyToAsync(memoire);
+            }
+            memoire.Position = 0;
+            return File("(~wwwroot/DocumentsExercices" + fileName,"application/vnd.ms-word");
+
         }
         /// <summary>
         /// Affiche la vue pour supprimer un exercice

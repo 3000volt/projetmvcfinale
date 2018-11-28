@@ -1,10 +1,10 @@
-﻿@model projetmvcfinale.Models.Exercice
+﻿@model projetmvcfinale.Models.NoteDeCours
 
-<h4>Ajouter un fchier</h4>
+<h4>Ajouter un fichier de note de cours</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post" enctype="multipart/form-data" asp-controller="Exercice" asp-action="UploadExercice">
+        <form asp-action="UploadNote" enctype="multipart/form-data" method="post" asp-controller="NoteDeCours" asp-action="UploadNote">
             <div class="form-group">
                 <label asp-for="Lien" class="control-label"></label>
                 <input asp-for="Lien" class="form-control" type="file" />
@@ -17,6 +17,6 @@
     </div>
 </div>
 <div>
-    <a asp-action="ListeExercice" class="btn btn-primary">Retour à la liste</a>
+    <a asp-action="ListeNoteDeCours" class="btn btn-primary">Retour à la liste</a>
 </div>
 

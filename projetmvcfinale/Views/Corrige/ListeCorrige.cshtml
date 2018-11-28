@@ -1,0 +1,53 @@
+﻿@model IEnumerable<projetmvcfinale.Models.Corrige>
+
+@{
+    ViewData["Title"] = "ListeCorrige";
+}
+
+<h1>Liste des Corrigés disponibles</h1>
+
+<p>
+    <a asp-action="AjouterCorrige" class=" btn btn-info" >Ajouter un corrigé</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CorrigeDocNom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateInsertion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdexerciceNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CorrigeDocNom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lien)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateInsertion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdexerciceNavigation.AdresseCourriel)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Idcorrige">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Idcorrige">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Idcorrige">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
