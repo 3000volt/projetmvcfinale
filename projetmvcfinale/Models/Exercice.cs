@@ -27,7 +27,7 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro du corrigé")]
         public int? Idcorrige { get; set; }
         [Display(Name = "Numéro du document")]
-        public int IdDocument { get; set; }
+        public int? IdDocument { get; set; }
         [Display(Name = "Numéro de catégorie")]
         public int IdCateg { get; set; }
 
