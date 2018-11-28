@@ -52,7 +52,7 @@ namespace projetmvcfinale.Controllers
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ViewData["ReturnUrl"] = returnUrl ?? "/Librairie/Accueil";
+            ViewData["ReturnUrl"] = returnUrl ?? "/Home/Index";
             return View();
         }
 
@@ -72,7 +72,7 @@ namespace projetmvcfinale.Controllers
                 {
                     ////ajoute le user dans une session
                     //this.HttpContext.Session.SetString("user", JsonConvert.SerializeObject(this.provider.selectclient(model.UserName)));
-
+                    
                     _logger.LogInformation("User logged in.");
 
                    
@@ -114,10 +114,12 @@ namespace projetmvcfinale.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new LoginUser { UserName = model.UserName, Email = model.Email, PhoneNumber=model.Telephone };
+                var user = new LoginUser { UserName = model.Email, Email = model.Email, PhoneNumber=model.Telephone };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    this.provider.Utilisateur.Add(new Utilisateur { AdresseCourriel = model.Email, Nom = model.Nom, Prenom = model.Prenom, RegistrerDate = DateTime.Now });
+                    this.provider.SaveChanges();
                     _logger.LogInformation("User created a new account with password.");
                     var roleresult = await _userManager.AddToRoleAsync(user, model.Role);
                     if (roleresult.Succeeded)
@@ -125,10 +127,7 @@ namespace projetmvcfinale.Controllers
 
                         _logger.LogInformation("User created a new account with password.");
 
-                        ////Insert le user dans la base de donnée Librairie lorsqu'il s'enregistre
-                        //this.provider.Insertclient(new Clients() { Adresse = model.Adresse, Email = model.Email, NomClient=model.UserName,Telephone=model.Telephone});
-
-                        return RedirectToAction("Accueil", "Librairie");
+                        return RedirectToAction("Home", "Index");
                     }
                     else
                     {

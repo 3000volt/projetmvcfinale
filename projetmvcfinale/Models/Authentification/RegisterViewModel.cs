@@ -9,11 +9,15 @@ namespace projetmvcfinale.Models.Authentification
 {
     public class RegisterViewModel
     {
+
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-        [Display(Name = "UserName")]
-        public string UserName { get; set; }
-
+        [Display(Name = "Nom")]
+        public string Nom { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+        [Display(Name = "Prénom")]
+        public string Prenom { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
         [DataType(DataType.Password)]
@@ -34,8 +38,6 @@ namespace projetmvcfinale.Models.Authentification
         [Display(Name = "Téléphone")]
         public string Telephone { get; set; }
 
-        [Required]
-        public string Adresse { get; set; }
         public List<SelectListItem> Roles { get; set; }
         public string Role { get; set; }
 
