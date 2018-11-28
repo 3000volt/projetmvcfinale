@@ -11,6 +11,13 @@ namespace projetmvcfinale.Controllers
 {
     public class ExerciceController : Controller
     {
+        private readonly ProjetFrancaisContext _context;
+
+        public ExerciceController(ProjetFrancaisContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult ListeExercice()
         {
             return View();
@@ -33,15 +40,27 @@ namespace projetmvcfinale.Controllers
         /// <param name="exercice"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AjoutExercice(Exercice exercice, IFormFile file)
+        public async Task<IActionResult> AjoutExercice([Bind("Idexercice,NomExercices,Lien,DateInsertion,TypeExercice,AdresseCourriel,IdDifficulte,Idcorrige,IdDocument,IdCateg")]Exercice exercice,IFormFile file)
         {
-
-            if(file != null && file.Length > 0)
+            if(ModelState.IsValid)
             {
-                
+                _context.Add(exercice);
+                await _context.SaveChangesAsync();
+      
+                if(file != null && file.Length > 0)
+                {
+                    using (var stream = new FileStream(Path.GetTempPath(), FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                else
+                {
+                    return BadRequest("Il y a une erreur avec le fichier");
+                }
             }
 
-            return View();
+            return RedirectToAction(nameof(ListeExercice));
         }
         /// <summary>
         /// Affiche la vue pour supprimer un exercice
@@ -63,7 +82,5 @@ namespace projetmvcfinale.Controllers
         {
             return View();
         }
-
-
     }
 }

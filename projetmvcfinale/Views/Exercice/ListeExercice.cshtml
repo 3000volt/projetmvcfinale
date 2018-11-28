@@ -1,0 +1,83 @@
+﻿@model IEnumerable<projetmvcfinale.Models.Exercice>
+
+@{
+    ViewData["Title"] = "ListeExercice";
+}
+
+<h2>ListeExercice</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomExercices)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateInsertion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeExercice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDifficulteNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDocumentNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdcorrigeNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomExercices)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lien)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateInsertion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeExercice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdDocumentNavigation.AdresseCourriel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdcorrigeNavigation.CorrigeDocNom)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Idexercice">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Idexercice">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Idexercice">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

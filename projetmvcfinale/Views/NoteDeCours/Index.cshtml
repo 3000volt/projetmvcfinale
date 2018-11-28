@@ -1,0 +1,65 @@
+﻿@model IEnumerable<projetmvcfinale.Models.NoteDeCours>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateInsertion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdSousCategorieNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomNote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lien)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateInsertion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdDocument">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdDocument">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdDocument">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
