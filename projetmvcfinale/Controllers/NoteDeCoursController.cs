@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using projetmvcfinale.Models;
 
 namespace projetmvcfinale.Controllers
 {
     public class NoteDeCoursController : Controller
     {
-        private readonly ProjetFrancaisContext _context;
-        
-        public NoteDeCoursController(ProjetFrancaisContext context)
+        private readonly ProjetFrancaisContext provider;
+        private readonly IConfiguration Configuration;
+
+        public NoteDeCoursController(IConfiguration configuration)
         {
-            _context = context;
+            this.Configuration = configuration;
+            this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
         }
 
         public IActionResult Index()
@@ -31,8 +34,8 @@ namespace projetmvcfinale.Controllers
         {
             if(ModelState.IsValid)
             {
-                _context.Add(note);
-                await _context.SaveChangesAsync();
+                provider.Add(note);
+                await provider.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));

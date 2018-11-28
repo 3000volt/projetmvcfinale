@@ -6,21 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using projetmvcfinale.Models;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace projetmvcfinale.Controllers
 {
     public class ExerciceController : Controller
     {
-        private readonly ProjetFrancaisContext _context;
+        private readonly ProjetFrancaisContext provider;
+        private readonly IConfiguration Configuration;
 
-        public ExerciceController(ProjetFrancaisContext context)
+        public ExerciceController(IConfiguration configuration)
         {
-            _context = context;
+            this.Configuration = configuration;
+            this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
         }
 
         public IActionResult ListeExercice()
         {
-            return View();
+            List<Exercice> listeExercice = this.provider.Exercice.ToList();
+            return View(listeExercice);
         }
         /// <summary>
         /// Affiche la vue pour ajouter un exercice
@@ -44,8 +48,8 @@ namespace projetmvcfinale.Controllers
         {
             if(ModelState.IsValid)
             {
-                _context.Add(exercice);
-                await _context.SaveChangesAsync();
+                provider.Add(exercice);
+                await provider.SaveChangesAsync();
       
                 if(file != null || file.Length == 0)
                 {
