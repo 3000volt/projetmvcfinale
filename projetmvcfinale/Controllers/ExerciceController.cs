@@ -23,7 +23,8 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult ListeExercice()
         {
-            return View();
+            List<Exercice> listeExercice = this.provider.Exercice.ToList();
+            return View(listeExercice);
         }
         /// <summary>
         /// Affiche la vue pour ajouter un exercice
