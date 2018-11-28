@@ -47,12 +47,16 @@ namespace projetmvcfinale.Controllers
                 _context.Add(exercice);
                 await _context.SaveChangesAsync();
       
-                if(file != null && file.Length > 0)
+                if(file != null || file.Length == 0)
                 {
-                    using (var stream = new FileStream(Path.GetTempPath(), FileMode.Create))
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/Exercice",file.FileName);
+
+                    using (var stream = new FileStream(chemin, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
+
+                    return Ok("Fichier téléversé avec succès!");
                 }
                 else
                 {
