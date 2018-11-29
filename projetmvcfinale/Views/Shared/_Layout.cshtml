@@ -151,16 +151,19 @@
                                             <li><a href="#">Catagory 1</a></li>
                                         </ul>
                                     </li>
-                                    <li>
-                                        <a href="#">Administrateur</a>
-                                        <ul class="dropdown">
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="about-us.html">About Us</a></li>
-                                            <li><a href="single-post.html">Single Post</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                            <li><a href="coming-soon.html">Coming Soon</a></li>
-                                        </ul>
-                                    </li>
+                                    @if (this.User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a href="#">Administrateur</a>
+                                            <ul class="dropdown">
+                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="about-us.html">About Us</a></li>
+                                                <li><a href="single-post.html">Single Post</a></li>
+                                                <li><a href="contact.html">Contact</a></li>
+                                                <li><a href="coming-soon.html">Coming Soon</a></li>
+                                            </ul>
+                                        </li>
+                                    }
 
                                 </ul>
                                 <div class="classynav">
