@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Documents\Exercices\" />
+    <Folder Include="wwwroot\Documents\Corrige\" />
+    <Folder Include="wwwroot\Documents\NoteDeCours\" />
+  </ItemGroup>
+
 </Project>

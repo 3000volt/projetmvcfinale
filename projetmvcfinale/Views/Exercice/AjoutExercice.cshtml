@@ -3,14 +3,11 @@
 @{
     ViewData["Title"] = "AjoutExercice";
 }
-
-<h2>AjoutExercice</h2>
-
-<h4>Exercice</h4>
+<h2>Ajouter un exercice</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AjoutExercice" enctype="multipart/form-data">
+        <form asp-action="AjoutExercice">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Idexercice" class="control-label"></label>
@@ -22,16 +19,11 @@
                 <input asp-for="NomExercices" class="form-control" />
                 <span asp-validation-for="NomExercices" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Lien" class="control-label"></label>
-                <input asp-for="Lien" type="file" class="form-control" />
-                <span asp-validation-for="Lien" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="DateInsertion" class="control-label"></label>
                 <input asp-for="DateInsertion" class="form-control" />
                 <span asp-validation-for="DateInsertion" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="TypeExercice" class="control-label"></label>
                 <input asp-for="TypeExercice" class="form-control" />
@@ -61,16 +53,15 @@
                 <label asp-for="IdCateg" class="control-label"></label>
                 <input asp-for="IdCateg" class="form-control" />
                 <span asp-validation-for="IdCateg" class="text-danger"></span>
-            </div>
+            </div> 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Créer exercice" class="btn btn-info" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
-    <a asp-action="ListeExercice" asp-controller="Exercice">Back to List</a>
+    <a asp-action="ListeExercice" asp-controller="Exercice" class="btn btn-primary">Retour à la liste</a>
 </div>
 
 @section Scripts {

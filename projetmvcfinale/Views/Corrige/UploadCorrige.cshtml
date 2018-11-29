@@ -1,0 +1,24 @@
+﻿@model projetmvcfinale.Models.Corrige
+
+<h4>Téléverser un fichier de Corrige</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data" asp-controller="Corrige" asp-action="UploadCorrige">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Lien" class="control-label"></label>
+                <input asp-for="Lien" class="form-control" type="file" />
+                <span asp-validation-for="Lien" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Téléverser" class="btn btn-info" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ListeCorrige" class="btn btn-primary">Retour à la liste</a>
+</div>
+
