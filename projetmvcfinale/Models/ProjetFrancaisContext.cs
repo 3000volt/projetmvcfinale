@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -35,8 +36,8 @@ namespace projetmvcfinale.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(" Server=localhost;Database=ProjetFrancais;User Id=sa;Password=sql");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer(" Server=localhost;Database=ProjetFrancais ;User Id=sa;Password=sql");
             }
         }
 
@@ -46,9 +47,7 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.IdCateg);
 
-                entity.Property(e => e.IdCateg)
-                    .HasColumnName("Id_Categ")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdCateg).HasColumnName("Id_Categ");
 
                 entity.Property(e => e.NomCategorie)
                     .IsRequired()
@@ -59,9 +58,7 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.IdChoix);
 
-                entity.Property(e => e.IdChoix)
-                    .HasColumnName("Id_Choix")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdChoix).HasColumnName("Id_Choix");
 
                 entity.Property(e => e.ChoixDeReponse1)
                     .IsRequired()
@@ -81,9 +78,7 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.IdCom);
 
-                entity.Property(e => e.IdCom)
-                    .HasColumnName("Id_com")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdCom).HasColumnName("Id_com");
 
                 entity.Property(e => e.AdresseCourriel)
                     .IsRequired()
@@ -106,8 +101,6 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.Idcorrige);
 
-                entity.Property(e => e.Idcorrige).ValueGeneratedNever();
-
                 entity.Property(e => e.CorrigeDocNom)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -126,8 +119,6 @@ namespace projetmvcfinale.Models
             modelBuilder.Entity<Exercice>(entity =>
             {
                 entity.HasKey(e => e.Idexercice);
-
-                entity.Property(e => e.Idexercice).ValueGeneratedNever();
 
                 entity.Property(e => e.AdresseCourriel)
                     .IsRequired()
@@ -170,7 +161,6 @@ namespace projetmvcfinale.Models
                 entity.HasOne(d => d.IdDocumentNavigation)
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.IdDocument)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Exercice__IdDocu__4F7CD00D");
 
                 entity.HasOne(d => d.IdcorrigeNavigation)
@@ -183,9 +173,7 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.IdLigne);
 
-                entity.Property(e => e.IdLigne)
-                    .HasColumnName("id_ligne")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdLigne).HasColumnName("id_ligne");
 
                 entity.Property(e => e.Ligne)
                     .IsRequired()
@@ -203,9 +191,7 @@ namespace projetmvcfinale.Models
             {
                 entity.HasKey(e => e.IdDifficulte);
 
-                entity.Property(e => e.IdDifficulte)
-                    .HasColumnName("Id_difficulte")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdDifficulte).HasColumnName("Id_difficulte");
 
                 entity.Property(e => e.NiveauDifficulte)
                     .IsRequired()
@@ -215,8 +201,6 @@ namespace projetmvcfinale.Models
             modelBuilder.Entity<NoteDeCours>(entity =>
             {
                 entity.HasKey(e => e.IdDocument);
-
-                entity.Property(e => e.IdDocument).ValueGeneratedNever();
 
                 entity.Property(e => e.AdresseCourriel)
                     .IsRequired()
@@ -254,8 +238,6 @@ namespace projetmvcfinale.Models
             modelBuilder.Entity<SousCategorie>(entity =>
             {
                 entity.HasKey(e => e.IdSousCategorie);
-
-                entity.Property(e => e.IdSousCategorie).ValueGeneratedNever();
 
                 entity.Property(e => e.IdCateg).HasColumnName("Id_Categ");
 
