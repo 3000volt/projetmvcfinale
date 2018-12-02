@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Data.SqlClient;
 
 namespace projetmvcfinale.Controllers
 {
@@ -16,11 +17,15 @@ namespace projetmvcfinale.Controllers
     {
         private readonly ProjetFrancaisContext provider;
         private readonly IConfiguration Configuration;
+        public string ConnectionString;
+        private SqlConnection sqlConnection;
 
         public ExerciceController(IConfiguration configuration)
         {
             this.Configuration = configuration;
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
+            this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            this.sqlConnection = new SqlConnection(this.ConnectionString);
         }
 
         public IActionResult ListeExercice()
@@ -33,7 +38,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> AjoutExercice()
+        public IActionResult AjoutExercice()
         {
             this.provider.Niveau.ToList();
 
@@ -74,9 +79,14 @@ namespace projetmvcfinale.Controllers
                     IdDifficulte = exerciceVM.IdDifficulte,
                     IdCateg = exerciceVM.IdCateg
                 };
+
+                HttpContext.Session.SetString("exercice", JsonConvert.SerializeObject(exercice));//pour aller le chercher pour l'upload
+
                 string test = exercice.AdresseCourriel;
+
                 //Ajouter au contexte
                 provider.Add(exercice);
+
                 await provider.SaveChangesAsync();
                 //Envoyer vers l'autre page
                 if (exercice.TypeExercice == "Interactif")
@@ -101,10 +111,12 @@ namespace projetmvcfinale.Controllers
                 return View("CompleterCreation", exerciceVM);
             }
 
+            
+
             return BadRequest("Erreur dans l'insertion de l'exercice");
         }
         /// <summary>
-        /// 
+        /// Afficher la vue pour téléverser un fichier d'exercice
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -120,22 +132,39 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
+            SqlDataReader reader;
+
+                Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
+
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
 
+            
+
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", Lien.FileName);
+
+
+            string query = "UPDATE Exercice SET Lien ='" + chemin + "' WHERE NomExercices = '" + ex.NomExercices  + "'";
+            SqlCommand commande = new SqlCommand(query,sqlConnection);
 
             using (var stream = new FileStream(chemin, FileMode.Create))
             {
                 await Lien.CopyToAsync(stream);
-
             }
+
+            sqlConnection.Open();
+            reader = commande.ExecuteReader();
+
             return Ok("Fichier téléversé avec succès!");
         }
-
-        public async Task<IActionResult> DownloadExercice(string fileName)
+        /// <summary>
+        /// Télécharger le fichier d'exercice
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> DownloadExercice(string NomExercices)
         {
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", fileName);
+            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", NomExercices);
 
             var memoire = new MemoryStream();
 
@@ -144,7 +173,7 @@ namespace projetmvcfinale.Controllers
                 await stream.CopyToAsync(memoire);
             }
             memoire.Position = 0;
-            return File("(~wwwroot/DocumentsExercices" + fileName, "application/vnd.ms-word");
+            return File("(~wwwroot/Documents/Exercices" + NomExercices, "application/vnd.ms-word");
 
         }
         /// <summary>
@@ -153,7 +182,7 @@ namespace projetmvcfinale.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> SupprimerExercice(string id)
+        public IActionResult SupprimerExercice(string id)
         {
             return View();
         }
