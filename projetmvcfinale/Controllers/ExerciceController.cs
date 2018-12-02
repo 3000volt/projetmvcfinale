@@ -37,9 +37,8 @@ namespace projetmvcfinale.Controllers
         {
             this.provider.Niveau.ToList();
 
-            int i = 0;
             this.provider.Categorie.ToList();
-            int y = 0;
+
             //Options de type d,exercice
             List<string> listeTypes = new List<string>();
             listeTypes.Add("Normal");
@@ -71,7 +70,7 @@ namespace projetmvcfinale.Controllers
                     NomExercices = exerciceVM.NomExercices,
                     DateInsertion = DateTime.Today,
                     TypeExercice = exerciceVM.TypeExercice,
-                    AdresseCourriel = this.HttpContext.User.Identity.Name,
+                    AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel,
                     IdDifficulte = exerciceVM.IdDifficulte,
                     IdCateg = exerciceVM.IdCateg
                 };

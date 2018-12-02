@@ -70,8 +70,8 @@ namespace projetmvcfinale.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    ////ajoute le user dans une session
-                    //this.HttpContext.Session.SetString("user", JsonConvert.SerializeObject(this.provider.selectclient(model.UserName)));
+                    //ajoute le user dans une session
+                    this.HttpContext.Session.SetString("user", JsonConvert.SerializeObject(this.provider.Utilisateur.Find(model.UserName)));
                     
                     _logger.LogInformation("User logged in.");
 

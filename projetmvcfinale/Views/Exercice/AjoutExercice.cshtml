@@ -3,68 +3,54 @@
 @{
     ViewData["Title"] = "AjoutExercice";
 }
-<h2>Ajouter un exercice</h2>
-<hr />
 
-<div class="row">
-    <div class="col-md-4">
+
+<div style="margin-top: 10px;">
+
+    <h4>Ajouter un exercice</h4>
+    <hr />
+
+    <div style="padding: 10px;">
+
         <form asp-action="AjoutExercice">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                <label asp-for="Idexercice" class="control-label"></label>
-                <input asp-for="Idexercice" class="form-control" />
-                <span asp-validation-for="Idexercice" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="NomExercices" class="control-label"></label>
-                <input asp-for="NomExercices" class="form-control" />
-                <span asp-validation-for="NomExercices" class="text-danger"></span>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label asp-for="NomExercices" class="control-label"></label>
+                    <input asp-for="NomExercices" class="form-control" />
+                    <span asp-validation-for="NomExercices" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label asp-for="TypeExercice" class="control-label"></label>
+                    <select asp-for="TypeExercice" asp-items="ViewBag.Type" class="form-control"></select>
+                </div>
             </div>
-            @*<div class="form-group">
-                    <label asp-for="DateInsertion" class="control-label"></label>
-                    <input asp-for="DateInsertion" class="form-control" />
-                    <span asp-validation-for="DateInsertion" class="text-danger"></span>
-                </div>*@
-            <div class="form-group">
-                <label asp-for="TypeExercice" class="control-label"></label>
-                <select asp-for="TypeExercice" asp-items="ViewBag.Type" class="form-control"></select>
-                @*<span asp-validation-for="TypeExercice" class="text-danger"></span>*@
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label asp-for="IdDifficulte" class="control-label"></label>
+                    <select asp-for="IdDifficulte" asp-items="ViewBag.Niveau" class="form-control"></select>
+                    <span asp-validation-for="IdDifficulte" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label asp-for="IdCateg" class="control-label"></label>
+                    <select asp-for="IdCateg" asp-items="ViewBag.Categorie" class="form-control"></select>
+                    <span asp-validation-for="IdCateg" class="text-danger"></span>
+                </div>
             </div>
-            @*<div class="form-group">
-                <label asp-for="AdresseCourriel" class="control-label"></label>
-                <input asp-for="AdresseCourriel" class="form-control" />
-                <span asp-validation-for="AdresseCourriel" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="IdDifficulte" class="control-label"></label>
-                <select asp-for="IdDifficulte" asp-items="ViewBag.Niveau" class="form-control"></select>
-                <span asp-validation-for="IdDifficulte" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
-                <label asp-for="Idcorrige" class="control-label"></label>
-                <input asp-for="Idcorrige" class="form-control" />
-                <span asp-validation-for="Idcorrige" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdDocument" class="control-label"></label>
-                <input asp-for="IdDocument" class="form-control" />
-                <span asp-validation-for="IdDocument" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="IdCateg" class="control-label"></label>
-                <select asp-for="IdCateg" asp-items="ViewBag.Categorie" class="form-control"></select>
-                <span asp-validation-for="IdCateg" class="text-danger"></span>
-            </div>
+
+
             <div class="form-group">
                 <input type="submit" value="Créer exercice" class="btn btn-info" />
             </div>
         </form>
+        <div class="form-group">
+            <input type="submit" value="Retour à la liste des exercices" class="btn btn-info" onclick="location.href='@Url.Action("ListeExercice","Exercice")'" />
+        </div>
     </div>
+
 </div>
-<div>
-    <input type="submit" value="CréerExercice" />
-    @*<a asp-action="ListeExercice" asp-controller="Exercice" class="btn btn-primary">Retour à la liste</a>*@
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

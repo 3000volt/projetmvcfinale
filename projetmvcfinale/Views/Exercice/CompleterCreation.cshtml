@@ -1,35 +1,33 @@
 ﻿@model projetmvcfinale.Models.ExerciceVM
 
-<div>
-    <h4>ExerciceVM</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.NomExercices)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.NomExercices)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TypeExercice)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TypeExercice)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IdDifficulte)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IdDifficulte)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IdCateg)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IdCateg)
-        </dd>
-    </dl>
+<div style="margin: 10px;">
+    
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h5><u>Informations relatif à l'exercice</u></h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            @Html.DisplayNameFor(model => model.NomExercices) : @Html.DisplayFor(model => model.NomExercices)
+        </div>
+
+        <div class="form-group col-sm-6">
+            @Html.DisplayNameFor(model => model.TypeExercice) : @Html.DisplayFor(model => model.TypeExercice)
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-6">
+            @Html.DisplayNameFor(model => model.IdDifficulte) : @Html.DisplayFor(model => model.IdDifficulte)
+        </div>
+        <div class="form-group col-sm-6">
+            @Html.DisplayNameFor(model => model.IdCateg) : @Html.DisplayFor(model => model.IdCateg)
+        </div>
+    </div>
 </div>
+
+<hr />
 
 @if (ViewBag.Type == "Interactif")
 {
