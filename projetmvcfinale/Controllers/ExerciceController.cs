@@ -96,6 +96,8 @@ namespace projetmvcfinale.Controllers
                     listeLignes = new List<LignePerso>()
                 };
                 this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(insertion));
+                //Pour si une phras ese continue
+                this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
                 //Envoyer vers la vue pour continuer la creation selon le type
                 return View("CompleterCreation", exerciceVM);
             }
@@ -168,47 +170,121 @@ namespace projetmvcfinale.Controllers
         }
 
         [HttpPost]
-        public void CreationLigne([FromBody][Bind("NumeroQuestion,Ligne")]LignePerso ligne)
+        public void CreationLigne([FromBody][Bind("NumeroQuestion,Ligne,ChoixDeReponse1,Response,NoOrdre")]LignePerso ligne)
         {
-            //Instancier la liste des choix
-            ligne.listeChoixReponses = new List<ChoixDeReponse>();
-            //Associer la ligne en cours a la session
-            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
-            LignePerso ligne2 = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
-            int i = 0;
+            //Transformer le choix pour qu'il puisse entrer dans l aBD
+            List<ChoixDeReponse> choixDeReponse = new List<ChoixDeReponse>();
+            if (ligne.listeChoixReponses2 != null)
+            {
+                foreach (ChoixDeReponseTest c in ligne.listeChoixReponses2)
+                {
+                    choixDeReponse.Add(new ChoixDeReponse()
+                    {
+                        ChoixDeReponse1 = c.ChoixDeReponse1,
+                        Response = c.Response,
+                        NoOrdre = c.NoOrdre,
+                    });
+                }
+            }
 
+
+
+            //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
+
+
+            //Si la session est vide (Première partie de phrase envoyé)
+            LignePerso ligneSession = new LignePerso();
+            if (this.HttpContext.Session.GetString("Ligne") == null)
+            {
+                ligneSession.NumeroQuestion = ligne.NumeroQuestion;
+                ligneSession.Ligne = ligne.Ligne + "(?)";
+                ligneSession.listeChoixReponses = choixDeReponse;
+            }
+            //S'il s'agit d'une suite de phrase
+            if (this.HttpContext.Session.GetString("PhraseASuivre") == "Actif")
+            {
+                ligneSession = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+                ligneSession.Ligne = ligneSession.Ligne + ligne.Ligne + "(?)";
+                ligneSession.listeChoixReponses = choixDeReponse;
+
+            }
+            //Instancier la liste des choix
+            //Associer la ligne en cours a la session
+            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligneSession));
+        }
+
+        //TerminerLigne
+        [HttpPost]
+        public void TerminerLigne([FromBody][Bind("NumeroQuestion,Ligne")]LignePerso ligne)
+        {
+
+            LignePerso lignePerso = new LignePerso();
+            //Si aucune partie de phrase n'a été envoyé (phrase sans choix de réponse)
+            if (this.HttpContext.Session.GetString("Ligne") == null)
+            {
+                lignePerso.NumeroQuestion = ligne.NumeroQuestion;
+                lignePerso.Ligne = ligne.Ligne;
+                lignePerso.listeChoixReponses = new List<ChoixDeReponse>();
+            }
+            //Si des parties de phrases ont été envoyé avant
+            else
+            {
+                lignePerso = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+            }
+            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
         }
 
         [HttpPost]
-        public void AjoutChoixReponse([FromBody][Bind("ChoixDeReponse1,Response,NoOrdre")]ChoixDeReponseTest choix)
+        public void AjoutChoixReponse([FromBody][Bind("ChoixDeReponse1,Response,NoOrdre")]List<ChoixDeReponseTest> choix)
         {
-            //LignePerso test = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+            //Insérer la liste au contexte
+            LignePerso lignePerso = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
             InsertionExercice insertion = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
-            //Transformer le choix pour qu'il puisse entrer dans l aBD
-            ChoixDeReponse choixDeReponse = new ChoixDeReponse()
+            List<ChoixDeReponse> listeChoix = new List<ChoixDeReponse>();
+            foreach (ChoixDeReponseTest choixTest in choix)
             {
-                ChoixDeReponse1 = choix.ChoixDeReponse1,
-                Response = choix.Response,
-                NoOrdre = choix.NoOrdre,
-                //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
-            };
-            // if (this.HttpContext.Session.GetString("Ligne") != null)
-            // {
-            LignePerso ligne = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
-            //}
-            ligne.listeChoixReponses.Add(choixDeReponse);
-            //Mettre a jour les sessions
-            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
+                listeChoix.Add(new ChoixDeReponse()
+                {
+                    ChoixDeReponse1 = choixTest.ChoixDeReponse1,
+                    Response = choixTest.Response,
+                    NoOrdre = choixTest.NoOrdre,
+                    //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == lignePerso.NumeroQuestion).IdLigne
+                });
+            }
+            //Associer la  liste de choix de reponse a la liste en cours
+            lignePerso.listeChoixReponses = listeChoix;
+            //Mettre la session a jours
+            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
 
-            //List<LignePerso> liste = new List<LignePerso>();
-            //if (this.HttpContext.Session.GetString("ListeLigne") != null)
-            //{
-            //    //Associer la liste a celle ci
-            //    liste = JsonConvert.DeserializeObject<List<LignePerso>>(this.HttpContext.Session.GetString("ListeLigne"));
-            //}
-            //liste.Add(ligne);
-            //this.HttpContext.Session.SetString("ListeLigne", JsonConvert.SerializeObject(liste));
-            //int i = 0;
+            //lignePerso.listeChoixReponses 
+
+            //////LignePerso test = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+            ////InsertionExercice insertion = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+            //////Transformer le choix pour qu'il puisse entrer dans l aBD
+            ////ChoixDeReponse choixDeReponse = new ChoixDeReponse()
+            ////{
+            ////    ChoixDeReponse1 = choix.ChoixDeReponse1,
+            ////    Response = choix.Response,
+            ////    NoOrdre = choix.NoOrdre,
+            ////    //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
+            ////};
+            ////// if (this.HttpContext.Session.GetString("Ligne") != null)
+            ////// {
+            ////LignePerso ligne = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+            //////}            
+            ////ligne.listeChoixReponses.Add(choixDeReponse);
+            //////Mettre a jour les sessions
+            ////this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
+
+            //////List<LignePerso> liste = new List<LignePerso>();
+            //////if (this.HttpContext.Session.GetString("ListeLigne") != null)
+            //////{
+            //////    //Associer la liste a celle ci
+            //////    liste = JsonConvert.DeserializeObject<List<LignePerso>>(this.HttpContext.Session.GetString("ListeLigne"));
+            //////}
+            //////liste.Add(ligne);
+            //////this.HttpContext.Session.SetString("ListeLigne", JsonConvert.SerializeObject(liste));
+            //////int i = 0;
         }
 
 
@@ -224,6 +300,8 @@ namespace projetmvcfinale.Controllers
             exercice.listeLignes.Add(ligne);
             //Mettre a jour la session
             this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(exercice));
+            //Mettre fin au continue
+            this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
         }
 
         [HttpPost]
@@ -254,6 +332,9 @@ namespace projetmvcfinale.Controllers
             }
             //Sauvegarder les données insérées
             this.provider.SaveChanges();
+            //Tout annuler les sessions concernés
+            this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
+
         }
 
         [HttpPost]
@@ -276,6 +357,20 @@ namespace projetmvcfinale.Controllers
 
 
             return disponible;
+        }
+
+        [HttpPost]
+        public void IndiquerUneSuite()
+        {
+            //Insérer dans la session de phrase en cours
+            this.HttpContext.Session.SetString("PhraseASuivre", "Actif");
+        }
+
+        [HttpPost]
+        public void AnnulerUneSuite()
+        {
+            //Insérer dans la session de phrase en cours
+            this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿$(function () {
-    alert("A");
+    alert("le bs!");
 });
 
 function CommencerExercice() {
@@ -56,8 +56,8 @@ function OuvrirBonneReponse() {
         //https://stackoverflow.com/questions/3446069/populate-dropdown-select-with-array-using-jquery
         //Rendre la div visible
         $("#divBonneReponse").removeAttr('hidden');
-    }
 
+    }
 }
 
 function AnnulerChoixReponse() {
@@ -73,6 +73,7 @@ function AnnulerChoixReponse() {
 }
 
 function ContinuerPhrase() {
+    alert("test");
     //Mettre le textbox valide
     $("#boutLigne").removeAttr("readonly");
     //Le vider
@@ -94,6 +95,7 @@ function ContinuerPhrase() {
     //Cacher le div
     $("#divDecision").attr("hidden", true);
     //Indiquer a la session que le prochain bout de phrase doit etre coller au vieux
+    IndiquerASuivre();
 }
 
 
@@ -109,9 +111,9 @@ function ChoixReponse() {
     //Envoyer les donnees vers controlleur
     //Envoyer l ligne
     var numero = $("#inNumeroQuestion").val();
-    CreationLigne(numero, boutPhrase);
+
     //Envoyer les choix de reponse
-    var compteur = 0;
+    var tableau = new Array();
     $("#selectChoixReponse option").each(function () {
         //https://stackoverflow.com/questions/590163/how-to-get-all-options-of-a-select-using-jquery
         var choixReponse = $(this).val();
@@ -123,15 +125,26 @@ function ChoixReponse() {
             Reponse = false;
         }
         var ordre = boutPhrase.length;
-        alert(choixReponse);
-        alert(Reponse);
-        alert(ordre);
-        SauvagardeEnvoyerChoix(choixReponse, Reponse, ordre);
+        //Insérer au tableau de choix de reponse
+        tableau.push({ ChoixDeReponse1: choixReponse, Response: Reponse, NoOrdre: ordre });
+        alert(tableau);
+        //tableau.push({ NomCours: coursNbH, CodeCompetence: competenceNbH, NbHCoursCompetence: nbH });
     });
+    CreationLigne(numero, boutPhrase, tableau);
+    //SauvagardeEnvoyerChoix(tableau);
+    //SauvagardeEnvoyerChoix(tableau);
     $("#divDecision").removeAttr('hidden');
 }
 
 function TerminerPhrase() {
+    //Annuler la suite de phrase
+
+    //Envoyer ce qu'il y a dans la phrase (si aucun choix n'a été envoyé)
+    var numero = $("#inNumeroQuestion").val();
+    var ligne = $("#boutLigne").val();
+    alert(numero);
+    alert(ligne);
+    TerminerLigne(numero, ligne);
     //Retour au bout de phrase
     //Vider le tableau et lui mettre 2 tr
     $("#tbChoixReponses tr").slice(3).each(function () {
@@ -196,14 +209,10 @@ function EnvoyerExercice() {
     return false;
 }
 
-function SauvagardeEnvoyerChoix(i, y, z) {
+function SauvagardeEnvoyerChoix(tableau_donner) {
 
     var url = "/Exercice/AjoutChoixReponse";
-    var data = {
-        ChoixDeReponse1: i,
-        Response: y,
-        NoOrdre: z,
-    };
+    var data = tableau_donner;
     $.ajax({
         data: JSON.stringify(data),
         type: "POST",
@@ -222,7 +231,32 @@ function SauvagardeEnvoyerChoix(i, y, z) {
 }
 
 
-function CreationLigne(i, y) {
+function CreationLigne(i, y, z) {
+
+    var url = "/Exercice/CreationLigne";
+    var data1 = {
+        NumeroQuestion: i,
+        Ligne: y,
+        listeChoixReponses2:z
+    };
+    $.ajax({
+        data: JSON.stringify(data1),
+        type: "POST",
+        url: url,
+        datatype: "text/plain",
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function (request) {
+            request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
+        },
+        success: function (result) {
+            alert(status);
+        },
+        error: function (xhr, status) { alert("erreur:" + status); }
+    });
+    return false;
+}
+
+function TerminerLigne(i, y) {
 
     var url = "/Exercice/CreationLigne";
     var data = {
@@ -263,3 +297,41 @@ function VerifierNumero(i) {
     });
     return bool;
 }//https://stackoverflow.com/questions/23078650/ajax-return-true-false-i-have-implemented-a-callback
+
+function IndiquerASuivre() {
+
+    var url = "/Exercice/IndiquerUneSuite";
+    $.ajax({
+        type: "POST",
+        url: url,
+        datatype: "text/plain",
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function (request) {
+            request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
+        },
+        success: function (result) {
+            alert(status);
+        },
+        error: function (xhr, status) { alert("erreur:" + status); }
+    });
+    return false;
+}
+
+function AnnulerASuivre() {
+
+    var url = "/Exercice/AnnulerUneSuite";
+    $.ajax({
+        type: "POST",
+        url: url,
+        datatype: "text/plain",
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function (request) {
+            request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
+        },
+        success: function (result) {
+            alert(status);
+        },
+        error: function (xhr, status) { alert("erreur:" + status); }
+    });
+    return false;
+}
