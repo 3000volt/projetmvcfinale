@@ -5,8 +5,6 @@
 }
 
 <h2>Ajouter des Note</h2>
-
-<h4>NoteDeCours</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,20 +21,6 @@
                 <span asp-validation-for="NomNote" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Lien" class="control-label"></label>
-                <input asp-for="Lien" type="file" class="form-control" />
-                <span asp-validation-for="Lien" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateInsertion" class="control-label"></label>
-                <input asp-for="DateInsertion" class="form-control" />
-                <span asp-validation-for="DateInsertion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdresseCourriel" class="control-label"></label>
-                <select asp-for="AdresseCourriel" class ="form-control" asp-items="ViewBag.AdresseCourriel"></select>
-            </div>
-            <div class="form-group">
                 <label asp-for="IdCateg" class="control-label"></label>
                 <select asp-for="IdCateg" class ="form-control" asp-items="ViewBag.IdCateg"></select>
             </div>
@@ -45,14 +29,14 @@
                 <select asp-for="IdSousCategorie" class ="form-control" asp-items="ViewBag.IdSousCategorie"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-info" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="ListeNoteDeCours">Retour à la liste</a>
+    <a asp-action="ListeNoteDeCours" class="btn btn-primary" >Retour à la liste</a>
 </div>
 
 @section Scripts {

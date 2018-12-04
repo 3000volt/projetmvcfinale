@@ -4,10 +4,9 @@
     ViewData["Title"] = "ListeExercice";
 }
 
-<h2>ListeExercice</h2>
-
+<h2>Liste des exercices</h2>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="AjoutExercice" class="btn btn-info">Ajouter un exercice</a>
 </p>
 <table class="table table-responsive table-hover table-condensed">
     <thead>
@@ -73,9 +72,10 @@
                 @Html.DisplayFor(modelItem => item.IdcorrigeNavigation.CorrigeDocNom)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Idexercice">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Idexercice">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Idexercice">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
+                <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
+                <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a> |
+                <a asp-action="DownloadExercice" asp-route-id="@item.NomExercices">Télécharger</a>
             </td>
         </tr>
 }
