@@ -327,6 +327,7 @@ namespace projetmvcfinale.Controllers
             //Envoyer le contenue de l'insertion vers la BD
             InsertionExercice Insertionexercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
 
+            //Pour ce faire on créer un objet exercices et on l'on remplit a partir de notre view model insertionExercice
             Exercice ExercicesAuComplet = new Exercice() {
                 AdresseCourriel= Insertionexercice.exercice.AdresseCourriel,
                 NomExercices= Insertionexercice.exercice.NomExercices,
