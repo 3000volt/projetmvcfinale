@@ -339,6 +339,7 @@ namespace projetmvcfinale.Controllers
 
             };
 
+            //on ajoute l'objet a la liste du provider des exercices
             this.provider.Exercice.Add(ExercicesAuComplet);
             //Sauvegarder les données insérées
             this.provider.SaveChanges();
