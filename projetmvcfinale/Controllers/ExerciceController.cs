@@ -286,36 +286,6 @@ namespace projetmvcfinale.Controllers
             lignePerso.listeChoixReponses = listeChoix;
             //Mettre la session a jours
             this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
-
-            //lignePerso.listeChoixReponses 
-
-            //////LignePerso test = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
-            ////InsertionExercice insertion = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
-            //////Transformer le choix pour qu'il puisse entrer dans l aBD
-            ////ChoixDeReponse choixDeReponse = new ChoixDeReponse()
-            ////{
-            ////    ChoixDeReponse1 = choix.ChoixDeReponse1,
-            ////    Response = choix.Response,
-            ////    NoOrdre = choix.NoOrdre,
-            ////    //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
-            ////};
-            ////// if (this.HttpContext.Session.GetString("Ligne") != null)
-            ////// {
-            ////LignePerso ligne = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
-            //////}            
-            ////ligne.listeChoixReponses.Add(choixDeReponse);
-            //////Mettre a jour les sessions
-            ////this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
-
-            //////List<LignePerso> liste = new List<LignePerso>();
-            //////if (this.HttpContext.Session.GetString("ListeLigne") != null)
-            //////{
-            //////    //Associer la liste a celle ci
-            //////    liste = JsonConvert.DeserializeObject<List<LignePerso>>(this.HttpContext.Session.GetString("ListeLigne"));
-            //////}
-            //////liste.Add(ligne);
-            //////this.HttpContext.Session.SetString("ListeLigne", JsonConvert.SerializeObject(liste));
-            //////int i = 0;
         }
 
         //[HttpPost]
@@ -346,27 +316,21 @@ namespace projetmvcfinale.Controllers
         {
             //Envoyer le contenue de l'insertion vers la BD
             InsertionExercice Insertionexercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
-            //Tout mettre dans la BD
-            //Pour chaques lignes
-            foreach (LignePerso ligne in Insertionexercice.listeLignes)
-            {
-                //Ajuster la ligne au format de la BD
-                LigneTestInteractif ligneInteractif = new LigneTestInteractif()
-                {
-                    NumeroQuestion = ligne.NumeroQuestion,
-                    Ligne = ligne.Ligne,
-                    Idexercice = Insertionexercice.exercice.Idexercice
-                };
-                //Ajouter la ligne a la bd
-                this.provider.Add(ligneInteractif);
-                //pour chaque choix de cette ligne
-                foreach (ChoixDeReponse choix in ligne.listeChoixReponses)
-                {
-                    choix.IdLigne = ligneInteractif.IdLigne;
-                    //Ajouter a la BD
-                    this.provider.Add(choix);
-                }
-            }
+
+            //Pour ce faire on créer un objet exercices et on l'on remplit a partir de notre view model insertionExercice
+            Exercice ExercicesAuComplet = new Exercice() {
+                AdresseCourriel= Insertionexercice.exercice.AdresseCourriel,
+                NomExercices= Insertionexercice.exercice.NomExercices,
+                ExercicesInt= JsonConvert.SerializeObject(Insertionexercice.listeLignes),
+                DateInsertion=DateTime.Now,
+                TypeExercice= Insertionexercice.exercice.TypeExercice,
+                IdDifficulte= Insertionexercice.exercice.IdDifficulte,
+                IdCateg= Insertionexercice.exercice.IdCateg,
+
+            };
+
+            //on ajoute l'objet a la liste du provider des exercices
+            this.provider.Exercice.Add(ExercicesAuComplet);
             //Sauvegarder les données insérées
             this.provider.SaveChanges();
             //Tout annuler les sessions concernés

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -22,11 +21,9 @@ namespace projetmvcfinale.Models
         }
 
         public virtual DbSet<Categorie> Categorie { get; set; }
-        public virtual DbSet<ChoixDeReponse> ChoixDeReponse { get; set; }
         public virtual DbSet<Commentaires> Commentaires { get; set; }
         public virtual DbSet<Corrige> Corrige { get; set; }
         public virtual DbSet<Exercice> Exercice { get; set; }
-        public virtual DbSet<LigneTestInteractif> LigneTestInteractif { get; set; }
         public virtual DbSet<Niveau> Niveau { get; set; }
         public virtual DbSet<NoteDeCours> NoteDeCours { get; set; }
         public virtual DbSet<SousCategorie> SousCategorie { get; set; }
@@ -54,26 +51,6 @@ namespace projetmvcfinale.Models
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<ChoixDeReponse>(entity =>
-            {
-                entity.HasKey(e => e.IdChoix);
-
-                entity.Property(e => e.IdChoix).HasColumnName("Id_Choix");
-
-                entity.Property(e => e.ChoixDeReponse1)
-                    .IsRequired()
-                    .HasColumnName("ChoixDeReponse")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.IdLigne).HasColumnName("id_ligne");
-
-                entity.HasOne(d => d.IdLigneNavigation)
-                    .WithMany(p => p.ChoixDeReponse)
-                    .HasForeignKey(d => d.IdLigne)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ChoixDeRe__id_li__52593CB8");
-            });
-
             modelBuilder.Entity<Commentaires>(entity =>
             {
                 entity.HasKey(e => e.IdCom);
@@ -94,7 +71,7 @@ namespace projetmvcfinale.Models
                     .WithMany(p => p.Commentaires)
                     .HasForeignKey(d => d.AdresseCourriel)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Commentai__Adres__48CFD27E");
+                    .HasConstraintName("FK__Commentai__Adres__44FF419A");
             });
 
             modelBuilder.Entity<Corrige>(entity =>
@@ -113,7 +90,7 @@ namespace projetmvcfinale.Models
                     .WithMany(p => p.Corrige)
                     .HasForeignKey(d => d.Idexercice)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Corrige__Idexerc__5165187F");
+                    .HasConstraintName("FK__Corrige__Idexerc__4D94879B");
             });
 
             modelBuilder.Entity<Exercice>(entity =>
@@ -125,6 +102,8 @@ namespace projetmvcfinale.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DateInsertion).HasColumnType("date");
+
+                entity.Property(e => e.ExercicesInt).HasColumnType("text");
 
                 entity.Property(e => e.IdCateg).HasColumnName("Id_Categ");
 
@@ -144,47 +123,29 @@ namespace projetmvcfinale.Models
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.AdresseCourriel)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Exercice__Adress__4CA06362");
+                    .HasConstraintName("FK__Exercice__Adress__48CFD27E");
 
                 entity.HasOne(d => d.IdCategNavigation)
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.IdCateg)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Exercice__Id_Cat__5070F446");
+                    .HasConstraintName("FK__Exercice__Id_Cat__4CA06362");
 
                 entity.HasOne(d => d.IdDifficulteNavigation)
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.IdDifficulte)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Exercice__Id_dif__4D94879B");
+                    .HasConstraintName("FK__Exercice__Id_dif__49C3F6B7");
 
                 entity.HasOne(d => d.IdDocumentNavigation)
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.IdDocument)
-                    .HasConstraintName("FK__Exercice__IdDocu__4F7CD00D");
+                    .HasConstraintName("FK__Exercice__IdDocu__4BAC3F29");
 
                 entity.HasOne(d => d.IdcorrigeNavigation)
                     .WithMany(p => p.Exercice)
                     .HasForeignKey(d => d.Idcorrige)
-                    .HasConstraintName("FK__Exercice__Idcorr__4E88ABD4");
-            });
-
-            modelBuilder.Entity<LigneTestInteractif>(entity =>
-            {
-                entity.HasKey(e => e.IdLigne);
-
-                entity.Property(e => e.IdLigne).HasColumnName("id_ligne");
-
-                entity.Property(e => e.Ligne)
-                    .IsRequired()
-                    .HasColumnName("ligne")
-                    .HasColumnType("text");
-
-                entity.HasOne(d => d.IdexerciceNavigation)
-                    .WithMany(p => p.LigneTestInteractif)
-                    .HasForeignKey(d => d.Idexercice)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__LigneTest__Idexe__534D60F1");
+                    .HasConstraintName("FK__Exercice__Idcorr__4AB81AF0");
             });
 
             modelBuilder.Entity<Niveau>(entity =>
@@ -220,19 +181,19 @@ namespace projetmvcfinale.Models
                     .WithMany(p => p.NoteDeCours)
                     .HasForeignKey(d => d.AdresseCourriel)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__NoteDeCou__Adres__49C3F6B7");
+                    .HasConstraintName("FK__NoteDeCou__Adres__45F365D3");
 
                 entity.HasOne(d => d.IdCategNavigation)
                     .WithMany(p => p.NoteDeCours)
                     .HasForeignKey(d => d.IdCateg)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__NoteDeCou__Id_Ca__4AB81AF0");
+                    .HasConstraintName("FK__NoteDeCou__Id_Ca__46E78A0C");
 
                 entity.HasOne(d => d.IdSousCategorieNavigation)
                     .WithMany(p => p.NoteDeCours)
                     .HasForeignKey(d => d.IdSousCategorie)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__NoteDeCou__IdSou__4BAC3F29");
+                    .HasConstraintName("FK__NoteDeCou__IdSou__47DBAE45");
             });
 
             modelBuilder.Entity<SousCategorie>(entity =>
@@ -249,7 +210,7 @@ namespace projetmvcfinale.Models
                     .WithMany(p => p.SousCategorie)
                     .HasForeignKey(d => d.IdCateg)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SousCateg__Id_Ca__5441852A");
+                    .HasConstraintName("FK__SousCateg__Id_Ca__4E88ABD4");
             });
 
             modelBuilder.Entity<Utilisateur>(entity =>
