@@ -20,6 +20,7 @@ namespace projetmvcfinale.Controllers
         public string ConnectionString;
         private SqlConnection sqlConnection;
 
+        //Constructeur
         public ExerciceController(IConfiguration configuration)
         {
             this.Configuration = configuration;
@@ -27,7 +28,10 @@ namespace projetmvcfinale.Controllers
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
         }
-
+        /// <summary>
+        /// Afficher la liste d'exercices
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ListeExercice()
         {
             List<Exercice> listeExercice = this.provider.Exercice.ToList();
@@ -110,9 +114,6 @@ namespace projetmvcfinale.Controllers
                 //Envoyer vers la vue pour continuer la creation selon le type
                 return View("CompleterCreation", exerciceVM);
             }
-
-            
-
             return BadRequest("Erreur dans l'insertion de l'exercice");
         }
         /// <summary>
@@ -139,12 +140,10 @@ namespace projetmvcfinale.Controllers
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
 
-            
+            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", Lien.FileName);
-
-
-            string query = "UPDATE Exercice SET Lien ='" + chemin + "' WHERE NomExercices = '" + ex.NomExercices  + "'";
+            //ajouter le lien à la base de données
+            string query = @"UPDATE Exercice SET Lien ='" + chemin + "' WHERE NomExercices = '" + ex.NomExercices  + "'";
             SqlCommand commande = new SqlCommand(query,sqlConnection);
 
             using (var stream = new FileStream(chemin, FileMode.Create))
@@ -154,27 +153,8 @@ namespace projetmvcfinale.Controllers
 
             sqlConnection.Open();
             reader = commande.ExecuteReader();
-
-            return Ok("Fichier téléversé avec succès!");
-        }
-        /// <summary>
-        /// Télécharger le fichier d'exercice
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> DownloadExercice(string NomExercices)
-        {
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Documents/Exercices", NomExercices);
-
-            var memoire = new MemoryStream();
-
-            using (var stream = new FileStream(chemin, FileMode.Open))
-            {
-                await stream.CopyToAsync(memoire);
-            }
-            memoire.Position = 0;
-            return File("(~wwwroot/Documents/Exercices" + NomExercices, "application/vnd.ms-word");
-
+            sqlConnection.Close();
+            return RedirectToAction(nameof(ListeExercice));
         }
         /// <summary>
         /// Affiche la vue pour supprimer un exercice
@@ -182,9 +162,19 @@ namespace projetmvcfinale.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult SupprimerExercice(string id)
+        public async  Task <IActionResult> SupprimerExercice(string id)
         {
-            return View();
+              if (id == null)
+                return NotFound();
+
+              //aller chercher le cours dans le contexte
+              Exercice ex = await provider.Exercice.FindAsync(id);
+
+              //vérifier si le cours est null
+              if (ex == null)
+                return NotFound();
+
+            return View(ex);
         }
         /// <summary>
         /// Supprimer un exercice
@@ -194,7 +184,10 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> SupprimerExercicePost(string id)
         {
-            return View();
+            Exercice exercice = await provider.Exercice.FindAsync(id);
+            provider.Exercice.Remove(exercice);
+            await provider.SaveChangesAsync();
+            return RedirectToAction(nameof(ListeExercice));
         }
 
         [HttpPost]
@@ -214,9 +207,6 @@ namespace projetmvcfinale.Controllers
                     });
                 }
             }
-
-
-
             //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
 
 

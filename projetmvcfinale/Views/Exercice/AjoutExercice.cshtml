@@ -6,12 +6,9 @@
 
 
 <div style="margin-top: 10px;">
-
     <h4>Ajouter un exercice</h4>
     <hr />
-
     <div style="padding: 10px;">
-
         <form asp-action="AjoutExercice">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
@@ -38,8 +35,6 @@
                     <span asp-validation-for="IdCateg" class="text-danger"></span>
                 </div>
             </div>
-
-
             <div class="form-group">
                 <input type="submit" value="Créer exercice" class="btn btn-info" />
             </div>
@@ -48,10 +43,7 @@
             <input type="submit" value="Retour à la liste des exercices" class="btn btn-info" onclick="location.href='@Url.Action("ListeExercice","Exercice")'" />
         </div>
     </div>
-
 </div>
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

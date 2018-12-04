@@ -15,9 +15,6 @@
                 @Html.DisplayNameFor(model => model.NomExercices)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Lien)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.DateInsertion)
             </th>
             <th>
@@ -48,9 +45,6 @@
                 @Html.DisplayFor(modelItem => item.NomExercices)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Lien)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.DateInsertion)
             </td>
             <td>
@@ -72,10 +66,10 @@
                 @Html.DisplayFor(modelItem => item.IdcorrigeNavigation.CorrigeDocNom)
             </td>
             <td>
+                <a href='@Url.Content(item.Lien)'>Afficher</a> |
                 <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
                 <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
-                <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a> |
-                <a asp-action="DownloadExercice" asp-route-id="@item.NomExercices">Télécharger</a>
+                <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a>
             </td>
         </tr>
 }
