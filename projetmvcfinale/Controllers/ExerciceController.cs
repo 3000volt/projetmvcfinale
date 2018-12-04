@@ -200,12 +200,14 @@ namespace projetmvcfinale.Controllers
                 ligneSession.listeChoixReponses = choixDeReponse;
             }
             //S'il s'agit d'une suite de phrase
-            if (this.HttpContext.Session.GetString("PhraseASuivre") == "Actif")
+            else
             {
                 ligneSession = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
                 ligneSession.Ligne = ligneSession.Ligne + ligne.Ligne + "(?)";
-                ligneSession.listeChoixReponses = choixDeReponse;
-
+                foreach(ChoixDeReponse c in choixDeReponse)
+                {
+                    ligneSession.listeChoixReponses.Add(c);
+                }
             }
             //Instancier la liste des choix
             //Associer la ligne en cours a la session
@@ -229,8 +231,19 @@ namespace projetmvcfinale.Controllers
             else
             {
                 lignePerso = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
+                //Ajouter le reste de la ligne a la phrase
+                lignePerso.Ligne = lignePerso.Ligne + ligne.Ligne;
             }
-            this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligne));
+            //this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
+            //Ajouter cette ligne a la session exercice
+            //Ajouter cette ligne a la liste de la session de l'exercice en cours
+            InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+            //exercice.listeLignes.Add(ligne.NumeroQuestion, ligne);
+            exercice.listeLignes.Add(lignePerso);
+            //Mettre a jour la session
+            this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(exercice));
+            //Mettre fin a la sesisond e ligne
+            this.HttpContext.Session.Remove("Ligne");
         }
 
         [HttpPost]
@@ -286,7 +299,12 @@ namespace projetmvcfinale.Controllers
             //////int i = 0;
         }
 
-
+        //[HttpPost]
+        //public void BoutPhrase([FromBody][Bind("NumeroQuestion,Ligne")]LignePerso ligne)
+        //{
+        //    //Mettre a jour la session
+        //    this
+        //}
 
         [HttpPost]
         public void TerminerPhrase()
@@ -299,9 +317,10 @@ namespace projetmvcfinale.Controllers
             exercice.listeLignes.Add(ligne);
             //Mettre a jour la session
             this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(exercice));
-            //Mettre fin au continue
-            this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
+            //Mettre fin a la sesisond e ligne
+            this.HttpContext.Session.Remove("Ligne");
         }
+
 
         [HttpPost]
         public void EnvoyerExercice()
@@ -332,7 +351,8 @@ namespace projetmvcfinale.Controllers
             //Sauvegarder les données insérées
             this.provider.SaveChanges();
             //Tout annuler les sessions concernés
-            this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
+            this.HttpContext.Session.Remove("Ligne");
+            this.HttpContext.Session.Remove("Exercice");
 
         }
 

@@ -1,8 +1,10 @@
 ﻿$(function () {
-    alert("pou!!");
+    alert("pou277c!!");
+    var compteur;
 });
 
 function CommencerExercice() {
+    compteur = 0;
     //Valider que ce numéro est disponible
     var numero = $("#inNumeroQuestion").val();
     if (VerifierNumero(numero) == true) {
@@ -74,6 +76,8 @@ function AnnulerChoixReponse() {
 
 function ContinuerPhrase() {
     alert("test");
+    //Indiquer a la session que le prochain bout de phrase doit etre coller au vieux
+    //InsererPartie(numero, boutPhrase);
     //Mettre le textbox valide
     $("#boutLigne").removeAttr("readonly");
     //Le vider
@@ -94,12 +98,14 @@ function ContinuerPhrase() {
     $("#divTableau").attr("hidden", true);
     //Cacher le div
     $("#divDecision").attr("hidden", true);
-    //Indiquer a la session que le prochain bout de phrase doit etre coller au vieux
-    IndiquerASuivre();
+    $("#lblPhrase").html("Suite phrase");
+    
 }
 
 
 function ChoixReponse() {
+    alert("entre");
+    compteur++;
     //Inserer au textarea la phrase et la reponse
     //bout de phrase
     var boutPhrase = $("#boutLigne").val();
@@ -111,7 +117,6 @@ function ChoixReponse() {
     //Envoyer les donnees vers controlleur
     //Envoyer l ligne
     var numero = $("#inNumeroQuestion").val();
-
     //Envoyer les choix de reponse
     var tableau = new Array();
     $("#selectChoixReponse option").each(function () {
@@ -124,7 +129,7 @@ function ChoixReponse() {
         else {
             Reponse = false;
         }
-        var ordre = boutPhrase.length;
+        var ordre = compteur;
         //Insérer au tableau de choix de reponse
         tableau.push({ ChoixDeReponse1: choixReponse, Response: Reponse, NoOrdre: ordre });
         alert(tableau);
@@ -137,6 +142,7 @@ function ChoixReponse() {
 }
 
 function FinPhrase() {
+    compteur = 0;
     //Vider le tableau et lui mettre 2 tr
     $("#tbChoixReponses tr").slice(3).each(function () {
         $(this).remove();
@@ -162,7 +168,7 @@ function FinPhrase() {
     //Cahcer le reste du formulaire
     $("#ActiverCreation").attr("hidden", true);
     //Changer le titre du label
-    $("#lblPhrase").val("Suite Phrase");
+    $("#lblPhrase").html("Début Phrase");
     //Terminer dans le controlleur
     var url = "/Exercice/TerminerPhrase";
     $.ajax({
@@ -184,20 +190,42 @@ function FinPhrase() {
 
 
 function TerminerPhrase() {
-    //Annuler la suite de phrase
-
     //Envoyer ce qu'il y a dans la phrase (si aucun choix n'a été envoyé)
     var numero = $("#inNumeroQuestion").val();
     var ligne = $("#boutLigne").val();
     alert(numero);
     alert(ligne);
     TerminerLigne(numero, ligne);
-    //Retour au bout de phrase
-   
+    //Vider le tableau et lui mettre 2 tr
+    $("#tbChoixReponses tr").slice(3).each(function () {
+        $(this).remove();
+    });
+    $("#tbChoixReponses tr").each(function () {
+        $(this).find('td input').val("");
+    });
+    //Vider selectlist
+    $("#selectChoixReponse").html('');
+    //Cacher la selection de bonne reposne
+    $("#divBonneReponse").attr("hidden", true);
+    //Cacher le tableau
+    $("#divTableau").attr("hidden", true);
+    //Cacher le div
+    $("#divDecision").attr("hidden", true);
+    //Remmettre le texbox enable
+    $("#boutLigne").removeAttr("readonly");
+    //Vider son contenu
+    $("#boutLigne").val("");
+    //Remmtre dispo le numeor de question
+    $("#inNumeroQuestion").removeAttr("readonly");
+    $("#inNumeroQuestion").val("");
+    //Cahcer le reste du formulaire
+    $("#ActiverCreation").attr("hidden", true);
+    //Changer le titre du label
+    $("#lblPhrase").html("Début phrase");
 }
 
 function EnvoyerExercice() {
-
+    compteur = 0;
     var url = "/Exercice/EnvoyerExercice";
     $.ajax({
         type: "POST",
@@ -243,7 +271,7 @@ function CreationLigne(i, y, z) {
     var data1 = {
         NumeroQuestion: i,
         Ligne: y,
-        listeChoixReponses2:z
+        listeChoixReponses2: z
     };
     $.ajax({
         data: JSON.stringify(data1),
@@ -304,10 +332,15 @@ function VerifierNumero(i) {
     return bool;
 }//https://stackoverflow.com/questions/23078650/ajax-return-true-false-i-have-implemented-a-callback
 
-function IndiquerASuivre() {
+function InsererPartie(i, y) {
 
-    var url = "/Exercice/IndiquerUneSuite";
+    var url = "/Exercice/InsererPartie";
+    var data = {
+        NumeroQuestion: i,
+        Ligne: y
+    };
     $.ajax({
+        data: JSON.stringify(data),
         type: "POST",
         url: url,
         datatype: "text/plain",
