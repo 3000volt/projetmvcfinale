@@ -309,7 +309,7 @@ namespace projetmvcfinale.Controllers
 
 
         [HttpPost]
-        public async void EnvoyerExercice()
+        public  void EnvoyerExercice()
         {
             //Envoyer le contenue de l'insertion vers la BD
             InsertionExercice Insertionexercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
@@ -326,10 +326,13 @@ namespace projetmvcfinale.Controllers
 
             };
 
-            //on ajoute l'objet a la liste du provider des exercices
-            this.provider.Update(ExercicesAuComplet);
-            //Sauvegarder les données insérées
-            await this.provider.SaveChangesAsync();
+
+            //ajouter le lien à la base de données
+            string query = @"UPDATE Exercice SET ExercicesInt ='" + ExercicesAuComplet.ExercicesInt + "' WHERE NomExercices = '" + ExercicesAuComplet.NomExercices + "'";
+            SqlCommand commande = new SqlCommand(query, sqlConnection);
+            sqlConnection.Open();
+            SqlDataReader reader = commande.ExecuteReader();
+            sqlConnection.Close();
             //Tout annuler les sessions concernés
             this.HttpContext.Session.Remove("Ligne");
             this.HttpContext.Session.Remove("Exercice");
