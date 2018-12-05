@@ -1,0 +1,54 @@
+﻿
+
+@{
+    ViewData["Title"] = "AfficherExercice";
+}
+
+<h2>AfficherExercice</h2>
+
+
+<table class="table">
+    
+    <tbody>
+
+        @foreach (var item in ViewBag.lignesexercice as IEnumerable<projetmvcfinale.Models.LignePerso>)
+        {
+
+            string[] table = item.Ligne.Split("(?)");
+            List<projetmvcfinale.Models.ChoixDeReponse> ListeReponseQuestion = item.listeChoixReponses.OrderBy(x => x.NoOrdre).ToList();
+            int NoOdre = 1;
+            TagBuilder ligne = new TagBuilder("p");
+
+            <tr>
+                <td>
+                    @ligne.InnerHtml.AppendHtml("<p>")
+                    @ligne.InnerHtml.AppendHtml(item.NumeroQuestion.ToString() + ")")
+                    @ligne.InnerHtml.AppendHtml("&nbsp;")
+
+                    @foreach (var partligne in table)
+                    {
+                        if (partligne != "")
+                        {
+                            @ligne.InnerHtml.AppendHtml(partligne)
+                            @ligne.InnerHtml.AppendHtml("&nbsp;")
+                            //https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax
+                            if (item.listeChoixReponses.ToList().Contains(item.listeChoixReponses.ToList().Find(x=>x.NoOrdre== NoOdre)))
+                            {
+                                @ligne.InnerHtml.AppendHtml(@Html.DropDownListFor(x => item.listeChoixReponses, new SelectList(item.listeChoixReponses.ToList().Where(x => x.NoOrdre == NoOdre), "ChoixDeReponse1", "ChoixDeReponse1"), htmlAttributes: new { id = "Combobox" }))
+                                @ligne.InnerHtml.AppendHtml("&nbsp;")
+                                NoOdre++;
+                            }
+
+
+                        }
+                    }
+                    @ligne.InnerHtml.AppendHtml("</p>")
+                    @ligne.RenderBody()
+
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

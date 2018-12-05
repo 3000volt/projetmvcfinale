@@ -216,10 +216,6 @@ namespace projetmvcfinale.Controllers
             }
 
 
-
-            //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
-
-
             //Si la session est vide (Première partie de phrase envoyé)
             LignePerso ligneSession = new LignePerso();
             if (this.HttpContext.Session.GetString("Ligne") == null)
@@ -298,12 +294,6 @@ namespace projetmvcfinale.Controllers
             this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
         }
 
-        //[HttpPost]
-        //public void BoutPhrase([FromBody][Bind("NumeroQuestion,Ligne")]LignePerso ligne)
-        //{
-        //    //Mettre a jour la session
-        //    this
-        //}
 
         [HttpPost]
         public void TerminerPhrase()
@@ -322,7 +312,7 @@ namespace projetmvcfinale.Controllers
 
 
         [HttpPost]
-        public void EnvoyerExercice()
+        public async void EnvoyerExercice()
         {
             //Envoyer le contenue de l'insertion vers la BD
             InsertionExercice Insertionexercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
@@ -340,9 +330,9 @@ namespace projetmvcfinale.Controllers
             };
 
             //on ajoute l'objet a la liste du provider des exercices
-            this.provider.Exercice.Add(ExercicesAuComplet);
+            this.provider.Update(ExercicesAuComplet);
             //Sauvegarder les données insérées
-            this.provider.SaveChanges();
+            await this.provider.SaveChangesAsync();
             //Tout annuler les sessions concernés
             this.HttpContext.Session.Remove("Ligne");
             this.HttpContext.Session.Remove("Exercice");
@@ -366,8 +356,6 @@ namespace projetmvcfinale.Controllers
                 }
             }
             //Si la session n'existe pas, c'ests ur que le numeroe st disponible
-
-
             return disponible;
         }
 
@@ -383,6 +371,23 @@ namespace projetmvcfinale.Controllers
         {
             //Insérer dans la session de phrase en cours
             this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
+        }
+
+
+        [HttpGet]
+        public ActionResult AfficherExercice(int id)
+        {
+            Exercice exercice = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
+            List<LignePerso> list = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
+            ViewBag.exercice = exercice;
+            ViewBag.lignesexercice = list;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ValiderExercice()
+        {
+            return View();
         }
     }
 }
