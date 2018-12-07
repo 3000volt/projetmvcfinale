@@ -66,11 +66,19 @@
                 @Html.DisplayFor(modelItem => item.IdcorrigeNavigation.CorrigeDocNom)
             </td>
             <td>
-                <a href='@Url.Content(item.Lien)'>Afficher</a> |
-                <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
-                <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a>
-            </td>
+                @if (item.Lien != null)
+                {
+                    <a href="../Documents/Exercice/@item.Lien.Split('\\').Last()">Afficher</a>
+                }
+                else
+                {
+                    <span style="color:grey; font-size:small ">Afficher</span>
+                }
+                 |
+                  <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
+                  <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
+                  <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a>
+             </td>
         </tr>
 }
     </tbody>

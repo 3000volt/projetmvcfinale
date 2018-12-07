@@ -133,8 +133,6 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
-            SqlDataReader reader;
-
                 Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
 
             if (Lien == null || Lien.Length == 0)
@@ -143,17 +141,15 @@ namespace projetmvcfinale.Controllers
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
             //ajouter le lien à la base de données
-            string query = @"UPDATE Exercice SET Lien ='" + chemin + "' WHERE NomExercices = '" + ex.NomExercices  + "'";
-            SqlCommand commande = new SqlCommand(query,sqlConnection);
+            ex.Lien = chemin;
+            provider.Exercice.Update(ex);
+            await provider.SaveChangesAsync();
 
             using (var stream = new FileStream(chemin, FileMode.Create))
             {
                 await Lien.CopyToAsync(stream);
             }
 
-            sqlConnection.Open();
-            reader = commande.ExecuteReader();
-            sqlConnection.Close();
             return RedirectToAction(nameof(ListeExercice));
         }
         /// <summary>

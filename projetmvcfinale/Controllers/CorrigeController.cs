@@ -19,6 +19,7 @@ namespace projetmvcfinale.Controllers
         private readonly IConfiguration Configuration;
         public string ConnectionString;
         private SqlConnection sqlConnection;
+        private List<Corrige> listeCor;
 
         //Controlleur
         public CorrigeController(IConfiguration configuration)
@@ -27,11 +28,13 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
+            this.listeCor = this.provider.Corrige.ToList();
         }
 
         public IActionResult ListeCorrige()
         {
-            return View();
+            List<Corrige> listeCorrige = this.provider.Corrige.ToList();
+            return View(listeCorrige);
         }
         /// <summary>
         /// 
@@ -54,25 +57,33 @@ namespace projetmvcfinale.Controllers
         {
             if (ModelState.IsValid)
             {
-                SqlDataReader reader;
+                //SqlDataReader reader;
 
                 corrige.DateInsertion = DateTime.Today;
                 provider.Add(corrige);
                 await provider.SaveChangesAsync();
-                HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));//pour aller le chercher pour l'upload
+                listeCor.Add(corrige);
+                /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
+
+                Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
                 
+
                 //Ajouter l'id du corrigé a l'exercice correspondant
-                string query = @"UPDATE Exercice SET idCorrige ='" + corrige.Idcorrige + "' WHERE Idexercice = '" + corrige.Idexercice + "'";
-                SqlCommand commande = new SqlCommand(query, sqlConnection);
-                sqlConnection.Open();
-                reader = commande.ExecuteReader();
-                sqlConnection.Close();
+                //string query = @"UPDATE Exercice SET idCorrige ='" + corrige.Idcorrige + "' WHERE Idexercice = '" + corrige.Idexercice + "'";
+                //SqlCommand commande = new SqlCommand(query, sqlConnection);
+                //sqlConnection.Open();
+                //reader = commande.ExecuteReader();
+                //sqlConnection.Close();
+
+                provider.Exercice.Update(ex);
+                await provider.SaveChangesAsync();
             }
             return RedirectToAction(nameof(ListeCorrige));
         }
         [HttpGet]
         public IActionResult UploadCorrige()
         {
+            ViewBag.IdCorrige = new SelectList(this.provider.Corrige, "IdCorrige", "NomCorrige");
             return View();
         }
         /// <summary>
@@ -83,25 +94,24 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadCorrige(IFormFile Lien)
         {
-            SqlDataReader reader;
-
             Corrige corrige = JsonConvert.DeserializeObject<Corrige>(this.HttpContext.Session.GetString("corrige"));
+
+            //var idCor = this.provider.Corrige.FindAsync(corrige.Idcorrige);
 
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
 
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", Lien.FileName);
 
-            string query = @"UPDATE Corrige SET Lien ='" + chemin + "' WHERE NomCorrige = '" + corrige.CorrigeDocNom + "'";
-            SqlCommand commande = new SqlCommand(query, sqlConnection);
+            corrige.Lien = chemin;
+            provider.Corrige.Update(corrige);
+            await provider.SaveChangesAsync();
 
             using (var stream = new FileStream(chemin, FileMode.Create))
             {
                 await Lien.CopyToAsync(stream);
             }
 
-            sqlConnection.Open();
-            reader = commande.ExecuteReader();
             return Ok("Fichier téléversé avec succès!");
         }
     }
