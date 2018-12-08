@@ -9,17 +9,18 @@
             <div class="form-group col-sm-3">
                 <label id="lblNumeroQuestion" class="control-label"> Numéro de la question : </label>
                 <input id="inNumeroQuestion" class="form-control" />
-                <input type="button" value="Créer la question" style="margin-top:8px;" onclick="CommencerExercice()" />
+                <input id="btnCreerQuestion" type="button" value="Créer la question" style="margin-top:8px;" onclick="CommencerExercice()" />
             </div>
         </div>
 
         <div class="row">
-            <div id="ActiverCreation" hidden>
+            <div id="divActiverCreation" hidden>
                 <div class="form-group col-sm-7">
                     <label id="lblPhrase" asp-for="Ligne" class="control-label">Début phrase</label>
                     <textarea id="boutLigne" asp-for="Ligne" class="form-control" style="width:700px; height:150px"></textarea>
                     <span asp-validation-for="Ligne" class="text-danger"></span>
                     <input type="button" value="Insérer un choix de réponse après ce texte" onclick="AfficherTableau()" class="btn btn-default" style="margin-top:8px;" />
+                    <input id="btnFinPhrase" type="button" value="Phrase terminé" onclick="TerminerPhrase()" disabled class="btn btn-default"  style="margin-top:8px;" />
                 </div>
             </div>
         </div>
@@ -55,6 +56,9 @@
                     <div class="col-sm-2">
                         <input type="button" value="Indiquer la bonne réponse" onclick="OuvrirBonneReponse()" class="btn btn-default" />
                     </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Retirer le dernier choix de réponse" onclick="RetirerDerneirChoix()" class="btn btn-default" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,16 +68,18 @@
                 <div id="divBonneReponse" hidden>
                     <h5>Veuillez sélectionner la bonne réponse :</h5>
                     <select class="form-control" id="selectChoixReponse"></select>
-                     <input type="button" value="Valider la bonne réponse" onclick="ChoixReponse()" class="btn btn-default" />
+                    <input type="button" value="Valider la bonne réponse" onclick="ChoixReponse()" class="btn btn-default" />
+                    <input type="button" value="Retour aux choix de réponse" onclick="RetourChoix()" class="btn btn-default" />
                 </div>
             </div>
         </div>
 
-        <div class="row" style="margin-top:8px;">
+        <div id="divFinPhrase" hidden class="row" style="margin-top:8px;">
             <div class="col-sm-7">
-                <div id="divDecision" hidden>
+                <div>
                     <input type="button" value="Continuer la phrase" onclick="ContinuerPhrase()" class="btn btn-default" />
                     <input type="button" value="Arrêter la pharse" onclick="FinPhrase()" class="btn btn-default" />
+                    <input type="button" value="Changer la bonne reponse" onclick="ChangerChoix()" class="btn btn-default" />
                 </div>
             </div>
         </div>
@@ -82,18 +88,14 @@
             <div class="col-sm-7">
                 <div id="divPhrase">
                     <h5>Votre exercice :</h5>
-                    <textarea id="TextPhrase" disabled style="width:700px; height:150px"></textarea>
+                    <textarea id="txtExercice" disabled style="width:700px; height:150px"></textarea>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-2">
-                <input type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" class="btn btn-default" />
-            </div>
-
-            <div class="col-sm-2">
-                <input type="button" value="Phrase terminé" onclick="TerminerPhrase()" class="btn btn-default" />
+                <input id="btnExerciceTermine" type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" class="btn btn-default" />
             </div>
         </div>
     </form>
