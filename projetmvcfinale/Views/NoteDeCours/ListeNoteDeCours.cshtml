@@ -15,9 +15,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.NomNote)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Lien)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.DateInsertion)
             </th>
@@ -39,9 +39,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.NomNote)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Lien)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.DateInsertion)
             </td>
@@ -55,6 +55,15 @@
                 @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
             </td>
             <td>
+                @if (item.Lien != null)
+                {
+                    <a href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()">Afficher</a>
+                }
+                else
+                {
+                    <span style="color:grey; font-size:small ">Afficher</span>
+                }
+                |
                 <a asp-action="Edit" asp-route-id="@item.IdDocument">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.IdDocument">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.IdDocument">Delete</a>

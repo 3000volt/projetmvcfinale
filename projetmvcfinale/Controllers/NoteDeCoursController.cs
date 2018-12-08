@@ -29,7 +29,8 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult ListeNoteDeCours()
         {
-            return View();
+            List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
+            return View(listeNote);
         }
         [HttpGet]
         public IActionResult AjouterNote()
@@ -72,8 +73,6 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadNote(IFormFile Lien)
         {
-            SqlDataReader reader;
-
             NoteDeCours note = JsonConvert.DeserializeObject<NoteDeCours>(this.HttpContext.Session.GetString("NoteDeCours"));
 
             if (Lien == null || Lien.Length == 0)
@@ -81,16 +80,15 @@ namespace projetmvcfinale.Controllers
 
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
-            string query = @"UPDATE Exercice SET Lien ='" + chemin + "' WHERE NomExercices = '" + note.NomNote + "'";
-            SqlCommand commande = new SqlCommand(query, sqlConnection);
+            note.Lien = chemin;
+            provider.NoteDeCours.Update(note);
+            await provider.SaveChangesAsync();
 
             using (var stream = new FileStream(chemin, FileMode.Create))
             {
                 await Lien.CopyToAsync(stream);
             }
 
-            sqlConnection.Open();
-            reader = commande.ExecuteReader();
             return Ok("Fichier téléversé avec succès!");
         }
     }
