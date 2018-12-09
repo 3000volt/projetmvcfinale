@@ -1,5 +1,5 @@
 ﻿$(function () {
-    alert("wth!!");
+    alert("bao!!");
     var compteur;
     //$("#btnExerciceTermine").attr("disabled", true);
 });

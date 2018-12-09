@@ -32,15 +32,16 @@
                         //https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax
                         if (item.listeChoixReponses.ToList().Contains(item.listeChoixReponses.ToList().Find(x => x.NoOrdre == NoOdre)))
                         {
-                            @ligne.InnerHtml.AppendHtml(@Html.DropDownListFor(x => item.listeChoixReponses, new SelectList(item.listeChoixReponses.ToList().Where(x => x.NoOrdre == NoOdre), "ChoixDeReponse1", "ChoixDeReponse1"), htmlAttributes: new { id = "Combobox" }))
+                            @ligne.InnerHtml.AppendHtml(@Html.DropDownListFor(x => item.listeChoixReponses, new SelectList(item.listeChoixReponses.ToList().Where(x => x.NoOrdre == NoOdre), "ChoixDeReponse1", "ChoixDeReponse1")))@*htmlAttributes: new { id = "Combobox" }*@
                             @ligne.InnerHtml.AppendHtml("&nbsp;")
                             NoOdre++;
                         }
                         // }
                     }
+                    @ligne.InnerHtml.AppendHtml("<label id='reponse'></label>")
                     @ligne.InnerHtml.AppendHtml("</p>")
                     @ligne.RenderBody()
-
+                    
                 </td>
             </tr>
         }
