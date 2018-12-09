@@ -32,10 +32,9 @@ namespace projetmvcfinale.Controllers
         /// Afficher la liste d'exercices
         /// </summary>
         /// <returns></returns>
-        public IActionResult ListeExercice()
+        public IActionResult ListeExercice(string search)
         {
-            List<Exercice> listeExercice = this.provider.Exercice.ToList();
-            return View(listeExercice);
+            return View( this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// Affiche la vue pour ajouter un exercice
