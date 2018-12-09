@@ -16,7 +16,6 @@ function SoummettreCorrection() {
     var compteur = 0;
     //Indiquer les corrections
     $("#Exercice tbody tr").each(function () {
-        //alert($(this + " td p select").val());
         $(this).find("td p select").each(function () {
             if (correction[compteur] == true) {
                 alert("bon!");
@@ -41,16 +40,9 @@ function CorrigerExercice(i) {
         type: "POST",
         async: false,
         url: url,
-        dataType: "json",
-        //contentType: "application/json; charset=utf-8",        
-        success: function (data) {
-            //for (var i in data) {
-            //alert(data);
-            //liste.push(data[i]);
-            //alert(data);
-            //}
+        dataType: "json",    
+        success: function (data) {           
             liste = data;
-            //alert(data);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });

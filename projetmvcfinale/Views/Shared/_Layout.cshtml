@@ -22,10 +22,9 @@
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="~/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/style.css">
-    </environment>
+     </environment>
 
 
 </head>
@@ -70,7 +69,7 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li><a href="index.html">Accueil</a></li>
+                                    <li><a asp-action="index" asp-controller="Home">Accueil</a></li>
 
                                     <li>
                                         <a href="#">Note De cours</a>
@@ -80,69 +79,166 @@
                                                 <li><a href="#">Mega Menu Item 1</a></li>
                                                 <li><a href="#">Mega Menu Item 2</a></li>
                                                 <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">Mega Menu Item 4</a></li>
-                                                <li><a href="#">Mega Menu Item 5</a></li>
+                                                <li><a href="#">............</a></li>
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Structure de phrase</li>
-                                                <li><a href="#">Mega Menu Item 1</a></li>
-                                                <li><a href="#">Mega Menu Item 2</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">Mega Menu Item 4</a></li>
-                                                <li><a href="#">Mega Menu Item 5</a></li>
+                                                <li><a href="#">Structure de la phrase de base</a></li>
+                                                <li><a href="#">Juxtaposition et coordination (énumération)</a></li>
+                                                <li><a href="#">Intégration des citations</a></li>
+                                                <li><a href="#">............</a></li>
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Conjuguaison</li>
-                                                <li><a href="#">Mega Menu Item 1</a></li>
-                                                <li><a href="#">Mega Menu Item 2</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">Mega Menu Item 4</a></li>
-                                                <li><a href="#">Mega Menu Item 5</a></li>
+                                                <li><a href="#">Accord du verbe/Conjugaison</a></li>
+                                                <li><a href="#">Accord du participe passé</a></li>
+                                                <li><a href="#">Choix du temps et du mode des verbes</a></li>
+                                                <li><a href="#">............</a></li>
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Orthographe</li>
-                                                <li><a href="#">Mega Menu Item 1</a></li>
-                                                <li><a href="#">Mega Menu Item 2</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">Mega Menu Item 4</a></li>
-                                                <li><a href="#">Mega Menu Item 5</a></li>
+                                                <li><a href="#">Homophones</a></li>
+                                                <li><a href="#">Accord du nom, de l’adjectif ...</a></li>
+                                                <li><a href="#">Choix du singulier ou du pluriel</a></li>
+                                                <li><a href="#">............</a></li>
                                             </ul>
                                             <ul class="single-mega cn-col-4">
-                                                <li class="title">Headline 5</li>
+                                                <li class="title">Ponctuation</li>
+                                                <li><a href="#">Utilisation de la virgule</a></li>
+                                                <li><a href="#">Utilisation de la virgule avec « qui »</a></li>
+                                                <li><a href="#">Mega Menu Item 3</a></li>
+                                                <li><a href="#">............</a></li>
+                                            </ul>
+                                            <ul class="single-mega cn-col-4">
+                                                <li class="title">Vocabulaire</li>
                                                 <li><a href="#">Mega Menu Item 1</a></li>
                                                 <li><a href="#">Mega Menu Item 2</a></li>
                                                 <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">Mega Menu Item 4</a></li>
-                                                <li><a href="#">Mega Menu Item 5</a></li>
+                                                <li><a href="#">............</a></li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
                                         <a href="#">Exercice</a>
                                         <ul class="dropdown">
-                                            <li><a href="#">Catagory 1</a></li>
-                                            <li><a href="#">Catagory 1</a></li>
-                                            <li>
-                                                <a href="#">Catagory 1</a>
+                                            <li><a href="#">Conjugaison</a>
                                                 <ul class="dropdown">
-                                                    <li><a href="#">Catagory 2</a></li>
-                                                    <li><a href="#">Catagory 2</a></li>
                                                     <li>
-                                                        <a href="#">Catagory 2</a>
+                                                        <a href="#">Exercices Intéractif</a>
                                                         <ul class="dropdown">
-                                                            <li><a href="#">Catagory 3</a></li>
-                                                            <li><a href="#">Catagory 3</a></li>
-                                                            <li><a href="#">Catagory 3</a></li>
-                                                            <li><a href="#">Catagory 3</a></li>
-                                                            <li><a href="#">Catagory 3</a></li>
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
                                                         </ul>
                                                     </li>
-                                                    <li><a href="#">Catagory 2</a></li>
-                                                    <li><a href="#">Catagory 2</a></li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul></li>
+                                            <li><a href="#">Grammaire</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
                                                 </ul>
                                             </li>
-                                            <li><a href="#">Catagory 1</a></li>
-                                            <li><a href="#">Catagory 1</a></li>
+                                            <li><a href="#">Orthographe</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="#">Vocabulaire</a>
+                                                <ul class="dropdown">
+                                                    <li><a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>                                                           
+                                                        </ul></li>
+                                                    <li><a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Ponctuation</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul></li>
+                                            <li><a href="#">Structure de la phrase</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            
+
                                         </ul>
                                     </li>
                                     @if (this.User.IsInRole("Admin"))
@@ -150,9 +246,9 @@
                                         <li>
                                             <a href="#">Administrateur</a>
                                             <ul class="dropdown" style="width:300px;">
-                                                <li><a href="index.html">Gestion des documents</a></li>
+                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours">Gestion des documents</a></li>
                                                 <li><a href="about-us.html">Gestion des membres</a></li>
-                                                <li><a href="single-post.html">Gestion des exercices</a></li>
+                                                <li><a asp-action="ListeExercice" asp-controller="Exercice">Gestion des exercices</a></li>
                                             </ul>
                                         </li>
                                     }
@@ -174,10 +270,6 @@
                             </div>
                             <!-- Nav End -->
                         </div>
-                        <!-- Subscribe btn -->
-                        @*<div class="subscribe-btn">
-                                <a href="#" class="btn subscribe-btn" data-toggle="modal" data-target="#subsModal">Subscribe</a>
-                            </div>*@
 
 
                     </nav>
@@ -187,7 +279,7 @@
     </header>
     <!-- ##### Header Area End ##### -->
 
-    <div class="container body-content" style=" overflow-x: auto;white-space: nowrap;">
+    <div class="container body-content" style=" overflow-x: auto;white-space: nowrap;height:100%">
         @RenderBody()
         <hr />
     </div>
@@ -199,41 +291,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-
-                    <!-- Footer Nav Area -->
-                    @*<div class="classy-nav-container breakpoint-off" style="background-color:#ed7f10;">
-                        <!-- Classy Menu -->
-                        <nav class="classy-navbar justify-content-center">
-
-                            <!-- Navbar Toggler -->
-                            <div class="classy-navbar-toggler">
-                                <span class="navbarToggler"><span></span><span></span><span></span></span>
-                            </div>
-
-                            <!-- Menu -->
-                            <div class="classy-menu">
-
-                                <!-- close btn -->
-                                <div class="classycloseIcon">
-                                    <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
-                                </div>
-
-                                <!-- Nav Start -->
-                                <div class="classynav">
-                                    <ul>
-                                        <li><a href="#">Home</a></li>
-                                        <li><a href="#">About Us</a></li>
-                                        <li><a href="#">Lifestyle</a></li>
-                                        <li><a href="#">travel</a></li>
-                                        <li><a href="#">Music</a></li>
-                                        <li><a href="#">Contact</a></li>
-                                    </ul>
-                                </div>
-                                <!-- Nav End -->
-                            </div>
-                        </nav>
-                    </div>*@
-
                     <!-- Footer Social Area -->
                     <div class="footer-social-area ">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Pinterest"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
