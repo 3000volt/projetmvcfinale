@@ -1,14 +1,12 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "AfficherExercice";
 }
 
 <h2>AfficherExercice</h2>
 
 
-<table class="table">
-    
+<table id="Exercice" class="table">
+
     <tbody>
 
         @foreach (var item in ViewBag.lignesexercice as IEnumerable<projetmvcfinale.Models.LignePerso>)
@@ -27,28 +25,31 @@
 
                     @foreach (var partligne in table)
                     {
-                        if (partligne != "")
+                        //if (partligne != "")
+                        //{
+                        @ligne.InnerHtml.AppendHtml(partligne)
+                        @ligne.InnerHtml.AppendHtml("&nbsp;")
+                        //https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax
+                        if (item.listeChoixReponses.ToList().Contains(item.listeChoixReponses.ToList().Find(x => x.NoOrdre == NoOdre)))
                         {
-                            @ligne.InnerHtml.AppendHtml(partligne)
+                            @ligne.InnerHtml.AppendHtml(@Html.DropDownListFor(x => item.listeChoixReponses, new SelectList(item.listeChoixReponses.ToList().Where(x => x.NoOrdre == NoOdre), "ChoixDeReponse1", "ChoixDeReponse1")))@*htmlAttributes: new { id = "Combobox" }*@
                             @ligne.InnerHtml.AppendHtml("&nbsp;")
-                            //https://www.pluralsight.com/guides/asp-net-mvc-populating-dropdown-lists-in-razor-views-using-the-mvvm-design-pattern-entity-framework-and-ajax
-                            if (item.listeChoixReponses.ToList().Contains(item.listeChoixReponses.ToList().Find(x=>x.NoOrdre== NoOdre)))
-                            {
-                                @ligne.InnerHtml.AppendHtml(@Html.DropDownListFor(x => item.listeChoixReponses, new SelectList(item.listeChoixReponses.ToList().Where(x => x.NoOrdre == NoOdre), "ChoixDeReponse1", "ChoixDeReponse1"), htmlAttributes: new { id = "Combobox" }))
-                                @ligne.InnerHtml.AppendHtml("&nbsp;")
-                                NoOdre++;
-                            }
-
-
+                            NoOdre++;
                         }
+                        // }
                     }
+                    @ligne.InnerHtml.AppendHtml("<label id='reponse'></label>")
                     @ligne.InnerHtml.AppendHtml("</p>")
                     @ligne.RenderBody()
-
+                    
                 </td>
             </tr>
         }
-
-
     </tbody>
 </table>
+<input type="button" value="Soumettre les réponses" onclick="SoummettreCorrection()" />
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/CorrectionExercice.js"></script>
+}

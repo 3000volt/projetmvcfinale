@@ -132,7 +132,7 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
-                Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
+            Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
 
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
@@ -157,16 +157,16 @@ namespace projetmvcfinale.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async  Task <IActionResult> SupprimerExercice(string id)
+        public async Task<IActionResult> SupprimerExercice(string id)
         {
-              if (id == null)
+            if (id == null)
                 return NotFound();
 
-              //aller chercher le cours dans le contexte
-              Exercice ex = await provider.Exercice.FindAsync(id);
+            //aller chercher le cours dans le contexte
+            Exercice ex = await provider.Exercice.FindAsync(id);
 
-              //vérifier si le cours est null
-              if (ex == null)
+            //vérifier si le cours est null
+            if (ex == null)
                 return NotFound();
 
             return View(ex);
@@ -202,12 +202,6 @@ namespace projetmvcfinale.Controllers
                     });
                 }
             }
-
-
-
-            //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == ligne.NumeroQuestion).IdLigne
-
-
             //Si la session est vide (Première partie de phrase envoyé)
             LignePerso ligneSession = new LignePerso();
             if (this.HttpContext.Session.GetString("Ligne") == null)
@@ -220,8 +214,19 @@ namespace projetmvcfinale.Controllers
             else
             {
                 ligneSession = JsonConvert.DeserializeObject<LignePerso>(this.HttpContext.Session.GetString("Ligne"));
-                ligneSession.Ligne = ligneSession.Ligne + ligne.Ligne + "(?)";
-                foreach(ChoixDeReponse c in choixDeReponse)
+                //Vérifier s'il s'agit d'une mise a jour des choix de réponses ou une premeire fois
+                if (ligneSession.listeChoixReponses.Last().NoOrdre == choixDeReponse.Last().NoOrdre)
+                {
+                    //Retirer les derniers choix de réponse
+                    ligneSession.listeChoixReponses.RemoveAll(x => x.NoOrdre == choixDeReponse.Last().NoOrdre);
+                }
+                else
+                {
+                    //Associer la ligne au complete s'il s'agit de la 1ere fois
+                    ligneSession.Ligne = ligneSession.Ligne + ligne.Ligne + "(?)";
+                }
+                //Insérer les choix de réponses   
+                foreach (ChoixDeReponse c in choixDeReponse)
                 {
                     ligneSession.listeChoixReponses.Add(c);
                 }
@@ -229,6 +234,17 @@ namespace projetmvcfinale.Controllers
             //Instancier la liste des choix
             //Associer la ligne en cours a la session
             this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligneSession));
+        }
+
+        [HttpPost]
+        public void RetirerPhrase()
+        {
+            //Si une session est existant, lui mettre fin
+            if (this.HttpContext.Session.GetString("Ligne") != null)
+            {
+                this.HttpContext.Session.Remove("Ligne");
+            }
+
         }
 
         //TerminerLigne
@@ -304,20 +320,21 @@ namespace projetmvcfinale.Controllers
 
 
         [HttpPost]
-        public  void EnvoyerExercice()
+        public ActionResult EnvoyerExercice()
         {
             //Envoyer le contenue de l'insertion vers la BD
             InsertionExercice Insertionexercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
 
             //Pour ce faire on créer un objet exercices et on l'on remplit a partir de notre view model insertionExercice
-            Exercice ExercicesAuComplet = new Exercice() {
-                AdresseCourriel= Insertionexercice.exercice.AdresseCourriel,
-                NomExercices= Insertionexercice.exercice.NomExercices,
-                ExercicesInt= JsonConvert.SerializeObject(Insertionexercice.listeLignes),
-                DateInsertion=DateTime.Now,
-                TypeExercice= Insertionexercice.exercice.TypeExercice,
-                IdDifficulte= Insertionexercice.exercice.IdDifficulte,
-                IdCateg= Insertionexercice.exercice.IdCateg,
+            Exercice ExercicesAuComplet = new Exercice()
+            {
+                AdresseCourriel = Insertionexercice.exercice.AdresseCourriel,
+                NomExercices = Insertionexercice.exercice.NomExercices,
+                ExercicesInt = JsonConvert.SerializeObject(Insertionexercice.listeLignes),
+                DateInsertion = DateTime.Now,
+                TypeExercice = Insertionexercice.exercice.TypeExercice,
+                IdDifficulte = Insertionexercice.exercice.IdDifficulte,
+                IdCateg = Insertionexercice.exercice.IdCateg,
 
             };
 
@@ -331,27 +348,36 @@ namespace projetmvcfinale.Controllers
             //Tout annuler les sessions concernés
             this.HttpContext.Session.Remove("Ligne");
             this.HttpContext.Session.Remove("Exercice");
-
+            //return RedirectToAction(nameof(ListeExercice));
+            return Json(Url.Action("ListeExercice", "Exercice"));
         }
 
         [HttpPost]
-        public bool VerifierNumero(int numero)
+        public bool VerifierNumero(string numero)
         {
-            bool disponible = true;
-            //Voir si la session existe
-            if (this.HttpContext.Session.GetString("Exercice") != null)
+            try
             {
-                //Associer la liste
-                InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
-                //si le numero existe deja dans la sortedList
-                //if (exercice.listeLignes.ContainsKey(numero))
-                if (exercice.listeLignes.Any(x => x.NumeroQuestion == numero))
+                int num = int.Parse(numero);
+                bool disponible = true;
+                //Voir si la session existe
+                if (this.HttpContext.Session.GetString("Exercice") != null)
                 {
-                    disponible = false;
+                    //Associer la liste
+                    InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+                    //si le numero existe deja dans la sortedList
+                    //if (exercice.listeLignes.ContainsKey(numero))
+                    if (exercice.listeLignes.Any(x => x.NumeroQuestion == num))
+                    {
+                        disponible = false;
+                    }
                 }
+                //Si la session n'existe pas, c'ests ur que le numeroe st disponible
+                return disponible;
             }
-            //Si la session n'existe pas, c'ests ur que le numeroe st disponible
-            return disponible;
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         [HttpPost]
@@ -376,6 +402,7 @@ namespace projetmvcfinale.Controllers
             List<LignePerso> list = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
             ViewBag.exercice = exercice;
             ViewBag.lignesexercice = list;
+            this.HttpContext.Session.SetString("ExerciceAffiche", JsonConvert.SerializeObject(exercice));
             return View();
         }
 
@@ -383,6 +410,55 @@ namespace projetmvcfinale.Controllers
         public ActionResult ValiderExercice()
         {
             return View();
+        }
+
+        [HttpPost]
+        public List<bool> Correction(List<string> ListReponse)
+        {
+
+            Exercice exercice = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("ExerciceAffiche"));
+            //Liste comparative des bonnes reponses
+            List<string> listeReponse = new List<string>();
+            //Liste de validation
+            List<bool> listeResultat = new List<bool>();
+            //SortedList<int, bool> listeResultat = new SortedList<int, bool>();
+            //Liste des bonnes reponses
+            List<LignePerso> listePhrase = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
+            foreach (LignePerso l in listePhrase)
+            {
+                //Pour chaque choix de reponse dans la question
+                foreach (ChoixDeReponse c in l.listeChoixReponses)
+                {
+                    //S'il s'agit d'une bonne réponse
+                    if (c.Response == true)
+                    {
+                        //Ajouter a la liste de réponse
+                        listeReponse.Add(c.ChoixDeReponse1);
+                    }
+                }
+            }
+            //Comparer les réponses de l'utilisateur au corrigé
+            int compteur = 0;
+            foreach (string s in ListReponse)
+            {
+                //Si la réponse transmise est la même que la bonne réponse
+                if (s == listeReponse[compteur])
+                {
+                    //Mettre vrai dans le corrigé
+                    //listeResultat.Add(compteur, true);
+                    listeResultat.Add(true);
+                }
+                //s'il s'agit d'une mauvaise réponse, envoyer une erreur
+                else
+                {
+                    //listeResultat.Add(compteur, false);
+                    listeResultat.Add(false);
+                }
+                //Ajouter au compteur
+                compteur++;
+            }
+
+            return listeResultat;
         }
     }
 }
