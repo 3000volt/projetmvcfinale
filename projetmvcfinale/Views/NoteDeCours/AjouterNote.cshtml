@@ -1,4 +1,4 @@
-﻿@model projetmvcfinale.Models.NoteDeCours
+﻿@model projetmvcfinale.Models.NotesViewModel
 
 @{
     ViewData["Title"] = "AjouterNote";
@@ -8,13 +8,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AjouterNote">
+        <form asp-action="AjouterNote" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdDocument" class="control-label"></label>
-                <input asp-for="IdDocument" class="form-control" />
-                <span asp-validation-for="IdDocument" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="NomNote" class="control-label"></label>
                 <input asp-for="NomNote" class="form-control" />
@@ -22,11 +17,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdCateg" class="control-label"></label>
-                <select asp-for="IdCateg" class ="form-control" asp-items="ViewBag.IdCateg"></select>
+                <select asp-for="IdCateg" class="form-control" asp-items="ViewBag.IdCateg"></select>
             </div>
             <div class="form-group">
-                <label asp-for="IdSousCategorie" class="control-label"></label>
-                <select asp-for="IdSousCategorie" class ="form-control" asp-items="ViewBag.IdSousCategorie"></select>
+                <label asp-for="SousCategorie" class="control-label"></label>
+                <select asp-for="SousCategorie" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Lien" class="control-label"></label>
+                <input asp-for="Lien" class="form-control" type="file" />
+                <span asp-validation-for="Lien" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-info" />
@@ -36,9 +36,10 @@
 </div>
 
 <div>
-    <a asp-action="ListeNoteDeCours" class="btn btn-primary" >Retour à la liste</a>
+    <a asp-action="ListeNoteDeCours" class="btn btn-primary">Retour à la liste</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/Notes.js"></script>
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -32,6 +33,14 @@ namespace projetmvcfinale.Controllers
             this.listeCor = this.provider.Corrige.ToList();
         }
 
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
+            base.OnActionExecuted(context);
+            ViewBag.Categories = this.provider.Categorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
+        }
         public IActionResult ListeCorrige()
         {
             List<Corrige> listeCorrige = this.provider.Corrige.ToList();
