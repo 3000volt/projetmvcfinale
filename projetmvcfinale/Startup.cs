@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -71,6 +72,16 @@ namespace projetmvcfinale
 
             services.AddDbContext<ProjetFrancaisContext>(options =>
                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+
+            //https://forums.asp.net/t/2142697.aspx?asp+net+core+session+timeout
+            //gestion du temps du cookie de connection
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(options =>
+               {
+                   options.Cookie.Expiration = TimeSpan.FromSeconds(30);
+               });
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

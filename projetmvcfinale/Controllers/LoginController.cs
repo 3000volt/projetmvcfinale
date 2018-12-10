@@ -121,13 +121,35 @@ namespace projetmvcfinale.Controllers
                     this.provider.Utilisateur.Add(new Utilisateur { AdresseCourriel = model.Email, Nom = model.Nom, Prenom = model.Prenom, RegistrerDate = DateTime.Now });
                     this.provider.SaveChanges();
                     _logger.LogInformation("User created a new account with password.");
-                    var roleresult = await _userManager.AddToRoleAsync(user, "Usager");
+
+                     IdentityResult roleresult;
+
+                    if (HttpContext.User.IsInRole("Admin"))
+                    {
+                        //Si la personne qui crée l'utilisateur est un admin il lui donne le role choisi par l'admin
+                        roleresult = await _userManager.AddToRoleAsync(user, model.Role);
+                    }
+                    else
+                    { roleresult = await _userManager.AddToRoleAsync(user, "Usager"); }
+
+                    
                     if (roleresult.Succeeded)
                     {
 
                         _logger.LogInformation("User created a new account with password.");
 
-                        return RedirectToAction("Home", "Index");
+                        
+                        if(HttpContext.User.IsInRole("Admin"))
+                        {
+                            //Si la personne qui crée l'utilisateur est un admin il est retourné a la liste des utilisateurs, 
+                            return RedirectToAction("ListeUtilisateur", "Utilisateur");
+                        }
+                        else
+                        {
+                            //Si la personne qui crée l'utilisateur n'est pas un admin il est retourné a la liste des utilisateurs, 
+                            return RedirectToAction("Index", "Home");
+                        }
+                        
                     }
                     else
                     {

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,8 @@ namespace projetmvcfinale.Controllers
             List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             return View(listeNote);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AjouterNote()
         {
@@ -42,6 +45,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AjouterNote([Bind("IdDocument,NomNote,IdCateg,IdSousCategorie")] NoteDeCours note)
         {
@@ -60,6 +64,7 @@ namespace projetmvcfinale.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult UploadNote()
         {
@@ -70,6 +75,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <param name="Lien"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> UploadNote(IFormFile Lien)
         {

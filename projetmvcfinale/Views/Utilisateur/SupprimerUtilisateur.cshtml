@@ -1,0 +1,56 @@
+﻿@model projetmvcfinale.Models.Authentification.UtilisateurPersoViewModel
+
+@{
+    ViewData["Title"] = "SupprimerUtilisateur";
+}
+
+<h2>SupprimerUtilisateur</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>UtilisateurPersoViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AdresseCourriel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdresseCourriel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Prenom)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Prenom)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistrerDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegistrerDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telephone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telephone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Role)
+        </dd>
+    </dl>
+    
+    <form asp-action="SupprimerUtilisateurpost">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a class="btn btn-info" asp-action="ListeUtilisateur">Retournez à la liste</a>
+    </form>
+</div>

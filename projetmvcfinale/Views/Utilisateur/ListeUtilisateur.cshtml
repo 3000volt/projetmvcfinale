@@ -1,0 +1,64 @@
+﻿@model IEnumerable<projetmvcfinale.Models.Authentification.UtilisateurPersoViewModel>
+
+@{
+    ViewData["Title"] = "ListeUtilisateur";
+}
+
+<h2>Liste des Utilisateurs</h2>
+
+<p>
+    <a class="btn btn-info" asp-controller="Login" asp-action="Register">Ajouter un membre</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AdresseCourriel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prenom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegistrerDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdresseCourriel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prenom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrerDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telephone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.ActionLink("Modifier ", "ModifierUtilisateur", new { email = item.AdresseCourriel }) |
+                @Html.ActionLink("Supprimer", "SupprimerUtilisateur", new { email = item.AdresseCourriel})
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

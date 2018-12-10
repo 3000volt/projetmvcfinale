@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,6 +41,7 @@ namespace projetmvcfinale.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AjouterCorrige()
         {
@@ -52,6 +54,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <param name="corrige"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AjouterCorrige([Bind("Idcorrige,CorrigeDocNom,Lien,DateInsertion,Idexercice")] Corrige corrige)
         {
@@ -66,20 +69,14 @@ namespace projetmvcfinale.Controllers
                 /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
-                
-
-                //Ajouter l'id du corrigé a l'exercice correspondant
-                //string query = @"UPDATE Exercice SET idCorrige ='" + corrige.Idcorrige + "' WHERE Idexercice = '" + corrige.Idexercice + "'";
-                //SqlCommand commande = new SqlCommand(query, sqlConnection);
-                //sqlConnection.Open();
-                //reader = commande.ExecuteReader();
-                //sqlConnection.Close();
 
                 provider.Exercice.Update(ex);
                 await provider.SaveChangesAsync();
             }
             return RedirectToAction(nameof(ListeCorrige));
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult UploadCorrige()
         {
@@ -91,6 +88,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <param name="Lien"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> UploadCorrige(IFormFile Lien)
         {

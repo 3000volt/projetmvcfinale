@@ -8,5 +8,6 @@ namespace projetmvcfinale.Models.Authentification
 {
     public class LoginRole : IdentityRole
     {
+   
     }
 }
