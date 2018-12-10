@@ -121,7 +121,7 @@ namespace projetmvcfinale.Controllers
                     this.provider.Utilisateur.Add(new Utilisateur { AdresseCourriel = model.Email, Nom = model.Nom, Prenom = model.Prenom, RegistrerDate = DateTime.Now });
                     this.provider.SaveChanges();
                     _logger.LogInformation("User created a new account with password.");
-                    var roleresult = await _userManager.AddToRoleAsync(user, model.Role);
+                    var roleresult = await _userManager.AddToRoleAsync(user, "Usager");
                     if (roleresult.Succeeded)
                     {
 
@@ -166,7 +166,7 @@ namespace projetmvcfinale.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction("Accueil", "Librairie");
+            return RedirectToAction("Index", "Home");
         }
       
 

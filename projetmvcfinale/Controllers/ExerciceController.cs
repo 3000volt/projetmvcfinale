@@ -366,7 +366,6 @@ namespace projetmvcfinale.Controllers
                     //Associer la liste
                     InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
                     //si le numero existe deja dans la sortedList
-                    //if (exercice.listeLignes.ContainsKey(numero))
                     if (exercice.listeLignes.Any(x => x.NumeroQuestion == num))
                     {
                         disponible = false;
@@ -446,7 +445,6 @@ namespace projetmvcfinale.Controllers
                 if (s == listeReponse[compteur])
                 {
                     //Mettre vrai dans le corrigé
-                    //listeResultat.Add(compteur, true);
                     listeResultat.Add(true);
                 }
                 //s'il s'agit d'une mauvaise réponse, envoyer une erreur
