@@ -24,7 +24,7 @@
         <link rel="stylesheet" href="~/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/style.css">
-     </environment>
+    </environment>
 
 
 </head>
@@ -74,73 +74,75 @@
                                     <li>
                                         <a href="#">Note De cours</a>
                                         <div class="megamenu">
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Grammaire</li>
-                                                <li><a href="#">Mega Menu Item 1</a></li>
-                                                <li><a href="#">Mega Menu Item 2</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Structure de phrase</li>
-                                                <li><a href="#">Structure de la phrase de base</a></li>
-                                                <li><a href="#">Juxtaposition et coordination (énumération)</a></li>
-                                                <li><a href="#">Intégration des citations</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Conjuguaison</li>
-                                                <li><a href="#">Accord du verbe/Conjugaison</a></li>
-                                                <li><a href="#">Accord du participe passé</a></li>
-                                                <li><a href="#">Choix du temps et du mode des verbes</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Orthographe</li>
-                                                <li><a href="#">Homophones</a></li>
-                                                <li><a href="#">Accord du nom, de l’adjectif ...</a></li>
-                                                <li><a href="#">Choix du singulier ou du pluriel</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Ponctuation</li>
-                                                <li><a href="#">Utilisation de la virgule</a></li>
-                                                <li><a href="#">Utilisation de la virgule avec « qui »</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Vocabulaire</li>
-                                                <li><a href="#">Mega Menu Item 1</a></li>
-                                                <li><a href="#">Mega Menu Item 2</a></li>
-                                                <li><a href="#">Mega Menu Item 3</a></li>
-                                                <li><a href="#">............</a></li>
-                                            </ul>
+                                            @foreach (var i in ViewBag.Categories)
+                                            {
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">@i.NomCategorie</li>
+                                                    @{ var listeNotes = ViewBag.Notes as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
+                                                        foreach (var e in listeNotes.Where(x => x.IdCateg == i.IdCateg))
+                                                        {
+                                                            <li><a a href="../Documents/NoteDeCours/@e.Lien.Split('\\').Last()">@e.NomNote</a></li>
+                                                        }
+
+                                                        //
+                                                        //<li><a href="#">Mega Menu Item 2</a></li>
+                                                        //<li><a href="#">Mega Menu Item 3</a></li>
+                                                        //<li><a href="#">............</a></li>
+
+                                                    }
+                                                </ul>
+                                            }
+                                            @*<ul class="single-mega cn-col-4">
+                                                    <li class="title">Grammaire</li>
+                                                    <li><a href="#">Mega Menu Item 1</a></li>
+                                                    <li><a href="#">Mega Menu Item 2</a></li>
+                                                    <li><a href="#">Mega Menu Item 3</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Structure de phrase</li>
+                                                    <li><a href="#">Structure de la phrase de base</a></li>
+                                                    <li><a href="#">Juxtaposition et coordination (énumération)</a></li>
+                                                    <li><a href="#">Intégration des citations</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Conjuguaison</li>
+                                                    <li><a href="#">Accord du verbe/Conjugaison</a></li>
+                                                    <li><a href="#">Accord du participe passé</a></li>
+                                                    <li><a href="#">Choix du temps et du mode des verbes</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Orthographe</li>
+                                                    <li><a href="#">Homophones</a></li>
+                                                    <li><a href="#">Accord du nom, de l’adjectif ...</a></li>
+                                                    <li><a href="#">Choix du singulier ou du pluriel</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Ponctuation</li>
+                                                    <li><a href="#">Utilisation de la virgule</a></li>
+                                                    <li><a href="#">Utilisation de la virgule avec « qui »</a></li>
+                                                    <li><a href="#">Mega Menu Item 3</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Vocabulaire</li>
+                                                    <li><a href="#">Mega Menu Item 1</a></li>
+                                                    <li><a href="#">Mega Menu Item 2</a></li>
+                                                    <li><a href="#">Mega Menu Item 3</a></li>
+                                                    <li><a href="#">............</a></li>
+                                                </ul>*@
                                         </div>
                                     </li>
+
+
                                     <li>
                                         <a href="#">Exercice</a>
                                         <ul class="dropdown">
-                                            <li><a href="#">Conjugaison</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul></li>
-                                            <li><a href="#">Grammaire</a>
+                                            <li>
+                                                <a href="#">Conjugaison</a>
                                                 <ul class="dropdown">
                                                     <li>
                                                         <a href="#">Exercices Intéractif</a>
@@ -160,7 +162,29 @@
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li><a href="#">Orthographe</a>
+                                            <li>
+                                                <a href="#">Grammaire</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="#">Orthographe</a>
                                                 <ul class="dropdown">
                                                     <li>
                                                         <a href="#">Exercices Intéractif</a>
@@ -183,23 +207,6 @@
                                             <li>
                                                 <a href="#">Vocabulaire</a>
                                                 <ul class="dropdown">
-                                                    <li><a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>                                                           
-                                                        </ul></li>
-                                                    <li><a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">Ponctuation</a>
-                                                <ul class="dropdown">
                                                     <li>
                                                         <a href="#">Exercices Intéractif</a>
                                                         <ul class="dropdown">
@@ -216,8 +223,10 @@
                                                             <li><a href="#">Dur</a></li>
                                                         </ul>
                                                     </li>
-                                                </ul></li>
-                                            <li><a href="#">Structure de la phrase</a>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="#">Ponctuation</a>
                                                 <ul class="dropdown">
                                                     <li>
                                                         <a href="#">Exercices Intéractif</a>
@@ -237,7 +246,28 @@
                                                     </li>
                                                 </ul>
                                             </li>
-                                            
+                                            <li>
+                                                <a href="#">Structure de la phrase</a>
+                                                <ul class="dropdown">
+                                                    <li>
+                                                        <a href="#">Exercices Intéractif</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Exercices Pdf</a>
+                                                        <ul class="dropdown">
+                                                            <li><a href="#">Facile</a></li>
+                                                            <li><a href="#">Moyen</a></li>
+                                                            <li><a href="#">Dur</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
 
                                         </ul>
                                     </li>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace projetmvcfinale.Controllers
 {
@@ -27,7 +28,18 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
+            //ViewBag.Categories = this.provider.Categorie.ToList();
         }
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
+            base.OnActionExecuted(context);
+            ViewBag.Categories = this.provider.Categorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
+        }
+
         /// <summary>
         /// Afficher la liste d'exercices
         /// </summary>

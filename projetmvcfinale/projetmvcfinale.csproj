@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\Documents\Exercices\" />
     <Folder Include="wwwroot\Documents\Corrige\" />
-    <Folder Include="wwwroot\Documents\NoteDeCours\" />
   </ItemGroup>
 
 </Project>
