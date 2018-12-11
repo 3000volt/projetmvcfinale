@@ -101,9 +101,9 @@
                                                         {
 
                                                             var diff = 3 - count;
-                                                            foreach (var e in listesouscateg.Where(x => x.IdCateg == i.IdCateg))
+                                                            foreach (var e in listesouscateg)
                                                             {
-                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours">@e.NomSousCategorie</a></li>
+                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
                                                                 compteur++;
 
                                                                 if (compteur > @count - 1 && compteur < 3)
@@ -286,6 +286,7 @@
                                                 <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours">Gestion des documents</a></li>
                                                 <li><a asp-action="ListeUtilisateur" asp-controller="Utilisateur">Gestion des membres</a></li>
                                                 <li><a asp-action="ListeExercice" asp-controller="Exercice">Gestion des exercices</a></li>
+                                                <li><a asp-action="creerpdf" asp-controller="NoteDeCours">Créer un document</a></li>
                                             </ul>
                                         </li>
                                     }

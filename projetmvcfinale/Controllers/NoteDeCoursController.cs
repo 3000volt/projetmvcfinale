@@ -148,5 +148,13 @@ namespace projetmvcfinale.Controllers
             //Retourner la liste
             return sousCategorie;
         }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult creerpdf()
+        {
+            return View();
+        }
     }
 }

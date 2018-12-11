@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "creerpdf";
+}
+
+<h4 style="margin-top:10px"><u>Créer un document pdf</u></h4>
+
+<hr />
+<textarea name="editor1" id="editor1" rows="10" cols="80">
+                This is my textarea to be replaced with CKEditor.
+</textarea>
+
+
+
+@section Scripts{
+    
+<script src="//cdn.ckeditor.com/4.11.1/full/ckeditor.js"></script>
+    <script>
+        // Replace the <textarea id="editor1"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace('editor1');
+    </script>
+}
