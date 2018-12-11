@@ -41,10 +41,9 @@ namespace projetmvcfinale.Controllers
             ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
-        public IActionResult ListeCorrige()
+        public IActionResult ListeCorrige(string search)
         {
-            List<Corrige> listeCorrige = this.provider.Corrige.ToList();
-            return View(listeCorrige);
+            return View(this.provider.Corrige.Where(x => x.CorrigeDocNom.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// 

@@ -7,68 +7,89 @@
 <h1>List des notes de cours disponibles</h1>
 
 <p>
-    <a asp-action="AjouterNote">Ajouter des notes de cours</a>
+    <a asp-action="AjouterNote" class="btn btn-info">Ajouter des notes de cours</a>
+</p>
+<p>
+    @using (@Html.BeginForm("ListeNoteDeCours", "NoteDeCours", FormMethod.Get))
+    {
+        <b>Recherche par Titre:</b>
+
+        @Html.TextBox("search")
+        <input type="submit" value="Rechercher" />
+    }
 </p>
 <table class="table">
-    <thead>
+    @if (Model.Count() == 0)
+    {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomNote)
-            </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Lien)
-            </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.DateInsertion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCategNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdSousCategorieNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomNote)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Lien)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.DateInsertion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
-            </td>
-            <td>
-                @if (item.Lien != null)
-                {
-                    <a href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()">Afficher</a>
-                }
-                else
-                {
-                    <span style="color:grey; font-size:small ">Afficher</span>
-                }
-                |
-                <a asp-action="Edit" asp-route-id="@item.IdDocument">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdDocument">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdDocument">Delete</a>
+            <td colspan="4">
+                Aucun enregistrement trouvée.
             </td>
         </tr>
-}
-    </tbody>
-</table>
+    }
+    else
+    {
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomNote)
+                </th>
+                @*<th>
+                        @Html.DisplayNameFor(model => model.Lien)
+                    </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.DateInsertion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdCategNavigation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdSousCategorieNavigation)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomNote)
+                    </td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Lien)
+                        </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateInsertion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
+                    </td>
+                    <td>
+                        @if (item.Lien != null)
+                        {
+                            <a href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()">Afficher</a>
+                        }
+                        else
+                        {
+                            <span style="color:grey; font-size:small ">Afficher</span>
+                        }
+                        |
+                        <a asp-action="Edit" asp-route-id="@item.IdDocument">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.IdDocument">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.IdDocument">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+    </table>

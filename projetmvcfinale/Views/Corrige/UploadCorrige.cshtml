@@ -1,15 +1,11 @@
 ﻿@model projetmvcfinale.Models.Corrige
 
-<h4>Téléverser un fichier de Corrige</h4>
+<h4>Ajouter le fichier</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post" enctype="multipart/form-data" asp-controller="Corrige" asp-action="UploadCorrige">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                <label asp-for="IdCorrige" class="control-label"></label>
-                <select asp-for="IdCorrige" class="form-control" asp-items="ViewBag.ICorrige"></select>
-            </div>*@
             <div class="form-group">
                 <label asp-for="Lien" class="control-label"></label>
                 <input asp-for="Lien" class="form-control" type="file" />
