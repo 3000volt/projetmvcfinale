@@ -8,6 +8,15 @@
 <p>
     <a asp-action="AjouterCorrige" class=" btn btn-info" >Ajouter un corrigé</a>
 </p>
+<p>
+    @using (@Html.BeginForm("ListeCorrige", "Corrige", FormMethod.Get))
+    {
+        <b>Recherche par titre:</b>
+
+        @Html.TextBox("search")
+        <input type="submit" value="Rechercher" />
+    }
+</p>
 <table class="table table-responsive table-hover table-condensed">
     <thead>
         <tr>

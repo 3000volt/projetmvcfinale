@@ -35,16 +35,16 @@ namespace projetmvcfinale.Controllers
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            //Pour permettre au ViewBag contenant les categories d'etre accessible en tout temps    
+            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
             base.OnActionExecuted(context);
             ViewBag.Categories = this.provider.Categorie.ToList();
-            ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.Niveau = this.provider.Niveau.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
-        public IActionResult ListeCorrige()
+        public IActionResult ListeCorrige(string search)
         {
-            List<Corrige> listeCorrige = this.provider.Corrige.ToList();
-            return View(listeCorrige);
+            return View(this.provider.Corrige.Where(x => x.CorrigeDocNom.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// 
