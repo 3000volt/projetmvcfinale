@@ -39,6 +39,7 @@ namespace projetmvcfinale.Controllers
             base.OnActionExecuted(context);
             ViewBag.Categories = this.provider.Categorie.ToList();
             ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.Niveau = this.provider.Niveau.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
         public IActionResult ListeCorrige()

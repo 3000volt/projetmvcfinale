@@ -91,48 +91,6 @@
                                                     }
                                                 </ul>
                                             }
-                                            @*<ul class="single-mega cn-col-4">
-                                                    <li class="title">Grammaire</li>
-                                                    <li><a href="#">Mega Menu Item 1</a></li>
-                                                    <li><a href="#">Mega Menu Item 2</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Structure de phrase</li>
-                                                    <li><a href="#">Structure de la phrase de base</a></li>
-                                                    <li><a href="#">Juxtaposition et coordination (énumération)</a></li>
-                                                    <li><a href="#">Intégration des citations</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Conjuguaison</li>
-                                                    <li><a href="#">Accord du verbe/Conjugaison</a></li>
-                                                    <li><a href="#">Accord du participe passé</a></li>
-                                                    <li><a href="#">Choix du temps et du mode des verbes</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Orthographe</li>
-                                                    <li><a href="#">Homophones</a></li>
-                                                    <li><a href="#">Accord du nom, de l’adjectif ...</a></li>
-                                                    <li><a href="#">Choix du singulier ou du pluriel</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Ponctuation</li>
-                                                    <li><a href="#">Utilisation de la virgule</a></li>
-                                                    <li><a href="#">Utilisation de la virgule avec « qui »</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Vocabulaire</li>
-                                                    <li><a href="#">Mega Menu Item 1</a></li>
-                                                    <li><a href="#">Mega Menu Item 2</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>*@
                                         </div>
                                     </li>
 
@@ -148,17 +106,23 @@
                                                         <li>
                                                             <a href="#">Exercices Intéractif</a>
                                                             <ul class="dropdown">
-                                                                <li><a href="#">Facile</a></li>
-                                                                <li><a href="#">Moyen</a></li>
-                                                                <li><a href="#">Dur</a></li>
+                                                                @foreach (var e in ViewBag.NiveauDif)
+                                                                {
+                                                                    <li><a href="#">@e.NiveauDifficulte</a></li>
+                                                                }
+                                                                @*<li><a href="#">Moyen</a></li>
+                                                                    <li><a href="#">Dur</a></li>*@
                                                             </ul>
                                                         </li>
                                                         <li>
                                                             <a href="#">Exercices Pdf</a>
                                                             <ul class="dropdown">
-                                                                <li>@Html.ActionLink("Exercice", "ListeExercice", new { @class = "elements" }, null)</li>
-                                                                <li><a href="#">Moyen</a></li>
-                                                                <li><a href="#">Dur</a></li>
+                                                                @foreach (var e in ViewBag.NiveauDif)
+                                                                {
+                                                                    <li>@Html.ActionLink("Exercice", "ListeExercice2", "Exercice", new { diff = e.NiveauDifficulte, categ = i.NomCategorie, interaction = false })</li>
+                                                                }
+                                                                @*<li><a href="#">Moyen</a></li>
+                                                                    <li><a href="#">Dur</a></li>*@
                                                             </ul>
                                                         </li>
                                                     </ul>

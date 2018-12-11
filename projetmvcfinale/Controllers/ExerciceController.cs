@@ -39,6 +39,7 @@ namespace projetmvcfinale.Controllers
             base.OnActionExecuted(context);
             ViewBag.Categories = this.provider.Categorie.ToList();
             ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.NiveauDif = this.provider.Niveau.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
 
@@ -48,7 +49,25 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public IActionResult ListeExercice(string search)
         {
-            return View( this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
+            return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
+        }
+
+        public IActionResult ListeExercice2(string diff, string categ, bool interactif)
+        {
+            //Chercher la liste en consequence de la demande
+            List<Exercice> liste = new List<Exercice>();
+            int categorie = this.provider.Categorie.ToList().Find(x => x.NomCategorie == categ).IdCateg;
+            int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
+            if (interactif == false)
+            {
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt == null);
+            }
+            else if (interactif == true)
+            {
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != null);
+            }
+
+            return View("ListeExercice", liste);
         }
 
         /// <summary>
@@ -105,10 +124,6 @@ namespace projetmvcfinale.Controllers
 
                 string test = exercice.AdresseCourriel;
 
-                //Ajouter au contexte
-                provider.Add(exercice);
-
-                await provider.SaveChangesAsync();
                 //Envoyer vers l'autre page
                 if (exercice.TypeExercice == "Interactif")
                 {
@@ -128,6 +143,10 @@ namespace projetmvcfinale.Controllers
                 this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(insertion));
                 //Pour si une phras ese continue
                 this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
+
+                //Ajouter au contexte
+                provider.Add(exercice);
+                await provider.SaveChangesAsync();
                 //Envoyer vers la vue pour continuer la creation selon le type
                 return View("CompleterCreation", exerciceVM);
             }
@@ -163,7 +182,7 @@ namespace projetmvcfinale.Controllers
 
             //ajouter le lien à la base de données
             ex.Lien = chemin;
-            provider.Exercice.Update(ex);
+            provider.Update(ex);
             await provider.SaveChangesAsync();
 
             using (var stream = new FileStream(chemin, FileMode.Create))
