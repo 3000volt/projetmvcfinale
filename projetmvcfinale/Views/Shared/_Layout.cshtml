@@ -76,64 +76,71 @@
                                         <div class="megamenu">
                                             @foreach (var i in ViewBag.Categories)
                                             {
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">@i.NomCategorie</li>
-                                                    @{ var listeNotes = ViewBag.Notes as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
-                                                        foreach (var e in listeNotes.Where(x => x.IdCateg == i.IdCateg))
+                                            <ul class="single-mega cn-col-4">
+                                                <li class="title">@i.NomCategorie</li>
+                                                @{ var listesouscategtotal = ViewBag.souscatégorie as IEnumerable<projetmvcfinale.Models.SousCategorie>;
+                                                    var listesouscateg = listesouscategtotal.Where(x => x.IdCateg == i.IdCateg);
+                                                    int compteur = 0;
+                                                    if (listesouscateg.Any())
+                                                    {
+
+                                                        var count = listesouscateg.Count();
+                                                        if (count >= 3)
                                                         {
-                                                            <li><a a href="../Documents/NoteDeCours/@e.Lien.Split('\\').Last()">@e.NomNote</a></li>
+                                                            foreach (var e in listesouscateg)
+                                                            {
+                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                compteur++;
+                                                                if (compteur == 3)
+                                                                {
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@i.NomCategorie">............</a></li>
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (count > 0 && count < 3)
+                                                        {
+
+                                                            var diff = 3 - count;
+                                                            foreach (var e in listesouscateg.Where(x => x.IdCateg == i.IdCateg))
+                                                            {
+                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours">@e.NomSousCategorie</a></li>
+                                                                compteur++;
+
+                                                                if (compteur > @count - 1 && compteur < 3)
+                                                                {
+                                                                    while (compteur < 3)
+                                                                    {
+                                                                        <li><a href="#">Mega menu item @compteur</a></li>
+                                                                        compteur++;
+                                                                        if (compteur == 3)
+                                                                        {
+                                                                            <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            }
                                                         }
 
-                                                        //
-                                                        //<li><a href="#">Mega Menu Item 2</a></li>
-                                                        //<li><a href="#">Mega Menu Item 3</a></li>
-                                                        //<li><a href="#">............</a></li>
-
                                                     }
-                                                </ul>
+                                                    else
+                                                    {
+                                                        while (compteur <= 2)
+                                                        {
+                                                            <li><a href="#">Mega menu item @compteur</a></li>
+                                                            compteur++;
+                                                            if (compteur == 3)
+                                                            {
+                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                }
+                                            </ul>
                                             }
-                                            @*<ul class="single-mega cn-col-4">
-                                                    <li class="title">Grammaire</li>
-                                                    <li><a href="#">Mega Menu Item 1</a></li>
-                                                    <li><a href="#">Mega Menu Item 2</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Structure de phrase</li>
-                                                    <li><a href="#">Structure de la phrase de base</a></li>
-                                                    <li><a href="#">Juxtaposition et coordination (énumération)</a></li>
-                                                    <li><a href="#">Intégration des citations</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Conjuguaison</li>
-                                                    <li><a href="#">Accord du verbe/Conjugaison</a></li>
-                                                    <li><a href="#">Accord du participe passé</a></li>
-                                                    <li><a href="#">Choix du temps et du mode des verbes</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Orthographe</li>
-                                                    <li><a href="#">Homophones</a></li>
-                                                    <li><a href="#">Accord du nom, de l’adjectif ...</a></li>
-                                                    <li><a href="#">Choix du singulier ou du pluriel</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Ponctuation</li>
-                                                    <li><a href="#">Utilisation de la virgule</a></li>
-                                                    <li><a href="#">Utilisation de la virgule avec « qui »</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>
-                                                <ul class="single-mega cn-col-4">
-                                                    <li class="title">Vocabulaire</li>
-                                                    <li><a href="#">Mega Menu Item 1</a></li>
-                                                    <li><a href="#">Mega Menu Item 2</a></li>
-                                                    <li><a href="#">Mega Menu Item 3</a></li>
-                                                    <li><a href="#">............</a></li>
-                                                </ul>*@
+                                            
                                         </div>
                                     </li>
 
