@@ -88,7 +88,6 @@
                                                         //<li><a href="#">Mega Menu Item 2</a></li>
                                                         //<li><a href="#">Mega Menu Item 3</a></li>
                                                         //<li><a href="#">............</a></li>
-
                                                     }
                                                 </ul>
                                             }
@@ -141,134 +140,30 @@
                                     <li>
                                         <a href="#">Exercice</a>
                                         <ul class="dropdown">
-                                            <li>
-                                                <a href="#">Conjugaison</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Grammaire</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Orthographe</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Vocabulaire</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Ponctuation</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Structure de la phrase</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-
+                                            @foreach (var i in ViewBag.Categories)
+                                            {
+                                                <li>
+                                                    <a href="#">@i.NomCategorie</a>
+                                                    <ul class="dropdown">
+                                                        <li>
+                                                            <a href="#">Exercices Intéractif</a>
+                                                            <ul class="dropdown">
+                                                                <li><a href="#">Facile</a></li>
+                                                                <li><a href="#">Moyen</a></li>
+                                                                <li><a href="#">Dur</a></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">Exercices Pdf</a>
+                                                            <ul class="dropdown">
+                                                                <li>@Html.ActionLink("Exercice", "ListeExercice", new { @class = "elements" }, null)</li>
+                                                                <li><a href="#">Moyen</a></li>
+                                                                <li><a href="#">Dur</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
                                         </ul>
                                     </li>
                                     @if (this.User.IsInRole("Admin"))
