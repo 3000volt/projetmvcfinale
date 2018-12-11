@@ -25,6 +25,8 @@ namespace projetmvcfinale.Models.Authentification
         public string Telephone { get; set; }
         [Display(Name = "Role")]
         public string Role { get; set; }
-        
+
+        public List<SelectListItem> Roles { get; set; }
+
     }
 }

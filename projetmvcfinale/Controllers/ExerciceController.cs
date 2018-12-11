@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace projetmvcfinale.Controllers
 {
     public class ExerciceController : Controller
     {
+        //Propriétés du controlleur
         private readonly ProjetFrancaisContext provider;
         private readonly IConfiguration Configuration;
         public string ConnectionString;
@@ -48,10 +50,12 @@ namespace projetmvcfinale.Controllers
         {
             return View( this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
+
         /// <summary>
         /// Affiche la vue pour ajouter un exercice
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AjoutExercice()
         {
@@ -74,11 +78,13 @@ namespace projetmvcfinale.Controllers
             return View();
             //source:https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.1, https://stackoverflow.com/questions/35379309/how-to-upload-files-in-asp-net-core
         }
+
         /// <summary>
         /// Ajouter un exercice
         /// </summary>
         /// <param name="exercice"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AjoutExercice(ExerciceVM exerciceVM)
         {
@@ -127,20 +133,24 @@ namespace projetmvcfinale.Controllers
             }
             return BadRequest("Erreur dans l'insertion de l'exercice");
         }
+
         /// <summary>
         /// Afficher la vue pour téléverser un fichier d'exercice
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult UploadExercice()
         {
             return View();
         }
+
         /// <summary>
         /// téléverser le fichier dans le dossier d'exercice
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
@@ -163,11 +173,13 @@ namespace projetmvcfinale.Controllers
 
             return RedirectToAction(nameof(ListeExercice));
         }
+
         /// <summary>
         /// Affiche la vue pour supprimer un exercice
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> SupprimerExercice(string id)
         {
@@ -188,6 +200,7 @@ namespace projetmvcfinale.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SupprimerExercicePost(string id)
         {
@@ -197,6 +210,7 @@ namespace projetmvcfinale.Controllers
             return RedirectToAction(nameof(ListeExercice));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void CreationLigne([FromBody][Bind("NumeroQuestion,Ligne,ChoixDeReponse1,Response,NoOrdre")]LignePerso ligne)
         {
@@ -248,6 +262,7 @@ namespace projetmvcfinale.Controllers
             this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligneSession));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void RetirerPhrase()
         {
@@ -260,6 +275,7 @@ namespace projetmvcfinale.Controllers
         }
 
         //TerminerLigne
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void TerminerLigne([FromBody][Bind("NumeroQuestion,Ligne")]LignePerso ligne)
         {
@@ -292,6 +308,7 @@ namespace projetmvcfinale.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public void AjoutChoixReponse([FromBody][Bind("ChoixDeReponse1,Response,NoOrdre")]List<ChoixDeReponseTest> choix)
         {
             //Insérer la liste au contexte
@@ -316,6 +333,7 @@ namespace projetmvcfinale.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public void TerminerPhrase()
         {
             //Prendre la phrase dans la session
@@ -332,6 +350,7 @@ namespace projetmvcfinale.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult EnvoyerExercice()
         {
             //Envoyer le contenue de l'insertion vers la BD
@@ -364,6 +383,7 @@ namespace projetmvcfinale.Controllers
             return Json(Url.Action("ListeExercice", "Exercice"));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public bool VerifierNumero(string numero)
         {
@@ -390,7 +410,7 @@ namespace projetmvcfinale.Controllers
                 return false;
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void IndiquerUneSuite()
         {
@@ -398,6 +418,7 @@ namespace projetmvcfinale.Controllers
             this.HttpContext.Session.SetString("PhraseASuivre", "Actif");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void AnnulerUneSuite()
         {
@@ -405,8 +426,8 @@ namespace projetmvcfinale.Controllers
             this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
         }
 
-
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult AfficherExercice(int id)
         {
             Exercice exercice = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
@@ -417,12 +438,8 @@ namespace projetmvcfinale.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult ValiderExercice()
-        {
-            return View();
-        }
-
+        //page d'erreur a mettre
+        [AllowAnonymous]
         [HttpPost]
         public List<bool> Correction(List<string> ListReponse)
         {
@@ -432,7 +449,6 @@ namespace projetmvcfinale.Controllers
             List<string> listeReponse = new List<string>();
             //Liste de validation
             List<bool> listeResultat = new List<bool>();
-            //SortedList<int, bool> listeResultat = new SortedList<int, bool>();
             //Liste des bonnes reponses
             List<LignePerso> listePhrase = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
             foreach (LignePerso l in listePhrase)
