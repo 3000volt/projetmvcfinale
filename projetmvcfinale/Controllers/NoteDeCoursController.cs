@@ -32,10 +32,11 @@ namespace projetmvcfinale.Controllers
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            //Pour permettre au ViewBag contenant les categories d'etre accessible en tout temps    
+            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
             base.OnActionExecuted(context);
             ViewBag.Categories = this.provider.Categorie.ToList();
-            ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.NiveauDif = this.provider.Niveau.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
 
@@ -51,7 +52,7 @@ namespace projetmvcfinale.Controllers
         public IActionResult AjouterNote()
         {
             ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
-
+            //ViewBag.SousCategorie = new SelectList(this.provider.SousCategorie.ToList(), "idSousCategorie", "NomIdSousCategorie");
             return View();
         }
         /// <summary>

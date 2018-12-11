@@ -35,6 +35,16 @@ namespace projetmvcfinale.Controllers
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
 
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
+            base.OnActionExecuted(context);
+            ViewBag.Categories = this.provider.Categorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.NiveauDif = this.provider.Niveau.ToList();
+            //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
+        }
+
         public IActionResult Index()
         {
             ViewBag.Categories = this.provider.Categorie.ToList();
