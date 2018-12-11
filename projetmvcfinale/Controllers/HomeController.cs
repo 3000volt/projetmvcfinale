@@ -26,6 +26,14 @@ namespace projetmvcfinale.Controllers
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
         }
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //Pour permettre au ViewBag contenant les categories d'etre accessible en tout temps    
+            base.OnActionExecuted(context);
+            ViewBag.Categories = this.provider.Categorie.ToList();
+            ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
+            //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
+        }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {

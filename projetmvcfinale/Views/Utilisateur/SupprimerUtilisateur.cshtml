@@ -50,7 +50,8 @@
     </dl>
     
     <form asp-action="SupprimerUtilisateurpost">
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="hidden" asp-for="AdresseCourriel" />
+        <input type="submit" value="Supprimer l'utilisateur" asp-route-email="@Model.AdresseCourriel" class="btn btn-default" /> |
         <a class="btn btn-info" asp-action="ListeUtilisateur">Retournez à la liste</a>
     </form>
 </div>

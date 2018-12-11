@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +39,14 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
         }
 
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //Pour permettre au ViewBag contenant les categories d'etre accessible en tout temps    
+            base.OnActionExecuted(context);
+            ViewBag.Categories = this.provider.Categorie.ToList();
+            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
+        }
         /// <summary>
         /// Méthode qui afiche la liste des users
         /// </summary>
