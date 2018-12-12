@@ -76,71 +76,71 @@
                                         <div class="megamenu">
                                             @foreach (var i in ViewBag.Categories)
                                             {
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">@i.NomCategorie</li>
-                                                @{ var listesouscategtotal = ViewBag.souscatégorie as IEnumerable<projetmvcfinale.Models.SousCategorie>;
-                                                    var listesouscateg = listesouscategtotal.Where(x => x.IdCateg == i.IdCateg);
-                                                    int compteur = 0;
-                                                    if (listesouscateg.Any())
-                                                    {
-
-                                                        var count = listesouscateg.Count();
-                                                        if (count >= 3)
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">@i.NomCategorie</li>
+                                                    @{ var listesouscategtotal = ViewBag.souscatégorie as IEnumerable<projetmvcfinale.Models.SousCategorie>;
+                                                        var listesouscateg = listesouscategtotal.Where(x => x.IdCateg == i.IdCateg);
+                                                        int compteur = 0;
+                                                        if (listesouscateg.Any())
                                                         {
-                                                            foreach (var e in listesouscateg)
+
+                                                            var count = listesouscateg.Count();
+                                                            if (count >= 3)
                                                             {
-                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                foreach (var e in listesouscateg)
+                                                                {
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                    compteur++;
+                                                                    if (compteur == 3)
+                                                                    {
+                                                                        <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@i.NomCategorie">............</a></li>
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (count > 0 && count < 3)
+                                                            {
+
+                                                                var diff = 3 - count;
+                                                                foreach (var e in listesouscateg)
+                                                                {
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                    compteur++;
+
+                                                                    if (compteur > @count - 1 && compteur < 3)
+                                                                    {
+                                                                        while (compteur < 3)
+                                                                        {
+                                                                            <li><a href="#">Mega menu item @compteur</a></li>
+                                                                            compteur++;
+                                                                            if (compteur == 3)
+                                                                            {
+                                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
+                                                                            }
+                                                                        }
+
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            while (compteur <= 2)
+                                                            {
+                                                                <li><a href="#">Mega menu item @compteur</a></li>
                                                                 compteur++;
                                                                 if (compteur == 3)
                                                                 {
-                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@i.NomCategorie">............</a></li>
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
                                                                 }
-                                                            }
-                                                        }
-                                                        else if (count > 0 && count < 3)
-                                                        {
 
-                                                            var diff = 3 - count;
-                                                            foreach (var e in listesouscateg)
-                                                            {
-                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
-                                                                compteur++;
-
-                                                                if (compteur > @count - 1 && compteur < 3)
-                                                                {
-                                                                    while (compteur < 3)
-                                                                    {
-                                                                        <li><a href="#">Mega menu item @compteur</a></li>
-                                                                        compteur++;
-                                                                        if (compteur == 3)
-                                                                        {
-                                                                            <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
-                                                                        }
-                                                                    }
-
-                                                                }
                                                             }
                                                         }
 
                                                     }
-                                                    else
-                                                    {
-                                                        while (compteur <= 2)
-                                                        {
-                                                            <li><a href="#">Mega menu item @compteur</a></li>
-                                                            compteur++;
-                                                            if (compteur == 3)
-                                                            {
-                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
-                                                            }
-
-                                                        }
-                                                    }
-
-                                                }
-                                            </ul>
+                                                </ul>
                                             }
-                                            
+
                                         </div>
                                     </li>
 
@@ -148,134 +148,36 @@
                                     <li>
                                         <a href="#">Exercice</a>
                                         <ul class="dropdown">
-                                            <li>
-                                                <a href="#">Conjugaison</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Grammaire</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Orthographe</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Vocabulaire</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Ponctuation</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Structure de la phrase</a>
-                                                <ul class="dropdown">
-                                                    <li>
-                                                        <a href="#">Exercices Intéractif</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Exercices Pdf</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Facile</a></li>
-                                                            <li><a href="#">Moyen</a></li>
-                                                            <li><a href="#">Dur</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-
+                                            @foreach (var i in ViewBag.Categories)
+                                            {
+                                                <li>
+                                                    <a href="#">@i.NomCategorie</a>
+                                                    <ul class="dropdown">
+                                                        <li>
+                                                            <a href="#">Exercices Intéractif</a>
+                                                            <ul class="dropdown">
+                                                                @foreach (var e in ViewBag.NiveauDif)
+                                                                {
+                                                                    <li><a href="#">@e.NiveauDifficulte</a></li>
+                                                                }
+                                                                @*<li><a href="#">Moyen</a></li>
+                                                                    <li><a href="#">Dur</a></li>*@
+                                                            </ul>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">Exercices Pdf</a>
+                                                            <ul class="dropdown">
+                                                                @foreach (var e in ViewBag.NiveauDif)
+                                                                {
+                                                                    <li>@Html.ActionLink("Exercice", "ListeExercice2", "Exercice", new { diff = e.NiveauDifficulte, categ = i.NomCategorie, interaction = false })</li>
+                                                                }
+                                                                @*<li><a href="#">Moyen</a></li>
+                                                                    <li><a href="#">Dur</a></li>*@
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
                                         </ul>
                                     </li>
                                     @if (this.User.IsInRole("Admin"))

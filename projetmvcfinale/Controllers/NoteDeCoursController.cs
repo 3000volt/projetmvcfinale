@@ -37,6 +37,7 @@ namespace projetmvcfinale.Controllers
             ViewBag.Categories = this.provider.Categorie.ToList();
             ViewBag.Notes = this.provider.NoteDeCours.ToList();
             ViewBag.NiveauDif = this.provider.Niveau.ToList();
+            ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
 
