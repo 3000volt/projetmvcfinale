@@ -10,19 +10,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="ModifierNote">
+        <form asp-action="ModifierNote" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="NomNote" class="control-label"></label>
                 <input asp-for="NomNote" class="form-control" />
                 <span asp-validation-for="NomNote" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Lien" class="control-label"></label>
-                <input asp-for="Lien" class="form-control" />
-                <span asp-validation-for="Lien" class="text-danger"></span>
-            </div>         
-            
             <div class="form-group">
                 <label asp-for="IdCateg" class="control-label"></label>
                 <input asp-for="IdCateg" class="form-control" />
@@ -34,14 +28,19 @@
                 <span asp-validation-for="SousCategorie" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <label asp-for="Lien" class="control-label"></label>
+                <input asp-for="Lien" value="@ViewBag.Link" class="form-control" type="file" />
+                <span asp-validation-for="Lien" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Enregistrer" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="ListeNoteDeCours">Annuler les modifications</a>
 </div>
 
 @section Scripts {

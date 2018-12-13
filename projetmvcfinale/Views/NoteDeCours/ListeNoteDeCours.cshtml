@@ -84,9 +84,8 @@
                             <span style="color:grey; font-size:small ">Afficher</span>
                         }
                         |
-                        <a asp-action="Edit" asp-route-id="@item.IdDocument">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.IdDocument">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.IdDocument">Delete</a>
+                        <a asp-action="ModifierNote" asp-route-id="@item.IdDocument">Modifier</a> |
+                        <a asp-action="SupprimerNote" asp-route-id="@item.IdDocument">Supprimer</a>
                     </td>
                 </tr>
             }
