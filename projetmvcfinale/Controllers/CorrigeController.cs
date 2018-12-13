@@ -65,22 +65,48 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> AjouterCorrige([Bind("Idcorrige,CorrigeDocNom,Lien,DateInsertion,Idexercice")] Corrige corrige)
+        public async Task<IActionResult> AjouterCorrige([Bind("CorrigeDocNom,Lien,Idexercice")] CorrigeViewModel corrigeVM)
         {
             if (ModelState.IsValid)
             {
                 //SqlDataReader reader;
 
-                corrige.DateInsertion = DateTime.Today;
+                Corrige corrige = new Corrige()
+                {
+                    CorrigeDocNom = corrigeVM.CorrigeDocNom,
+                    Lien = corrigeVM.Lien.FileName,
+                    DateInsertion = DateTime.Now,
+                    Idexercice = corrigeVM.Idexercice
+
+                };
+
                 provider.Add(corrige);
                 await provider.SaveChangesAsync();
-                listeCor.Add(corrige);
+               // listeCor.Add(corrige);
                 /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
-
+                ex.Idcorrige = corrige.Idcorrige;
                 provider.Exercice.Update(ex);
                 await provider.SaveChangesAsync();
+
+
+                //Insérer dans la BD le document
+                if (corrige == null || corrige.Lien.Length == 0)
+                    return Content("Aucun fichier sélectionné");
+
+                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Lien);
+
+                corrige.Lien = chemin;
+                provider.Corrige.Update(corrige);
+                await provider.SaveChangesAsync();
+
+                using (var stream = new FileStream(chemin, FileMode.Create))
+                {
+                    await corrigeVM.Lien.CopyToAsync(stream);
+                }
+
+                return RedirectToAction(nameof(ListeCorrige));
             }
             return RedirectToAction(nameof(ListeCorrige));
         }
