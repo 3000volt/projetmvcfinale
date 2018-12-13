@@ -110,7 +110,7 @@
                                                                     {
                                                                         while (compteur < 3)
                                                                         {
-                                                                            <li><a href="#">Mega menu item @compteur</a></li>
+                                                                            <li><a href="#" style="color:#808080">À venir</a></li>
                                                                             compteur++;
                                                                             if (compteur == 3)
                                                                             {
@@ -127,7 +127,7 @@
                                                         {
                                                             while (compteur <= 2)
                                                             {
-                                                                <li><a href="#">Mega menu item @compteur</a></li>
+                                                                <li><a href="#" style="color:#808080">À venir</a></li>
                                                                 compteur++;
                                                                 if (compteur == 3)
                                                                 {
@@ -169,10 +169,9 @@
                                                             <ul class="dropdown">
                                                                 @foreach (var e in ViewBag.NiveauDif)
                                                                 {
-                                                                    <li>@Html.ActionLink("Exercice", "ListeExercice2", "Exercice", new { diff = e.NiveauDifficulte, categ = i.NomCategorie, interaction = false })</li>
+                                                                    string diff = e.NiveauDifficulte;
+                                                                    <li>@Html.ActionLink(diff, "ListeExercice2", "Exercice", new { diff = e.NiveauDifficulte, categ = i.NomCategorie, interaction = false })</li>
                                                                 }
-                                                                @*<li><a href="#">Moyen</a></li>
-                                                                    <li><a href="#">Dur</a></li>*@
                                                             </ul>
                                                         </li>
                                                     </ul>

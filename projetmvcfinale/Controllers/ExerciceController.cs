@@ -388,9 +388,13 @@ namespace projetmvcfinale.Controllers
                 IdCateg = Insertionexercice.exercice.IdCateg,
 
             };
-
-
             //ajouter le lien à la base de données
+            if (ExercicesAuComplet.ExercicesInt.Contains("'"))
+            {
+                //int index = ExercicesAuComplet.ExercicesInt.IndexOf("'");
+                //ExercicesAuComplet.ExercicesInt = ExercicesAuComplet.ExercicesInt.Insert(index, "'");
+                ExercicesAuComplet.ExercicesInt = ExercicesAuComplet.ExercicesInt.Replace("'", "''");
+            }
             string query = @"UPDATE Exercice SET ExercicesInt ='" + ExercicesAuComplet.ExercicesInt + "' WHERE NomExercices = '" + ExercicesAuComplet.NomExercices + "'";
             SqlCommand commande = new SqlCommand(query, sqlConnection);
             sqlConnection.Open();
@@ -463,7 +467,6 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public List<bool> Correction(List<string> ListReponse)
         {
-
             Exercice exercice = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("ExerciceAffiche"));
             //Liste comparative des bonnes reponses
             List<string> listeReponse = new List<string>();
@@ -503,8 +506,36 @@ namespace projetmvcfinale.Controllers
                 //Ajouter au compteur
                 compteur++;
             }
-
             return listeResultat;
         }
+
+        [HttpPost]
+        public List<int> ListeNumero()
+        {
+            InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+            List<int> listeNumero = new List<int>();
+
+            foreach (LignePerso s in exercice.listeLignes)
+            {
+                listeNumero.Add(s.NumeroQuestion);
+            }
+
+            return listeNumero;
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public void SupprimerLigne(int Ligne)
+        {
+            //Trouver l,exercice concerné
+            InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+            //Retirer la ligne concerné
+            LignePerso ligne = exercice.listeLignes.Find(x => x.NumeroQuestion == Ligne);
+            //retirer la ligne en question
+            exercice.listeLignes.Remove(ligne);
+            //Mettre la session à jour
+            this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(exercice));
+        }
+
     }
 }

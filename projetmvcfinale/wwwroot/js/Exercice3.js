@@ -1,7 +1,8 @@
 ﻿$(function () {
-    alert("bao!!");
+    alert("Dossiers!!");
     var compteur;
     //$("#btnExerciceTermine").attr("disabled", true);
+
 });
 
 function CommencerExercice() {
@@ -63,13 +64,29 @@ function AjouterColonne() {
 }
 
 function OuvrirBonneReponse() {
+    var tab = new Array();
     $("#tbChoixReponses tr").not(':first').each(function () {
+        //Si une tavle est vide
         if ($(this).find("td input").val() == "") {
             alert("Les champs de choix de réponse doivent être tous remplis!");
             return false;
-            //https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr
+            //https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr            
+
         }
+        tab.push($(this).find("td input").val());
     });
+    //Voir si certaine case ont la même valeur
+    for (var i = 0; i < tab.length; i++) {
+        for (var j = 0; j < tab.length; j++) {
+            if (i != j) {
+                if (tab[i] == tab[j]) {
+                    alert("Vous ne pouvez pas envoyer la même réponse plus d'une fois!");
+                    return false;
+                }
+            }
+        }
+    }
+    //https://stackoverflow.com/questions/19655975/check-if-an-array-contains-duplicate-values/45803283
     if (true) {
         //Mettre le selectlist vide
         $("#selectChoixReponse").empty();
@@ -91,6 +108,72 @@ function OuvrirBonneReponse() {
         $("#divTableau *").attr("disabled", true);
 
     }
+}
+
+function SupprimerLigne() {
+    //Afficher le select pour sélectionner le ligne a effacer
+    $("#selectLigneSupprimer").removeAttr("hidden");
+    //Peupler le selectList
+    $("#selectLigneSupprimer").empty();
+    var tableau = RetirerListeNumero();
+    alert(tableau[0]);
+    var choix = '';
+    for (var i = 0; i < tableau.length; i++) {
+        choix += '<option value="' + tableau[i] + '">' + tableau[i] + '</option>';
+    }
+    $("#selectLigneSupprimer").append(choix);
+    //https://stackoverflow.com/questions/3446069/populate-dropdown-select-with-array-using-jquery
+    //Afficher le bouton pour supprimer
+    $("#btnConfirmerSupprimer").removeAttr("hidden");
+}
+
+function ConfrimerSupprimerLigne() {
+    //Trouver la ligne à supprimer
+    var ligne = $("#selectLigneSupprimer option:selected").val();
+    alert(ligne);
+    //Supprimer la ligne
+    SupprimerLigneServeur(ligne);
+    //Retirer du textarea
+    var text = $("#txtExercice").val();
+    var debut = text.indexOf(ligne);
+    var fin = text.indexOf('\n', debut);
+    //var phrase = text.split($("#txtExercice").val().substring(debut, fin));
+    var phrase = text.replace($("#txtExercice").val().substring(debut, fin), "(Ligne supprimée)");
+    $("#txtExercice").val(phrase);
+    //https://stackoverflow.com/questions/9313071/retrieve-substring-between-two-characters
+    //Voir s'il reste d'autre ligne
+
+}
+
+function SupprimerLigneServeur(i) {
+    alert(i);
+    var url = "/Exercice/SupprimerLigne";
+    $.ajax({
+        data: { Ligne: i },
+        type: "POST",
+        url: url,
+        datatype: "text/plain",       
+        success: function (result) {
+        },
+        error: function (xhr, status) { alert("erreur:"); }
+    });
+}
+
+
+function RetirerListeNumero() {
+    var liste = new Array();
+    var url = "/Exercice/ListeNumero";
+    $.ajax({
+        type: "POST",
+        async: false,
+        url: url,
+        dataType: "json",
+        success: function (data) {
+            liste = data;
+        },
+        error: function (xhr, status) { alert("erreur:" + status); }
+    });
+    return liste;
 }
 
 function ChangerChoix() {
@@ -246,11 +329,13 @@ function FinPhrase() {
     //Mettre le text dans le textarea
     //$("#txtExercice").append($("#boutLigne").val());
     var textInitiale = $("#txtExercice").val();
-    $("#txtExercice").val(textInitiale + $("#boutLigne").val() +"(" + bonneReponse +")");
+    $("#txtExercice").val(textInitiale + $("#boutLigne").val() + "(" + bonneReponse + ")");
     //Vider son contenu
     $("#boutLigne").val("");
     //Ne plus mettre disponible le bouton de fin de phrase
     $("#btnFinPhrase").attr("disabled", true);
+    //mettre le bouton d'effacement de la phrase visible
+    $("#btnSupprimerLigne").removeAttr("disabled");
 }
 
 function finPhraseAjax() {

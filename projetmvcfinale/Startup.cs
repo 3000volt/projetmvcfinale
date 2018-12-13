@@ -78,7 +78,7 @@ namespace projetmvcfinale
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                .AddCookie(options =>
                {
-                   options.Cookie.Expiration = TimeSpan.FromSeconds(30);
+                   options.Cookie.Expiration = TimeSpan.FromHours(1);
                });
 
 

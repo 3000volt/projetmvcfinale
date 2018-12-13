@@ -95,7 +95,10 @@
 
         <div class="row">
             <div class="col-sm-2">
-                <input id="btnExerciceTermine" type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" class="btn btn-default" />
+                <input id="btnExerciceTermine" type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" disabled class="btn btn-default" />
+                <input id="btnSupprimerLigne" type="button" value="Supprimer une ligne" onclick="SupprimerLigne()" disabled class="btn btn-default" />
+                <select class="form-control" id="selectLigneSupprimer" hidden></select>
+                <input id="btnConfirmerSupprimer" type="button" value="Confirmer" onclick="ConfrimerSupprimerLigne()" hidden class="btn btn-default" />
             </div>
         </div>
     </form>
