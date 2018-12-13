@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Documents\Exercices\" />
-    <Folder Include="wwwroot\Documents\Corrige\" />
   </ItemGroup>
 
 </Project>
