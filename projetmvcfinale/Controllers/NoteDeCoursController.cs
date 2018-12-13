@@ -43,8 +43,6 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult ListeNoteDeCours(string search)
         {
-        //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
-        //    return View(listeNote);
             return View(this.provider.NoteDeCours.Where(x => x.NomNote.StartsWith(search) || search == null).ToList());
         }
 
@@ -78,11 +76,9 @@ namespace projetmvcfinale.Controllers
                     DateInsertion = DateTime.Now
 
                 };
-                //note.DateInsertion = DateTime.Today;
-                //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
                 provider.Add(note);
                 await provider.SaveChangesAsync();
-                //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
+               
                 //Insérer dans la BD le document
                 if (note.Lien == null || note.Lien.Length == 0)
                     return Content("Aucun fichier sélectionné");
@@ -99,7 +95,7 @@ namespace projetmvcfinale.Controllers
                     await noteVM.Lien.CopyToAsync(stream);
                 }
 
-                return RedirectToAction(nameof(ListeNoteDeCours));
+                return RedirectToAction(nameof(UploadNote));
             }
 
             return RedirectToAction(nameof(ListeNoteDeCours));
@@ -115,7 +111,7 @@ namespace projetmvcfinale.Controllers
             return View();
         }
         /// <summary>
-        /// 
+        /// Téléverser le fichier de note
         /// </summary>
         /// <param name="Lien"></param>
         /// <returns></returns>
