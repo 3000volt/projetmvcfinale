@@ -15,7 +15,7 @@ using projetmvcfinale.Models;
 
 namespace projetmvcfinale.Controllers
 {
-    public class NoteDeCoursController : Controller
+    public class NoteDeCoursController : Controller//
     {
         private readonly ProjetFrancaisContext provider;
         private readonly IConfiguration Configuration;

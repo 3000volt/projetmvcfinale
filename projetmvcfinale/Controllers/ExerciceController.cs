@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace projetmvcfinale.Controllers
 {
-    public class ExerciceController : Controller
+    public class ExerciceController : Controller//
     {
         //Propriétés du controlleur
         private readonly ProjetFrancaisContext provider;
