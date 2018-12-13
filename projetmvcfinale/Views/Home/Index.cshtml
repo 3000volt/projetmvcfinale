@@ -52,106 +52,302 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
+@{
+    var listexo = ViewBag.exercice as IEnumerable<projetmvcfinale.Models.Exercice>;
+    var listcategorie = ViewBag.Categories as IEnumerable<projetmvcfinale.Models.Categorie>;
+    projetmvcfinale.Models.Categorie id ;
+    var compteur = 0;
+    var count = 0;
 
-<div class="row">
-    <div class="col-sm-5">
-        <div class="row">
-            <div class="listexerciceheader">
-                <div class="letter" style="background-color: #863e94;">
-                    G
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="row">
+                <div class="listexerciceheader">
+                    <div class="letter" style="background-color: #863e94;">
+                        G
+                    </div>
+                    <div class="titleletter">
+                        <h3>Grammaire</h3>
+                        <h4>Grammaire</h4>
+                    </div>
                 </div>
-                <div class="titleletter">
-                    <h3>Grammaire</h3>
-                    <h4>Grammaire</h4>
+            </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col" style="display: block;">
+                    @{
+                        id = listcategorie.ToList().Find(y => y.NomCategorie == "Grammaire");
+                        var listgrammaire = listexo.ToList().FindAll(x => x.IdCateg == id.IdCateg);
+                        compteur = 0;
+                        count = listgrammaire.Count();
+                        if (count >= 3)
+                        {
+                                @foreach (var exo in listgrammaire)
+                                {
+                                    <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                    compteur++;
+                                    if (compteur == 3)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else if (count > 0 && count < 3)
+                            {
+                                @foreach (var exo in listgrammaire)
+                                {
+                                    <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                    compteur++;
+                                    if (compteur > @count - 1 && compteur < 3)
+                                    {
+                                        while (compteur < 3)
+                                        {
+                                            <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                            compteur++;
+                                            if (compteur == 3)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                while (compteur <= 2)
+                                {
+                                    <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                    compteur++;
+                                    if (compteur == 3)
+                                    {
+                                        break;
+                                    }
+
+                                }
+                            }
+                        }
+
+
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top:10px;">
-            <div class="col" style="display: block;">
-                <ul class="list-group-flush">
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Cras justo odio</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Dapibus ac facilisis in</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Vestibulum at eros</li>
-                </ul>
+
+        <div class="col-2">
+        </div>
+
+        <div class="col-sm-5">
+            <div class="row">
+                <div class="listexerciceheader">
+                    <div class="letter" style="background-color: #3a8bc5;">
+                        C
+                    </div>
+                    <div class="titleletter">
+                        <h3>Conjugaison</h3>
+                        <h4>Conjugaison</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col" style="display: block;">                    
+
+                    @{
+                        id = listcategorie.ToList().Find(y => y.NomCategorie == "Conjugaison");
+                        var listConjugaison = listexo.ToList().FindAll(x => x.IdCateg == id.IdCateg);
+                        compteur = 0;
+                        count = listConjugaison.Count();
+                        if (count >= 3)
+                        {
+                            @foreach (var exo in listConjugaison)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        else if (count > 0 && count < 3)
+                        {
+                            @foreach (var exo in listConjugaison)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur > @count - 1 && compteur < 3)
+                                {
+                                    while (compteur < 3)
+                                    {
+                                        <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                        compteur++;
+                                        if (compteur == 3)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            while (compteur <= 2)
+                            {
+                                <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+
+                            }
+                        }
+
+
+                    }
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="col-2">
-    </div>
-
-    <div class="col-sm-5">
-        <div class="row">
-            <div class="listexerciceheader">
-                <div class="letter" style="background-color: #3a8bc5;">
-                    C
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="row">
+                <div class="listexerciceheader">
+                    <div class="letter" style="background-color: #e03689;">
+                        O
+                    </div>
+                    <div class="titleletter">
+                        <h3>Orthographe</h3>
+                        <h4>Orthographe</h4>
+                    </div>
                 </div>
-                <div class="titleletter">
-                    <h3>Conjugaison</h3>
-                    <h4>Conjugaison</h4>
+            </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col" style="display: block;">
+                    @{
+                        id = listcategorie.ToList().Find(y => y.NomCategorie == "Orthographe");
+                        var listOrthographe = listexo.ToList().FindAll(x => x.IdCateg == id.IdCateg);
+                        compteur = 0;
+                        count = listOrthographe.Count();
+                        if (count >= 3)
+                        {
+                            @foreach (var exo in listOrthographe)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        else if (count > 0 && count < 3)
+                        {
+                            @foreach (var exo in listOrthographe)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur > @count - 1 && compteur < 3)
+                                {
+                                    while (compteur < 3)
+                                    {
+                                        <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                        compteur++;
+                                        if (compteur == 3)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            while (compteur <= 2)
+                            {
+                                <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+
+                            }
+                        }
+                    }
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top:10px;">
-            <div class="col" style="display: block;">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Cras justo odiooooo</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Dapibus ac facilisis in</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Vestibulum at eros</li>
-                </ul>
-            </div>
+
+        <div class="col-2">
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-5">
-        <div class="row">
-            <div class="listexerciceheader">
-                <div class="letter" style="background-color: #e03689;">
-                    O
-                </div>
-                <div class="titleletter">
-                    <h3>Orthographe</h3>
-                    <h4>Orthographe</h4>
+
+        <div class="col-sm-5">
+            <div class="row">
+                <div class="listexerciceheader">
+                    <div class="letter" style="background-color: #3A9D23;">
+                        S
+                    </div>
+                    <div class="titleletter">
+                        <h3>Structure de phrase</h3>
+                        <h4>Structure de phrase</h4>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row" style="margin-top:10px;">
-            <div class="col" style="display: block;">
-                <ul class="list-group-flush">
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Cras justo odio</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Dapibus ac facilisis in</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Vestibulum at eros</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col" style="display: block;">
+                    @{
+                        id = listcategorie.ToList().Find(y => y.NomCategorie == "Structure de phrase");
+                        var listStructure = listexo.ToList().FindAll(x => x.IdCateg == id.IdCateg);
+                        compteur = 0;
+                        count = listStructure.Count();
+                        if (count >= 3)
+                        {
+                            @foreach (var exo in listStructure)
+                            {
+                                <a  asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        else if (count > 0 && count < 3)
+                        {
+                            @foreach (var exo in listStructure)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur > @count - 1 && compteur < 3)
+                                {
+                                    while (compteur < 3)
+                                    {
+                                        <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                        compteur++;
+                                        if (compteur == 3)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            while (compteur <= 2)
+                            {
+                                <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
 
-    <div class="col-2">
-    </div>
-
-    <div class="col-sm-5">
-        <div class="row">
-            <div class="listexerciceheader">
-                <div class="letter" style="background-color: #3A9D23;">
-                    S
+                            }
+                        }
+                    }
                 </div>
-                <div class="titleletter">
-                    <h3>Structure de phrase</h3>
-                    <h4>Structure de phrase</h4>
-                </div>
             </div>
         </div>
-        <div class="row" style="margin-top:10px;">
-            <div class="col" style="display: block;">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item "style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Cras justo odiooooo</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px; margin-bottom:5px;">Dapibus ac facilisis in</li>
-                    <li class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;">Vestibulum at eros</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+    </div>                     
 
-
+}

@@ -40,10 +40,8 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Categories = this.provider.Categorie.ToList();
-            //Categorie cat = new Categorie();
-            //cat.NomCategorie
-            ViewBag.Notes = this.provider.NoteDeCours.ToList();
+            ViewBag.exercice = this.provider.Exercice.Where(x => x.TypeExercice == "Interactif").ToList();
+            //ViewBag.Categories2 = this.provider.Categorie.ToList();
             return View();
         }
 
