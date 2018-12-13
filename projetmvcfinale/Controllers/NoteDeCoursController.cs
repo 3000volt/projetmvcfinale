@@ -104,6 +104,18 @@ namespace projetmvcfinale.Controllers
 
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult ModifierNote(int id)
+        {
+            //Retirer les bonnes notes de cours
+            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+            //Retourenr la vue permettant de modifier
+            return View(noteDeCours);
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
