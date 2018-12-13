@@ -159,9 +159,7 @@
                                                                 @foreach (var e in ViewBag.NiveauDif)
                                                                 {
                                                                     <li><a href="#">@e.NiveauDifficulte</a></li>
-                                                                }
-                                                                @*<li><a href="#">Moyen</a></li>
-                                                                    <li><a href="#">Dur</a></li>*@
+                                                                }                                                              
                                                             </ul>
                                                         </li>
                                                         <li>
@@ -218,7 +216,7 @@
     </header>
     <!-- ##### Header Area End ##### -->
 
-    <div class="container body-content" style=" overflow-x: auto;white-space: nowrap;height:100%">
+    <div class="container body-content" style="overflow-x: auto;white-space: nowrap;">
         @RenderBody()
         <hr />
     </div>
@@ -251,7 +249,7 @@
     </footer>
     <environment include="Development">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="~/js/bootstrap.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <!-- ##### Footer Area End ##### -->
         <!-- jQuery (Necessary for All JavaScript Plugins) -->
