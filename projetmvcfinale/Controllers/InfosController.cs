@@ -41,7 +41,24 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult GererInfos()
         {
+            //Les listes necessaires
+            ViewBag.ListCategorie = this.provider.Categorie.ToList();
+            ViewBag.Categorie = new Categorie();
             return View();
+        }
+
+        [HttpPost]
+       public IActionResult CreerCategorie([FromBody][Bind("NomCategorie")] Categorie categorie)
+        {
+            //Voir si la donnée est valide
+            if (ModelState.IsValid)
+            {
+                //Ajouter a la bd
+                this.provider.Add(categorie);
+                this.provider.SaveChanges();
+                return Ok("élément modifié avec succès");
+            }
+            return BadRequest("Erreur de modification");
         }
     }
 }

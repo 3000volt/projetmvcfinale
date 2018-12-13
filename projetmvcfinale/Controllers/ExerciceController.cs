@@ -50,17 +50,6 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public IActionResult ListeExercice(string search)
         {
-            //List<Exercice> listeExercices = this.provider.Exercice.ToList();
-            //List<string> listeLiensCorrige = new List<string>();
-
-            //foreach (Exercice exercice in listeExercices)
-            //{
-            //    listeLiensCorrige.Add(this.provider.Corrige.Where(x => x.Idcorrige == exercice.Idcorrige).Select(x => x.Lien).ToString());
-            //    Console.WriteLine(exercice.Idcorrige);
-            //}
-
-            //return View(new ListeExerciceCorrige() { listeExercices = listeExercices, listeLiens = listeLiensCorrige });
-
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 
@@ -72,11 +61,11 @@ namespace projetmvcfinale.Controllers
             int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
             if (interactif == false)
             {
-                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt == null);
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.TypeExercice == "Normal");
             }
             else if (interactif == true)
             {
-                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != null);
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != "Normal");
             }
 
             return View("ListeExercice", liste);
