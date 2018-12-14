@@ -30,7 +30,6 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
-            //ViewBag.Categories = this.provider.Categorie.ToList();
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -50,17 +49,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public IActionResult ListeExercice(string search)
         {
-            //List<Exercice> listeExercices = this.provider.Exercice.ToList();
-            //List<string> listeLiensCorrige = new List<string>();
-
-            //foreach (Exercice exercice in listeExercices)
-            //{
-            //    listeLiensCorrige.Add(this.provider.Corrige.Where(x => x.Idcorrige == exercice.Idcorrige).Select(x => x.Lien).ToString());
-            //    Console.WriteLine(exercice.Idcorrige);
-            //}
-
-            //return View(new ListeExerciceCorrige() { listeExercices = listeExercices, listeLiens = listeLiensCorrige });
-
+            ViewBag.listecorriger = this.provider.Corrige.ToList();
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 

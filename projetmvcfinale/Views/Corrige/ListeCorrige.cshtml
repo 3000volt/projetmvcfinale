@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.DateInsertion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdexerciceNavigation)
+                @Html.DisplayNameFor(model => model.IdexerciceNavigation.NomExercices)
             </th>
             <th></th>
         </tr>
@@ -42,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.DateInsertion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdexerciceNavigation.AdresseCourriel)
+                @Html.DisplayFor(modelItem => item.Idexercice)
             </td>
             <td>
                 @if (item.Lien != null)
