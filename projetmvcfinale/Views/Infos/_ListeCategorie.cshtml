@@ -2,15 +2,15 @@
 
 <div class="top-buffer"></div>
 <div class="panel panel-primary">
-    <div class="panel-heading panel-head">Gestion des Roles</div>
+    <div class="panel-heading panel-head">Gestion des catégories</div>
     <div class="panel-body">
         <div class="btn-group">
-            <a id="createRoleModal" href="#" class="btn btn-primary">
-                <i class="glyphicon glyphicon-plus"></i>  Ajouter un rôle
+            <a id="btnCreerCategorie" href="#" class="btn btn-primary">
+                <i class="glyphicon glyphicon-plus"></i>  Ajouter une catégorie
             </a>
         </div>
         <div class="top-buffer"></div>
-        <table id="listeTable" class="table table-bordered table-striped table-condensed">
+        <table id="listeCategorie" class="table table-bordered table-striped table-condensed">
             <!--Ajout ici-->
             <thead>
                 <tr>
@@ -21,15 +21,15 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr id="@item.NomCategorie">
+                    <tr id="@item.IdCateg">
                         <!--Ajout ici-->
                         <td>@item.IdCateg</td>
                         <td>@item.NomCategorie</td>
                         <td>
-                            <a class="btn btn-danger" onclick='fndelete("@item.IdCateg")'>
+                            <a class="btn btn-danger" onclick='ValiderSupprimer(@item.IdCateg)'>
                                 <i class="glyphicon glyphicon-trash"></i>  Supprimer
                             </a>
-                            <a class="btn btn-primary" onclick='fneditGet("@item.NomCategorie")'>
+                            <a class="btn btn-primary" onclick='afficherModification("@item.IdCateg")'>
                                 <i class="glyphicon glyphicon-trash"></i>  Modifier
                             </a>
                         </td>
@@ -37,5 +37,46 @@
                 }
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Modal -->
+@*<div class="modal fade" id="ModalSupprimerCategorie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <p id="phraseAvertissement"></p>
+                    <button type="button" id="AccepterSupprimerCategorie" value="Supprimer" onclick="supprimerCategorieAjax()" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button type="button" id="RefuserSupprimerCategorie" value="Annuler" onclick="AnnulerSupprimer()" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>*@
+
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="ModalSupprimerCategorie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="phraseAvertissement"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AnnulerSupprimer()" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" onclick="supprimerCategorieAjax()">Supprimer</button>
+            </div>
+        </div>
     </div>
 </div>
