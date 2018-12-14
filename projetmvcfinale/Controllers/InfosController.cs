@@ -10,7 +10,7 @@ using projetmvcfinale.Models;
 
 namespace projetmvcfinale.Controllers
 {
-    public class InfosController : Controller
+    public class InfosController : Controller//
     {
         //Propriétés du controlleur
         private readonly ProjetFrancaisContext provider;
