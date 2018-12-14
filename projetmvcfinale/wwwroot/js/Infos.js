@@ -19,7 +19,7 @@ function fndefinirModal() {
         autoOpen: false,
         height: 400,
         width: 350,
-        modal: true,//
+        modal: true,
         close: function () {
             formModal.dialog("close");
         }
