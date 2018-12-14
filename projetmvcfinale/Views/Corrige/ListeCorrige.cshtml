@@ -6,20 +6,10 @@
 
 <h1>Liste des corrigés disponibles</h1>
 <p>
-    <a asp-action="AjouterCorrige" class=" btn btn-info" >Ajouter un corrigé</a>
+    <a asp-action="AjouterCorrige" class=" btn btn-info">Ajouter un corrigé</a>
 </p>
-<p>
-    @using (@Html.BeginForm("ListeCorrige", "Corrige", FormMethod.Get))
-    {
-        <div style="float:right;">
-            <b>Recherche par titre:</b>
 
-            @Html.TextBox("search", null, new { @style = "border-radius: 10px;border:2px solid #17a2b8" })
-            <input type="submit" value="Rechercher" />
-        </div>
-    }
-</p>
-<table class="table table-responsive table-hover table-condensed">
+<table class="table table-responsive table-hover table-condensed" id="myTable">
     <thead>
         <tr>
             <th>
@@ -35,32 +25,73 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorrigeDocNom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateInsertion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Idexercice)
-            </td>
-            <td>
-                @if (item.Lien != null)
-                {
-                    <a class="btn btn-info" href="../Documents/Corrige/@item.Lien.Split('\\').Last()">Afficher</a>
-                }
-                else
-                {
-                    <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
-                }
-                 |
-            <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-edit"></i> Modifier</a> |
-            <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="InfoCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-info-circle"></i> Informations</a> |
-            <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-trash-alt"></i> Supprimer</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CorrigeDocNom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateInsertion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Idexercice)
+                </td>
+                <td>
+                    @if (item.Lien != null)
+                    {
+                        <a class="btn btn-info" href="../Documents/Corrige/@item.Lien.Split('\\').Last()">Afficher</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
+                    }
+                    |
+                    <a class="btn btn-info" style="background-color:#863e94" asp-action="Edit" asp-route-id="@item.Idcorrige">Edit</a> |
+                    <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="Details" asp-route-id="@item.Idcorrige">Details</a> |
+                    <a class="btn btn-info" style="background-color:#e03689" asp-action="Delete" asp-route-id="@item.Idcorrige">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@section Scripts{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/1.10.19/i18n/French.json"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                language: {
+                    processing: "Traitement en cours...",
+                    search: "Rechercher&nbsp;:",
+                    lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+                    info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                    infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                    infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                    infoPostFix: "",
+                    loadingRecords: "Chargement en cours...",
+                    zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                    emptyTable: "Aucune donnée disponible dans le tableau",
+                    paginate: {
+                        first: "Premier",
+                        previous: "Pr&eacute;c&eacute;dent",
+                        next: "Suivant",
+                        last: "Dernier"
+                    },
+                    aria: {
+                        sortAscending: ": activer pour trier la colonne par ordre croissant",
+                        sortDescending: ": activer pour trier la colonne par ordre décroissant"
+                    }
+                }
+            });
+
+            $("input[type='search']").css({ "border-radius": "10px", "border": "2px solid #17a2b8" });
+
+        });
+    </script>
+
+}

@@ -41,11 +41,11 @@ namespace projetmvcfinale.Controllers
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
 
-        public IActionResult ListeNoteDeCours(string search)
+        public IActionResult ListeNoteDeCours()
         {
             //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             //    return View(listeNote);
-            return View(this.provider.NoteDeCours.Where(x => x.NomNote.StartsWith(search) || search == null).ToList());
+            return View(this.provider.NoteDeCours.ToList());
         }
 
         [Authorize(Roles = "Admin")]
