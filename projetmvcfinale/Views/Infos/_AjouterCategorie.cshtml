@@ -1,0 +1,30 @@
+﻿@model projetmvcfinale.Models.Categorie
+
+<div class="panel panel-primary">
+    <div class="panel-heading panel-head">Ajouter des Roles</div>
+    <form>
+        <div class="modal-body form-horizontal">
+            <div class="row">
+                @*<div class="form-group">
+                    <label asp-for="IdCateg" class="col-lg-3 col-sm-3 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="IdCateg" class="form-control" />
+                    </div>
+                </div>*@
+                <div class="form-group">
+                    <label asp-for="NomCategorie" class="col-lg-3 col-sm-3 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="NomCategorie" class="form-control" />
+                    </div>
+                </div>                
+                <div class="form-group">
+                    <button id="btnAnnuler" type="reset" class="btn btn-primary">Annuler</button>
+                    <button id="btnEnvoyer" type="submit" onclick="CreerCategorieAjax()" class="btn btn-primary">Envoyer</button>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
