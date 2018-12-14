@@ -43,20 +43,17 @@ function AnnulerSupprimer() {
 function DocumentCategorie(i) {
     var nbr;
     var url = "/Infos/VoirDocumentsCategorie";
-    var data = {
-        idCateg: i
-    };
     $.ajax({
-        data: JSON.stringify(data),
+        data: { idCateg: i },
         type: "POST",
         url: url,
         async: false,
-        datatype: "text/plain",
-        contentType: "application/json; charset=utf-8",
+        datatype: "text",
         // beforeSend: function (request) {
         //    request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         // },
         success: function (result) {
+            alert(result);
             nbr = result;
         },
         error: function (xhr, status) { alert("erreur:" + status); }
@@ -73,8 +70,8 @@ function CreerCategorieAjax() {
         data: JSON.stringify(data),
         type: "POST",
         url: url,
-        datatype: "text",
-        contentType: "application/json; charset=utf-8",
+        datatype: "text/plain",
+        //contentType: "application/json; charset=utf-8",
         // beforeSend: function (request) {
         //    request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         // },
@@ -119,9 +116,9 @@ function afficherModification(i) {
         datatype: "text/plain",
         success: function (result) {
             $("form").prop("title", "Modifier");
+            alert(result.NomCategorie);
             //Affecter la variable globale en cours
             idEnCours = i;
-            //alert("Soumettre " + idEnCours);
             formModal.dialog("open");
             //$("#Id").val(result.id);
             //$("#RoleName").val(result.roleName);
