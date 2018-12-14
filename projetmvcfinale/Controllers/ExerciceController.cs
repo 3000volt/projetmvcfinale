@@ -34,7 +34,7 @@ namespace projetmvcfinale.Controllers
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            //Pour permettre au ViewBag contenantn les categores d'etre accessible en tout temps    
+            //Pour permettre au ViewBag contenant les categories d'etre accessible en tout temps    
             base.OnActionExecuted(context);
             ViewBag.Categories = this.provider.Categorie.ToList();
             ViewBag.Notes = this.provider.NoteDeCours.ToList();
@@ -50,6 +50,9 @@ namespace projetmvcfinale.Controllers
         public IActionResult ListeExercice(string search)
         {
             ViewBag.listecorriger = this.provider.Corrige.ToList();
+            ViewBag.Idexercice= new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+            ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
+            ViewBag.model = new AssocierDoc();
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 
@@ -57,6 +60,10 @@ namespace projetmvcfinale.Controllers
         {
             //Chercher la liste en consequence de la demande
             List<Exercice> liste = new List<Exercice>();
+            ViewBag.listecorriger = this.provider.Corrige.ToList();
+            ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+            ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
+            ViewBag.model = new AssocierDoc();
             int categorie = this.provider.Categorie.ToList().Find(x => x.NomCategorie == categ).IdCateg;
             int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
             if (interactif == false)

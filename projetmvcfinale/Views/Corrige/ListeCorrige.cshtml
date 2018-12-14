@@ -11,10 +11,12 @@
 <p>
     @using (@Html.BeginForm("ListeCorrige", "Corrige", FormMethod.Get))
     {
-        <b>Recherche par titre:</b>
+        <div style="float:right;">
+            <b>Recherche par titre:</b>
 
-        @Html.TextBox("search")
-        <input type="submit" value="Rechercher" />
+            @Html.TextBox("search", null, new { @style = "border-radius: 10px;border:2px solid #17a2b8" })
+            <input type="submit" value="Rechercher" />
+        </div>
     }
 </p>
 <table class="table table-responsive table-hover table-condensed">
@@ -47,16 +49,16 @@
             <td>
                 @if (item.Lien != null)
                 {
-                    <a href="../Documents/Corrige/@item.Lien.Split('\\').Last()">Afficher</a>
+                    <a class="btn btn-info" href="../Documents/Corrige/@item.Lien.Split('\\').Last()">Afficher</a>
                 }
                 else
                 {
-                    <span style="color:grey; font-size:small ">Afficher</span>
+                    <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
                 }
                  |
-            <a asp-action="Edit" asp-route-id="@item.Idcorrige">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Idcorrige">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Idcorrige">Delete</a>
+            <a class="btn btn-info" style="background-color:#863e94" asp-action="Edit" asp-route-id="@item.Idcorrige">Edit</a> |
+            <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="Details" asp-route-id="@item.Idcorrige">Details</a> |
+            <a class="btn btn-info" style="background-color:#e03689" asp-action="Delete" asp-route-id="@item.Idcorrige">Delete</a>
             </td>
         </tr>
 }

@@ -1,0 +1,29 @@
+﻿@model projetmvcfinale.Models.AssocierDoc
+
+<h4>AssocierDoc</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="_AssocierExoPdf">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Idexercice" class="control-label"></label>
+                <select asp-for="Idexercice" class="form-control" asp-items="ViewBag.Idexercice"></select>
+                <span asp-validation-for="Idexercice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Idcorrige" class="control-label"></label>
+                <select asp-for="Idcorrige" class="form-control" asp-items="ViewBag.Idcorrige"></select>
+                <span asp-validation-for="Idcorrige" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
