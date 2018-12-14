@@ -98,16 +98,11 @@
                                 <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
                                 <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
                                 <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a> |
-                                @if (item.Idcorrige != null)
+                                @if (item.Idcorrige == null)
                                 {
                                     @*<a href="../Documents/Corrige/@Html.DisplayFor(modelItem => corrige)">Afficher le corrigé</a>*@
+                                    <a asp-action="AjouterCorrige" asp-controller="Corrige">Ajouter un corrigé</a>
                                 }
-                                else
-                                {
-                                    <a asp-action="AjouterCorrige" asp-controller="Corrige" asp-route-id="@item.Idexercice">Ajouter un corrigé</a>
-                                }
-
-
                             </td>
                         </tr>
                     }

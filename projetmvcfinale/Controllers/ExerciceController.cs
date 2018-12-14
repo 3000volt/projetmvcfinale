@@ -50,17 +50,6 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public IActionResult ListeExercice(string search)
         {
-            //List<Exercice> listeExercices = this.provider.Exercice.ToList();
-            //List<string> listeLiensCorrige = new List<string>();
-
-            //foreach (Exercice exercice in listeExercices)
-            //{
-            //    listeLiensCorrige.Add(this.provider.Corrige.Where(x => x.Idcorrige == exercice.Idcorrige).Select(x => x.Lien).ToString());
-            //    Console.WriteLine(exercice.Idcorrige);
-            //}
-
-            //return View(new ListeExerciceCorrige() { listeExercices = listeExercices, listeLiens = listeLiensCorrige });
-
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 

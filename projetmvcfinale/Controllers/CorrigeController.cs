@@ -82,7 +82,7 @@ namespace projetmvcfinale.Controllers
 
                 provider.Add(corrige);
                 await provider.SaveChangesAsync();
-               // listeCor.Add(corrige);
+                // listeCor.Add(corrige);
                 /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
@@ -147,5 +147,76 @@ namespace projetmvcfinale.Controllers
 
             return Ok("Fichier téléversé avec succès!");
         }
+
+        [HttpGet]
+        public ActionResult ModifierCorrige(string id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ModifierCorrigePost(string id)
+        {
+            return View();
+        }
+        /// <summary>
+        /// Afficher la vue avant de supprimer un corrige
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> SupprimerCorrige(string id)
+        {
+            if(ModelState.IsValid)
+            {
+              if (id == null)
+                return NotFound();
+
+               //aller chercher le cours dans le contexte
+                Corrige cr = await provider.Corrige.FindAsync(id);
+
+                //vérifier si le cours est null
+                if (cr == null)
+                return NotFound();
+  
+              return View(cr);
+            }
+            return BadRequest("Erreur");
+            
+        }
+
+        /// <summary>
+        /// Supprimer un corrige de la liste
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<ActionResult> SupprimerCorrigePost(string id)
+        {
+            if(ModelState.IsValid)
+            {
+              Corrige corrige = await provider.Corrige.FindAsync(id);
+              string chemin = corrige.Lien;
+              //trouver l'exercice correspondant & mettre l'id du corrige a null
+              Exercice ex = await provider.Exercice.FindAsync(corrige.Idexercice);
+              ex.Idcorrige = null;
+              provider.Update(ex);
+                
+                //supprimer le corrige de la BD
+                provider.Corrige.Remove(corrige);
+                
+                //supprimer le fichier
+                if (System.IO.File.Exists(chemin))
+                {
+                    System.IO.File.Delete(chemin);
+                }
+                await provider.SaveChangesAsync();
+              return RedirectToAction(nameof(ListeCorrige));
+            }
+            return BadRequest("Erreur");
+        }
+        //source:https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
     }
 }
