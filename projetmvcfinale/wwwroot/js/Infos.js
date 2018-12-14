@@ -127,13 +127,13 @@ function afficherModification(i) {
         success: function (result) {
             $("form").prop("title", "Modifier");
             $("#ModalModifierCategorie").modal('show');
-            alert(result.NomCategorie);
+            alert(result);
             //Affecter la variable globale en cours
             idEnCours = i;
             //formModal.dialog("open");
             //$("#Id").val(result.id);
             //$("#RoleName").val(result.roleName);
-            $("#NomCategorieModif").val(result.NomCategorie);
+            $("#NomCategorieModif").val(result);
         },
         error: function (xhr, status) { alert("erreur:" + xhr + status); }
     });
