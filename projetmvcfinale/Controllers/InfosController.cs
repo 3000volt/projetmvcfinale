@@ -88,7 +88,7 @@ namespace projetmvcfinale.Controllers
         }
 
         [HttpGet]
-        public IActionResult ModifierCategorie(int idCategorie)
+        public IActionResult ModifierCategorie(int idCategorie)//
         {
             Categorie categorie = this.provider.Categorie.ToList().Find(x=>x.IdCateg == idCategorie);
             return Json(categorie);
