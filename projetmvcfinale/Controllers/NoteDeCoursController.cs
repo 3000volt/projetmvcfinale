@@ -104,6 +104,17 @@ namespace projetmvcfinale.Controllers
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
 
+
+
+        public IActionResult InfoNote(int id)
+        {
+
+            if (id == null)
+                return NotFound();
+
+            return View();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult ModifierNote(int id)

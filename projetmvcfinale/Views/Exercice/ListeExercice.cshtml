@@ -72,7 +72,8 @@
                         |
                         <a class="btn btn-info" style="background-color:#863e94" asp-action="Edit" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
                         <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="Details" asp-route-id="@item.Idexercice"><i class="fas fa-info-circle"></i> Informations</a> |
-                        <a class="btn btn-info" style="background-color:#e03689" asp-action="Delete" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
+                        <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
+                        
                         @if (item.Idcorrige != null)
                         {
                             var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
@@ -103,8 +104,8 @@
                 <partial name="_AssocierExoPdf" model="ViewBag.model" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary">Sauvegarder</button>
             </div>
         </div>
     </div>

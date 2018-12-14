@@ -1,0 +1,80 @@
+﻿@model projetmvcfinale.Models.Exercice
+
+@{
+    ViewData["Title"] = "SupprimerExercice";
+}
+
+<h2>Supprimer un exercice</h2>
+
+<div>
+    <h4>Exercice</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NomExercices)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NomExercices)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lien)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lien)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExercicesInt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExercicesInt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateInsertion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateInsertion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeExercice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TypeExercice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdresseCourriel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdresseCourriel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdCategNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdCategNavigation.NomCategorie)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdDifficulteNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdDifficulteNavigation.NiveauDifficulte)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdDocumentNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdDocumentNavigation.AdresseCourriel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdcorrigeNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdcorrigeNavigation.CorrigeDocNom)
+        </dd>
+    </dl>
+    
+    <form asp-action="SupprimerExercice">
+        <input type="hidden" asp-for="Idexercice" />
+        <input type="submit" value="Supprimer" class="btn btn-info" /> |
+        <a asp-action="ListeExercice">Retour à la liste</a>
+    </form>
+</div>

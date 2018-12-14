@@ -60,7 +60,7 @@ namespace projetmvcfinale.Controllers
             return View();
         }
         /// <summary>
-        /// 
+        /// Ajouter un corrigé dans la bd
         /// </summary>
         /// <param name="corrige"></param>
         /// <returns></returns>
@@ -70,28 +70,23 @@ namespace projetmvcfinale.Controllers
         {
             if (ModelState.IsValid)
             {
-                //SqlDataReader reader;
-
                 Corrige corrige = new Corrige()
                 {
                     CorrigeDocNom = corrigeVM.CorrigeDocNom,
                     Lien = corrigeVM.Lien.FileName,
                     DateInsertion = DateTime.Now,
                     Idexercice = corrigeVM.Idexercice
-
                 };
 
                 provider.Add(corrige);
                 await provider.SaveChangesAsync();
-                // listeCor.Add(corrige);
                 /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
                 ex.Idcorrige = corrige.Idcorrige;
                 provider.Exercice.Update(ex);
                 await provider.SaveChangesAsync();
-
-
+                
                 //Insérer dans la BD le document
                 if (corrige == null || corrige.Lien.Length == 0)
                     return Content("Aucun fichier sélectionné");
@@ -149,16 +144,107 @@ namespace projetmvcfinale.Controllers
             return Ok("Fichier téléversé avec succès!");
         }
 
-        [HttpGet]
-        public ActionResult ModifierCorrige(string id)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        public async Task <ActionResult> InfoCorrige(int id)
         {
-            return View();
+            if (id == null)
+                return NotFound();
+
+            Corrige cr = await provider.Corrige.FindAsync(id);
+
+            if (cr == null)
+                return NotFound();
+
+            return View(cr);
         }
 
-        [HttpPost]
-        public ActionResult ModifierCorrigePost(string id)
+        /// <summary>
+        /// Afficher la vue pour modifier un corrige
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<ActionResult> ModifierCorrige(int id)
         {
-            return View();
+            if(ModelState.IsValid)
+            {
+                if (id == null)
+                    return NotFound();
+
+                Corrige cr = await provider.Corrige.FindAsync(id);
+
+                if (cr == null)
+                   return NotFound();
+
+                //transfer en ViewModel
+                CorrigeViewModel corrige = new CorrigeViewModel()
+                {
+                    idcorrige = cr.Idcorrige,
+                    CorrigeDocNom = cr.CorrigeDocNom,
+                };
+                //lien du document
+                this.HttpContext.Session.SetString("Lien", cr.Lien);
+                //liste d'exercice existant
+                ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+               
+              return View(corrige);
+            }
+            return BadRequest("Impossible d'afficher ce corrigé.");           
+        }
+        /// <summary>
+        /// Modifier un corrigé existant
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<ActionResult> ModifierCorrige(CorrigeViewModel corrigeVM)
+        {
+            if(ModelState.IsValid)
+            {
+                if (corrigeVM == null)
+                    return NotFound();
+
+                Corrige cr = await provider.Corrige.FindAsync(corrigeVM.idcorrige);
+
+                cr.CorrigeDocNom = corrigeVM.CorrigeDocNom;
+                cr.Idexercice = corrigeVM.Idexercice;
+
+                //vérifier si le lien est null ou non
+                if (corrigeVM.Lien != null)
+                {
+                    cr.Lien = corrigeVM.Lien.FileName;  
+                    
+                    //changer le document associé
+                     if (corrigeVM.Lien !=null || corrigeVM.Lien.Length != 0)
+                     {
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", this.HttpContext.Session.GetString("Lien"));
+                        string vieuxChemin = path;
+                        //supprimer le vieux document
+                        if (System.IO.File.Exists(vieuxChemin))
+                        {
+                          System.IO.File.Delete(vieuxChemin);
+                        }
+                        //nouveau lien 
+                        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrigeVM.Lien.FileName);
+                        //inserer le nouveau document
+                        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                        {
+                          await corrigeVM.Lien.CopyToAsync(stream);
+                        }
+                     }
+                }
+
+                provider.Corrige.Update(cr);
+                await provider.SaveChangesAsync();
+                return RedirectToAction(nameof(ListeCorrige));
+            }
+            return BadRequest("Impossible de mettre a jour ce corrigé.");
         }
         /// <summary>
         /// Afficher la vue avant de supprimer un corrige
@@ -167,17 +253,17 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> SupprimerCorrige(string id)
+        public async Task<IActionResult> SupprimerCorrige(int id)
         {
             if(ModelState.IsValid)
             {
               if (id == null)
                 return NotFound();
 
-               //aller chercher le cours dans le contexte
+               //aller chercher le corrigé dans le contexte
                 Corrige cr = await provider.Corrige.FindAsync(id);
 
-                //vérifier si le cours est null
+                //vérifier si le corrigé est null
                 if (cr == null)
                 return NotFound();
   
@@ -194,16 +280,21 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> SupprimerCorrigePost(string id)
+        public async Task<ActionResult> SupprimerCorrigePost(int id)
         {
             if(ModelState.IsValid)
             {
-              Corrige corrige = await provider.Corrige.FindAsync(id);
-              string chemin = corrige.Lien;
-              //trouver l'exercice correspondant & mettre l'id du corrige a null
-              Exercice ex = await provider.Exercice.FindAsync(corrige.Idexercice);
-              ex.Idcorrige = null;
-              provider.Update(ex);
+                Corrige corrige = await provider.Corrige.FindAsync(id);
+                string chemin = corrige.Lien;
+                //trouver l'exercice correspondant & mettre l'id du corrige a null
+                Exercice ex = await provider.Exercice.FindAsync(corrige.Idexercice);
+                
+                //updater manuellement dans la BD l'id du corrigé associé
+                string query = @"UPDATE Exercice SET IdCorrige = Null WHERE IdExercice = '" + ex.Idexercice + "'";
+                SqlCommand commande = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = commande.ExecuteReader();
+                sqlConnection.Close();
                 
                 //supprimer le corrige de la BD
                 provider.Corrige.Remove(corrige);
