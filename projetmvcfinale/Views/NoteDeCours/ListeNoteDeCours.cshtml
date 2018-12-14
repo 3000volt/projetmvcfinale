@@ -33,21 +33,15 @@
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.NomNote)
-                </th>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.Lien)
-                    </th>*@
-                <th>
-                    @Html.DisplayNameFor(model => model.DateInsertion)
-                </th>
+                </th>                             
                 <th>
                     @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IdCategNavigation)
+                    @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IdSousCategorieNavigation)
+                    @Html.DisplayNameFor(model => model.IdSousCategorieNavigation.NomSousCategorie)
                 </th>
                 <th></th>
             </tr>
@@ -58,13 +52,7 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.NomNote)
-                    </td>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Lien)
-                        </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateInsertion)
-                    </td>
+                    </td>                                     
                     <td>
                         @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
                     </td>
@@ -77,15 +65,15 @@
                     <td>
                         @if (item.Lien != null)
                         {
-                            <a href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()">Afficher</a>
+                            <a class="btn btn-info" href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
                         }
                         else
                         {
-                            <span style="color:grey; font-size:small ">Afficher</span>
+                            <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf"></i>Afficher<span>Lien manquant</span></a>
                         }
                         |
-                        <a asp-action="ModifierNote" asp-route-id="@item.IdDocument">Modifier</a> |
-                        <a asp-action="SupprimerNote" asp-route-id="@item.IdDocument">Supprimer</a>
+                        <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierNote" asp-route-id="@item.IdDocument"><i class="fas fa-edit"></i> Modifier</a> |
+                        <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerNote" asp-route-id="@item.IdDocument"><i class="fas fa-trash-alt"></i> Supprimer</a>
                     </td>
                 </tr>
             }

@@ -53,7 +53,6 @@ namespace projetmvcfinale.Controllers
         public IActionResult AjouterNote()
         {
             ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
-            //ViewBag.SousCategorie = new SelectList(this.provider.SousCategorie.ToList(), "idSousCategorie", "NomIdSousCategorie");
             return View();
         }
         /// <summary>
