@@ -1,0 +1,41 @@
+﻿@model IEnumerable<projetmvcfinale.Models.Categorie>
+
+<div class="top-buffer"></div>
+<div class="panel panel-primary">
+    <div class="panel-heading panel-head">Gestion des Roles</div>
+    <div class="panel-body">
+        <div class="btn-group">
+            <a id="createRoleModal" href="#" class="btn btn-primary">
+                <i class="glyphicon glyphicon-plus"></i>  Ajouter un rôle
+            </a>
+        </div>
+        <div class="top-buffer"></div>
+        <table id="listeTable" class="table table-bordered table-striped table-condensed">
+            <!--Ajout ici-->
+            <thead>
+                <tr>
+                    <th>Identifiant de la catérogie</th>
+                    <th>Nom de la catégorie</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.NomCategorie">
+                        <!--Ajout ici-->
+                        <td>@item.IdCateg</td>
+                        <td>@item.NomCategorie</td>
+                        <td>
+                            <a class="btn btn-danger" onclick='fndelete("@item.IdCateg")'>
+                                <i class="glyphicon glyphicon-trash"></i>  Supprimer
+                            </a>
+                            <a class="btn btn-primary" onclick='fneditGet("@item.NomCategorie")'>
+                                <i class="glyphicon glyphicon-trash"></i>  Modifier
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
