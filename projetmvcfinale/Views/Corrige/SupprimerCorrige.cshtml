@@ -1,0 +1,44 @@
+﻿@model projetmvcfinale.Models.Corrige
+
+@{
+    ViewData["Title"] = "SupprimerCorrige";
+}
+
+<h2>Supprimer un corrigé</h2>
+
+<div>
+    <h4>Corrigé</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CorrigeDocNom)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CorrigeDocNom)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lien)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lien)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateInsertion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateInsertion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdexerciceNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdexerciceNavigation.AdresseCourriel)
+        </dd>
+    </dl>
+    
+    <form asp-action="SupprimerCorrige">
+        <input type="hidden" asp-for="Idcorrige" />
+        <input type="submit" value="Supprimer" class="btn btn-default" /> |
+        <a asp-action="ListeCorrige">Retour à la liste</a>
+    </form>
+</div>

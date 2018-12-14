@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace projetmvcfinale.Controllers
 {
-    public class ExerciceController : Controller//
+    public class ExerciceController : Controller
     {
         //Propriétés du controlleur
         private readonly ProjetFrancaisContext provider;
@@ -30,7 +30,6 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
-            //ViewBag.Categories = this.provider.Categorie.ToList();
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -50,6 +49,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public IActionResult ListeExercice(string search)
         {
+            ViewBag.listecorriger = this.provider.Corrige.ToList();
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 

@@ -6,112 +6,119 @@
 
 <h2>Liste des exercices</h2>
 <p>
-    <a asp-action="AjoutExercice" class="btn btn-info">Ajouter un exercice</a>
+    <a asp-action="AjoutExercice" class="btn btn-info">Ajouter un exercice</a><br />
 </p>
-    <p>
+<p>
+    <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Associer un corrigé un exercice pdf</button>
+</p>
+<p>
+    <div style="float:right;">
         @using (@Html.BeginForm("ListeExercice", "Exercice", FormMethod.Get))
         {
             <b>Recherche par titre:</b>
 
-            @Html.TextBox("search")
-            <input type="submit" value="Rechercher" />
+            @Html.TextBox("search",null,new { @style= "border-radius: 10px;border:2px solid #17a2b8" })
+            <input type="submit" value="Rechercher" class="btn btn-info" />
         }
-    </p>
-    <table class="table table-responsive table-hover table-condensed">
-        @if (Model.Count() == 0)
-        {
+    </div>
+</p>
+<table class="table table-responsive table-hover table-condensed">
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="4">
+                Aucun enregistrement trouvée.
+            </td>
+        </tr>
+    }
+    else
+    {
+        <thead>
             <tr>
-                <td colspan="4">
-                    Aucun enregistrement trouvée.
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomExercices)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TypeExercice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AdresseCourrielNavigation.AdresseCourriel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdDifficulteNavigation.NiveauDifficulte)
+                </th>
+                <th></th>
             </tr>
-        }
-        else
-        {
-            <thead>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.NomExercices)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DateInsertion)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TypeExercice)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IdCateg)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IdDifficulte)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IdDocumentNavigation)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Idcorrige)
-                    </th>
-                    <th></th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomExercices)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeExercice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AdresseCourriel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
+                    </td>                  
+                    <td>
+                        @if (item.Lien != null)
+                        {
+                            <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
+                        }
+                        |
+                        <a class="btn btn-info" style="background-color:#863e94" asp-action="Edit" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
+                        <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="Details" asp-route-id="@item.Idexercice"><i class="fas fa-info-circle"></i> Informations</a> |
+                        <a class="btn btn-info" style="background-color:#e03689" asp-action="Delete" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
+                        @if (item.Idcorrige != null)
+                        {
+                            var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
+                            <a class="btn btn-info" style="background-color:#3A9D23"   href="../Documents/Corrige/@list.ToList().Find(x=>x.Idexercice==item.Idexercice).Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher le corrigé associé</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info" style="background-color:#3A9D23" asp-action="AjouterCorrige" asp-controller="Corrige" asp-route-id="@item.Idexercice"><i class="fas fa-link"></i> Creer/Associer un corrigé</a>
+                        }
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.NomExercices)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateInsertion)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TypeExercice)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AdresseCourriel)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IdDocumentNavigation.AdresseCourriel)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IdcorrigeNavigation.CorrigeDocNom)
-                            </td>
-                            <td>
-                                @if (item.Lien != null)
-                                {
-                                    <a href="../Documents/Exercices/@item.Lien.Split('\\').Last()">Afficher</a>
-                                }
-                                else
-                                {
-                                    <span style="color:grey; font-size:small ">Afficher</span>
-                                }
-                                |
-                                <a asp-action="Edit" asp-route-id="@item.Idexercice">Modifier</a> |
-                                <a asp-action="Details" asp-route-id="@item.Idexercice">Informations</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Idexercice">Supprimer</a> |
-                                @if (item.Idcorrige != null)
-                                {
-                                    @*<a href="../Documents/Corrige/@Html.DisplayFor(modelItem => corrige)">Afficher le corrigé</a>*@
-                                }
-                                else
-                                {
-                                    <a asp-action="AjouterCorrige" asp-controller="Corrige" asp-route-id="@item.Idexercice">Ajouter un corrigé</a>
-                                }
+            }
 
+        </tbody>
+    }
+</table>
 
-                            </td>
-                        </tr>
-                    }
-                
-            </tbody>
-        }
-    </table>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
