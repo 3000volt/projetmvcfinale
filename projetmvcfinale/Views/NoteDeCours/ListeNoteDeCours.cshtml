@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>List des notes de cours disponibles</h1>
+<h1>Liste des notes de cours disponibles</h1>
 
 <p>
     <a asp-action="AjouterNote" class="btn btn-info">Ajouter des notes de cours</a>
@@ -14,7 +14,7 @@
     {
         <b>Recherche par Titre:</b>
 
-        @Html.TextBox("search")
+        @Html.TextBox("search", null, new { @style = "border-radius: 10px;border:2px solid #17a2b8" })
         <input type="submit" value="Rechercher" />
     }
 </p>
@@ -73,6 +73,7 @@
                         }
                         |
                         <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierNote" asp-route-id="@item.IdDocument"><i class="fas fa-edit"></i> Modifier</a> |
+                        <a class="btn btn-info" style="background-color:#3a8bc5" asp-action="InfoNote" asp-route-id="@item.IdDocument"><i class="fas fa-info-circle"></i> Informations</a> |
                         <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerNote" asp-route-id="@item.IdDocument"><i class="fas fa-trash-alt"></i> Supprimer</a>
                     </td>
                 </tr>
