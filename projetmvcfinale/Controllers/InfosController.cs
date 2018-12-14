@@ -101,6 +101,7 @@ namespace projetmvcfinale.Controllers
             {
                 Categorie categorieUpdate = this.provider.Categorie.ToList().Find(x=>x.IdCateg == categorie.IdCateg);
                 categorieUpdate.NomCategorie = categorie.NomCategorie;
+                this.provider.Update(categorieUpdate);
                 this.provider.SaveChanges();
                 return Ok("élément modifié avec succès");
             }
