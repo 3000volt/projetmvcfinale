@@ -1,31 +1,35 @@
-﻿var formModal;
+﻿//var formModal;
 var formModalDelete;
 var idEnCours;
 $(function () {
     $("#ModalSupprimerCategorie").modal('hide');
-    formModal = fndefinirModal();
+    $("#ModalAjouterCategorie").modal('hide');
+    $("#ModalModifierCategorie").modal('hide');
+    //formModal = fndefinirModal();
     $("#btnCreerCategorie").on('click', function () {
-        $(formModal).dialog("open");
-        $("form").prop("title", "Ajouter catégorie");
+        //$(formModal).dialog("open");
+        //$("form").prop("title", "Ajouter catégorie");
+        $("#ModalAjouterCategorie").modal('show');
+
     });
     $("#btnEnvoyer").on("click", function () {
         $("form").prop("title") === "Ajouter catégorie" ? CreerCategorieAjax() : SoumettreModification(idEnCours);
     });
-    $("#btnAnnuler").on("click", function () { $(formModal).dialog("close"); });
+    //$("#btnAnnuler").on("click", function () { $(formModal).dialog("close"); });
 });
 
-function fndefinirModal() {
-    var formModal = $("#divAjouterCategorie").dialog({
-        autoOpen: false,
-        height: 400,
-        width: 350,
-        modal: true,
-        close: function () {
-            formModal.dialog("close");
-        }
-    });
-    return formModal;
-}
+//function fndefinirModal() {
+//    var formModal = $("#divAjouterCategorie").dialog({
+//        autoOpen: false,
+//        height: 400,
+//        width: 350,
+//        modal: true,
+//        close: function () {
+//            formModal.dialog("close");
+//        }s
+//    });
+//    return formModal;
+//}
 
 
 function ValiderSupprimer(i) {
@@ -37,7 +41,11 @@ function ValiderSupprimer(i) {
 }
 
 function AnnulerSupprimer() {
-    $("#ModalSupprimerCategorie").close();
+    $("#ModalSupprimerCategorie").modal('hide');
+}
+
+function AnnulerAjouter() {
+    $("#ModalAjouterCategorie").modal('hide');
 }
 
 function DocumentCategorie(i) {
@@ -71,11 +79,12 @@ function CreerCategorieAjax() {
         type: "POST",
         url: url,
         datatype: "text/plain",
-        //contentType: "application/json; charset=utf-8",
+        contentType: "application/json; charset=utf-8",
         // beforeSend: function (request) {
         //    request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         // },
         success: function (result) {
+            $("#ModalAjouterCategorie").modal('hide');
             alert("Catégorie ajouté avec succès!");
             //Rafriachir la page
             location.reload();
@@ -107,33 +116,34 @@ function supprimerCategorieAjax() {
 }
 
 function afficherModification(i) {
+    idEnCours = i;
     var url = "/Infos/ModifierCategorie";
     $.ajax({
         type: "GET",
         url: url,
         data: { idCategorie: i },
-        //contentType: "application/html; charset=utf-8",
+        contentType: "application/html; charset=utf-8",
         datatype: "text/plain",
         success: function (result) {
             $("form").prop("title", "Modifier");
-            alert(result.NomCategorie);
+            $("#ModalModifierCategorie").modal('show');
+            alert(result);
             //Affecter la variable globale en cours
             idEnCours = i;
-            formModal.dialog("open");
+            //formModal.dialog("open");
             //$("#Id").val(result.id);
             //$("#RoleName").val(result.roleName);
-            $("#NomCategorie").val(result.NomCategorie);
+            $("#NomCategorieModif").val(result);
         },
-        error: function (xhr, status) { alert("erreur:" + status); }
+        error: function (xhr, status) { alert("erreur:" + xhr + status); }
     });
 }
 
-function SoumettreModification(i) {
-    alert($("#NomCategorie").val());
+function SoumettreModification() {
     var url = "/Infos/ModifierCategorie";
     var data = {
-        idCateg: i,
-        NomCategorie: $("#NomCategorie").val()
+        idCateg: idEnCours,
+        NomCategorie: $("#NomCategorieModif").val()
     };
     $.ajax({
         data: JSON.stringify(data),
@@ -142,6 +152,7 @@ function SoumettreModification(i) {
         contentType: "application/json; charset=utf-8",
         datatype: "text",
         success: function (result, textStatus) {
+            $("#ModalAjouterCategorie").modal('hide');
             alert("Modification réussite!");
             var tr = "<td>" + $("#Id").val() + "</td><td>" + $("#RoleName").val() + "</td><td>" + $("#Description").val() + "</td>" +
                 "<td>" +

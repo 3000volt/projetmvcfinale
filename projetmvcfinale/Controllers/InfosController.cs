@@ -88,10 +88,10 @@ namespace projetmvcfinale.Controllers
         }
 
         [HttpGet]
-        public IActionResult ModifierCategorie(int idCategorie)//
+        public string ModifierCategorie(int idCategorie)//
         {
-            Categorie categorie = this.provider.Categorie.ToList().Find(x=>x.IdCateg == idCategorie);
-            return Json(categorie);
+            string categorie = this.provider.Categorie.ToList().Find(x=>x.IdCateg == idCategorie).NomCategorie;
+            return categorie;
         }
 
         [HttpPost]
@@ -101,6 +101,7 @@ namespace projetmvcfinale.Controllers
             {
                 Categorie categorieUpdate = this.provider.Categorie.ToList().Find(x=>x.IdCateg == categorie.IdCateg);
                 categorieUpdate.NomCategorie = categorie.NomCategorie;
+                this.provider.Update(categorieUpdate);
                 this.provider.SaveChanges();
                 return Ok("élément modifié avec succès");
             }
