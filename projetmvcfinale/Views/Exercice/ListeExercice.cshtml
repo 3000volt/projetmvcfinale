@@ -73,13 +73,21 @@
                         @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
                     </td>                  
                     <td>
-                        @if (item.Lien != null)
+                        @if (item.Lien != null && item.TypeExercice == "Normal")
                         {
                             <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
                         }
-                        else
+                        else if (item.TypeExercice == "Normal" && item.Lien == null )
                         {
                             <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
+                        }
+                        else if (item.ExercicesInt != null && item.TypeExercice == "Interactif")
+                        {
+                            <a class="btn btn-info" asp-action="AfficherExercice" asp-route-id="@item.Idexercice"><i class="fas fa-external-link-square-alt"></i> Afficher</a>
+                        }
+                        else if (item.ExercicesInt == null && item.TypeExercice == "Interactif")
+                        {
+                            <a class="btn btn-info testing" href="#"><i class="fas fa-external-link-square-alt"></i> Afficher<span>Lien manquant</span></a>
                         }
                         |
                         <a class="btn btn-info" style="background-color:#863e94" asp-action="Edit" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
@@ -88,7 +96,7 @@
                         @if (item.Idcorrige != null)
                         {
                             var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
-                            <a class="btn btn-info" style="background-color:#3A9D23"   href="../Documents/Corrige/@list.ToList().Find(x=>x.Idexercice==item.Idexercice).Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher le corrigé associé</a>
+                            <a class="btn btn-info" style="background-color:#3A9D23" href="../Documents/Corrige/@list.ToList().Find(x=>x.Idexercice==item.Idexercice).Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher le corrigé associé</a>
                         }
                         else
                         {

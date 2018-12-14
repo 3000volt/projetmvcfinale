@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -29,6 +31,25 @@ namespace projetmvcfinale.Models
         public virtual DbSet<SousCategorie> SousCategorie { get; set; }
         public virtual DbSet<Utilisateur> Utilisateur { get; set; }
 
+        public void updatelien(string lien,int id)
+        {
+            //utiliser le connectionString pour pouvoir affecter la BD
+            using (SqlConnection con = new SqlConnection(this.ConnectionString))
+            {
+                //Requete pour ajouter un livre
+                
+
+                string sqlStr = "UPDATE Exercice SET Lien = @lien WHERE Idexercice=@idexo";
+                //Code pour affecter la BD
+                SqlCommand cmd = new SqlCommand(sqlStr, con);
+                cmd.CommandType = CommandType.Text;
+                con.Open();
+                cmd.Parameters.AddWithValue("lien",lien);
+                cmd.Parameters.AddWithValue("idexo", id);
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

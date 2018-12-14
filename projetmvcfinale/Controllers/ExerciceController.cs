@@ -189,9 +189,10 @@ namespace projetmvcfinale.Controllers
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
             //ajouter le lien à la base de données
-            ex.Lien = chemin;
-            provider.Update(ex);
-            await provider.SaveChangesAsync();
+            int Idexercice = this.provider.Exercice.ToList().Find(x => x.NomExercices == ex.NomExercices).Idexercice;
+
+            this.provider.updatelien(chemin,Idexercice);  
+           
 
             using (var stream = new FileStream(chemin, FileMode.Create))
             {
