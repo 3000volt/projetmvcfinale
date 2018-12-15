@@ -291,5 +291,19 @@ namespace projetmvcfinale.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult CreerSousCategorie([FromBody][Bind("NomSousCategorie,idCateg")] SousCategorie sousCategorie)
+        {
+            //Voir si la donnée est valide
+            if (ModelState.IsValid)
+            {
+                //Ajouter a la bd
+                this.provider.Add(sousCategorie);
+                this.provider.SaveChanges();
+                return Ok("élément modifié avec succès");
+            }
+            return BadRequest("Erreur de modification");
+        }
     }
 }
