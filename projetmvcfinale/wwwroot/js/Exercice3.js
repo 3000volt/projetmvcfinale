@@ -5,6 +5,7 @@
 
 });
 
+
 function CommencerExercice() {
     compteur = 0;
     //Valider que ce numéro est disponible
