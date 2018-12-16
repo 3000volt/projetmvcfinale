@@ -72,7 +72,7 @@ namespace projetmvcfinale.Controllers
             }
             else if (interactif == true)
             {
-                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != "Normal");
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.TypeExercice == "Interactif");
             }
 
             return View("ListeExercice", liste);
