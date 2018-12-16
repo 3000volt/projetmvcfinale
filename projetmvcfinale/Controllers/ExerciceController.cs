@@ -47,13 +47,13 @@ namespace projetmvcfinale.Controllers
         /// Afficher la liste d'exercices
         /// </summary>
         /// <returns></returns>
-        public IActionResult ListeExercice()
+        public IActionResult ListeExercice(string search)
         {
             ViewBag.listecorriger = this.provider.Corrige.ToList();
             ViewBag.Idexercice= new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
             ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
             ViewBag.model = new AssocierDoc();
-            return View(this.provider.Exercice.ToList());
+            return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
 
         public IActionResult ListeExercice2(string diff, string categ, bool interactif)
