@@ -3,27 +3,60 @@
     ViewData["Title"] = "GererInfos";
 }
 
-<h2>Gerer les informations</h2>
+<h2>Panneau de gestion des Information</h2>
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne" style="background-color:bisque">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Gestion des catégories
+                </button>
+            </h5>
+        </div>
 
-@*Catégorie*@
-<div id="divlisteCateg">
-    <partial name="_ListeCategorie" model="ViewBag.ListCategorie" />
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+                <div id="divlisteCateg">
+                    <partial name="_ListeCategorie" model="ViewBag.ListCategorie" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo" style="background-color:bisque">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Gestion des sous-catégories
+                </button>
+            </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+                <div id="divlisteSousCateg">
+                    <partial name="_ListeSousCategorie" model="ViewBag.ListSousCategorie" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingThree" style="background-color:bisque">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Gestion des niveaux de difficultés
+                </button>
+            </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div class="card-body">
+                <div id="divlisteNiveau">
+                    <partial name="_ListeDifficulte" model="ViewBag.ListeNiveau" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-@*Sous-Catégorie*@
-<div id="divlisteSousCateg">
-    <partial name="_ListeSousCategorie" model="ViewBag.ListSousCategorie" />
-</div>
-
-@*Difficulté*@
-<div id="divlisteNiveau">
-    <partial name="_ListeDifficulte" model="ViewBag.ListeNiveau" />
-</div>
-
-@*Source : Document Chapitre09, Application Internet*@
 
 
 @section Scripts {
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/js/Infos.js"></script>
 }

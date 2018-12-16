@@ -72,7 +72,7 @@ namespace projetmvcfinale.Controllers
             }
             else if (interactif == true)
             {
-                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != "Normal");
+                liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.TypeExercice == "Interactif");
             }
             return View("ListeExercice", liste);
         }
@@ -231,7 +231,7 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> SupprimerExercicePost(string id)
         {
-            Exercice exercice = await provider.Exercice.FindAsync(id);
+            Exercice exercice = await provider.Exercice.FindAsync(Convert.ToInt32(id));
             provider.Exercice.Remove(exercice);
             await provider.SaveChangesAsync();
             return RedirectToAction(nameof(ListeExercice));
