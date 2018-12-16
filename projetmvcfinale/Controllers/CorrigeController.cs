@@ -45,7 +45,7 @@ namespace projetmvcfinale.Controllers
         }
         public IActionResult ListeCorrige(string search)
         {
-            return View(this.provider.Corrige.ToList());
+            return View(this.provider.Corrige.Where(x => x.CorrigeDocNom.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// 
