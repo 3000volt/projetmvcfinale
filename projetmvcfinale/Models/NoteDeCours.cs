@@ -13,18 +13,22 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro")]
         public int IdDocument { get; set; }
         [Display(Name = "Titre du document")]
+        [Required]
         public string NomNote { get; set; }
+        [Required]
         public string Lien { get; set; }
         [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }
         [Display(Name = "Courriel")]
         public string AdresseCourriel { get; set; }
         [Display(Name = "Catégorie")]
+        [Required]
         public int IdCateg { get; set; }
         [Display(Name = "Sous-catégorie")]
+        [Required]
         public int IdSousCategorie { get; set; }
 
-
+        [Display(Name = "Courriel")]
         public Utilisateur AdresseCourrielNavigation { get; set; }
         public Categorie IdCategNavigation { get; set; }
         public SousCategorie IdSousCategorieNavigation { get; set; }

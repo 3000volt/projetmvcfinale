@@ -40,14 +40,20 @@ namespace projetmvcfinale.Controllers
             ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
-
+        /// <summary>
+        /// La liste des notes éxistantes
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ListeNoteDeCours()
         {
             //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             //    return View(listeNote);
             return View(this.provider.NoteDeCours.ToList());
         }
-
+        /// <summary>
+        /// Afficher la vue pour ajouter une note
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AjouterNote()
@@ -107,14 +113,27 @@ namespace projetmvcfinale.Controllers
 
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
-
-        public IActionResult InfoNote(int id)
+        /// <summary>
+        /// Voir les info d'une note
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        public async Task <IActionResult> InfoNote(int id)
         {
-
+            //vérifier si l'id est null
             if (id == null)
                 return NotFound();
 
-            return View();
+            //prendre les notes associé a l'id
+            NoteDeCours note = await provider.NoteDeCours.FindAsync(id);
+
+            //vérfier si l'objet est null
+            if (note == null)
+                return NotFound();
+
+            //afficher les notes associé dans la vue
+            return View(note);
         }
 
         [Authorize(Roles = "Admin")]
@@ -189,7 +208,11 @@ namespace projetmvcfinale.Controllers
             await provider.SaveChangesAsync();
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
-
+        /// <summary>
+        /// afficher la note a supprimer
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult SupprimerNote(int id)
@@ -213,7 +236,11 @@ namespace projetmvcfinale.Controllers
             //Retourenr la vue permettant de modifier
             return View(noteVM);
         }
-
+        /// <summary>
+        /// Supprimer la note ainsi que son document
+        /// </summary>
+        /// <param name="noteVM"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SupprimerNote(NotesViewModel noteVM)
@@ -237,7 +264,7 @@ namespace projetmvcfinale.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Retourne la vue pour ajouter un document
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
@@ -247,7 +274,7 @@ namespace projetmvcfinale.Controllers
             return View();
         }
         /// <summary>
-        /// 
+        /// téléverser le document
         /// </summary>
         /// <param name="Lien"></param>
         /// <returns></returns>
@@ -255,11 +282,14 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadNote(IFormFile Lien)
         {
+            //Trouver la bonne note
             NoteDeCours note = JsonConvert.DeserializeObject<NoteDeCours>(this.HttpContext.Session.GetString("NoteDeCours"));
 
+            //vérifier si le lien est null
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
 
+            //créer le chemin
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
             note.Lien = chemin;
@@ -273,7 +303,12 @@ namespace projetmvcfinale.Controllers
 
             return Ok("Fichier téléversé avec succès!");
         }
-
+        /// <summary>
+        /// Retrier une sous-catégorie
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public List<string> RetirerSousCateg(int id)
         {
@@ -284,7 +319,10 @@ namespace projetmvcfinale.Controllers
             return sousCategorie;
         }
 
-
+        /// <summary>
+        /// Créer un document pdf
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult creerpdf()

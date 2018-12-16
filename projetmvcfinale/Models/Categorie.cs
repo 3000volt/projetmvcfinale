@@ -15,6 +15,7 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro")]
         public int IdCateg { get; set; }
         [Display(Name = "Catégorie")]
+        [Required]
         public string NomCategorie { get; set; }
 
         [Display(Name = "Exercice")]

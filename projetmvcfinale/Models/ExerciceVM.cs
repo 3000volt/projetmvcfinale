@@ -9,6 +9,7 @@ namespace projetmvcfinale.Models
     public class ExerciceVM
     {
         [Display(Name ="Nom de l'exercice")]
+        [Required]
         public string NomExercices { get; set; }
         [Display(Name = "Type d'exercice")]
         public string TypeExercice { get; set; }

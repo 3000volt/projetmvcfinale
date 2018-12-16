@@ -145,7 +145,7 @@ namespace projetmvcfinale.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Afficher les informations du corrigés
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
