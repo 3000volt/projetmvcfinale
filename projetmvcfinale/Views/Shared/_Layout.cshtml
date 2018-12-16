@@ -88,11 +88,11 @@
                                                             {
                                                                 foreach (var e in listesouscateg)
                                                                 {
-                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-search="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
                                                                     compteur++;
                                                                     if (compteur == 3)
                                                                     {
-                                                                        <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@i.NomCategorie">............</a></li>
+                                                                        <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-search="@i.NomCategorie">............</a></li>
                                                                         break;
                                                                     }
                                                                 }
@@ -103,7 +103,7 @@
                                                                 var diff = 3 - count;
                                                                 foreach (var e in listesouscateg)
                                                                 {
-                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-idrecherche="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-search="@e.NomSousCategorie">@e.NomSousCategorie</a></li>
                                                                     compteur++;
 
                                                                     if (compteur > @count - 1 && compteur < 3)
@@ -114,7 +114,7 @@
                                                                             compteur++;
                                                                             if (compteur == 3)
                                                                             {
-                                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
+                                                                                <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-search="@i.NomCategorie">............</a></li>
                                                                             }
                                                                         }
 
@@ -131,7 +131,7 @@
                                                                 compteur++;
                                                                 if (compteur == 3)
                                                                 {
-                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-id="@i.NomCategorie">............</a></li>
+                                                                    <li><a asp-action="ListeNoteDeCours" asp-controller="NoteDeCours" asp-route-search="@i.NomCategorie">............</a></li>
                                                                 }
 
                                                             }
