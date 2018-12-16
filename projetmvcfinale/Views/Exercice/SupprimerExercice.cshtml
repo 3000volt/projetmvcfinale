@@ -72,8 +72,7 @@
         </dd>
     </dl>
     
-    <form asp-action="SupprimerExercice">
-        <input type="hidden" asp-for="Idexercice" />
+    <form asp-action="SupprimerExercicePost" asp-route-id="@Model.Idexercice">       
         <input type="submit" value="Supprimer" class="btn btn-info" /> |
         <a asp-action="ListeExercice">Retour à la liste</a>
     </form>

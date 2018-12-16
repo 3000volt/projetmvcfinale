@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,15 +41,12 @@ namespace projetmvcfinale.Controllers
             ViewBag.souscatégorie = this.provider.SousCategorie.ToList();
             //Merci https://stackoverflow.com/questions/40330391/set-viewbag-property-in-the-constructor-of-a-asp-net-mvc-core-controller
         }
-        /// <summary>
-        /// La liste des notes éxistantes
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult ListeNoteDeCours()
+
+        public IActionResult ListeNoteDeCours(string search)
         {
             //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             //    return View(listeNote);
-            return View(this.provider.NoteDeCours.ToList());
+            return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) || x.IdCategNavigation.NomCategorie.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// Afficher la vue pour ajouter une note
@@ -70,7 +68,16 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)
         {
-            if (ModelState.IsValid)
+            bool pfdOuWord = false;
+            //Voir si le document est un pdf ou word
+            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+            Match match = reg.Match(noteVM.Lien.FileName);
+            if (match.Success)
+            {
+                pfdOuWord = true;
+            }
+
+            if (ModelState.IsValid && pfdOuWord == true)
             {
                 //Transferer en note
                 NoteDeCours note = new NoteDeCours()
@@ -93,25 +100,28 @@ namespace projetmvcfinale.Controllers
                     return Content("Aucun fichier sélectionné");
 
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
-
-                //ajouter le lien à la base de données
-               // note.Lien = chemin;
-                //provider.Exercice.Update(ex);
-                
+                //Prendre la find du doc(.pdf / .doc / docx)
+                string format = note.Lien.Substring(note.Lien.Length - 4);
+                if(format == "docx")
+                {
+                    format = ".docx";
+                }
+                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
 
                 using (var stream = new FileStream(chemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
                 }
                 //Change le nom du document
-                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf"));
+                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
                 //ajouter le lien à la base de données
-                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf");
+                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeNoteDeCours));
             }
-
-            return RedirectToAction(nameof(ListeNoteDeCours));
+            ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+            ViewBag.pdf_Word = "Avertissement";
+            return View(noteVM);
         }
         /// <summary>
         /// Voir les info d'une note
@@ -328,6 +338,20 @@ namespace projetmvcfinale.Controllers
         public IActionResult creerpdf()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreerSousCategorie([FromBody][Bind("NomSousCategorie,idCateg")] SousCategorie sousCategorie)
+        {
+            //Voir si la donnée est valide
+            if (ModelState.IsValid)
+            {
+                //Ajouter a la bd
+                this.provider.Add(sousCategorie);
+                this.provider.SaveChanges();
+                return Ok("élément modifié avec succès");
+            }
+            return BadRequest("Erreur de modification");
         }
     }
 }

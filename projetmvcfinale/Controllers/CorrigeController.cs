@@ -45,7 +45,7 @@ namespace projetmvcfinale.Controllers
         }
         public IActionResult ListeCorrige(string search)
         {
-            return View(this.provider.Corrige.ToList());
+            return View(this.provider.Corrige.Where(x => x.CorrigeDocNom.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
         /// 
@@ -123,25 +123,33 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadCorrige(IFormFile Lien)
         {
-            Corrige corrige = JsonConvert.DeserializeObject<Corrige>(this.HttpContext.Session.GetString("corrige"));
-
-            //var idCor = this.provider.Corrige.FindAsync(corrige.Idcorrige);
-
-            if (Lien == null || Lien.Length == 0)
-                return Content("Aucun fichier sélectionné");
-
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", Lien.FileName);
-
-            corrige.Lien = chemin;
-            provider.Corrige.Update(corrige);
-            await provider.SaveChangesAsync();
-
-            using (var stream = new FileStream(chemin, FileMode.Create))
+            try
             {
-                await Lien.CopyToAsync(stream);
-            }
+                Corrige corrige = JsonConvert.DeserializeObject<Corrige>(this.HttpContext.Session.GetString("corrige"));
 
-            return Ok("Fichier téléversé avec succès!");
+                //var idCor = this.provider.Corrige.FindAsync(corrige.Idcorrige);
+
+                if (Lien == null || Lien.Length == 0)
+                    return Content("Aucun fichier sélectionné");
+
+                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", Lien.FileName);
+
+                corrige.Lien = chemin;
+                provider.Corrige.Update(corrige);
+                await provider.SaveChangesAsync();
+
+                using (var stream = new FileStream(chemin, FileMode.Create))
+                {
+                    await Lien.CopyToAsync(stream);
+                }
+
+                return Ok("Fichier téléversé avec succès!");
+            }
+            catch(Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
 
         /// <summary>
@@ -151,8 +159,8 @@ namespace projetmvcfinale.Controllers
         [Authorize(Roles = "Admin")]
         public async Task <ActionResult> InfoCorrige(int id)
         {
-            if (id == null)
-                return NotFound();
+            if (id.ToString() == null)
+                return View("\\Views\\Shared\\page_erreur.cshtml");
 
             Corrige cr = await provider.Corrige.FindAsync(id);
 
@@ -173,13 +181,13 @@ namespace projetmvcfinale.Controllers
         {
             if(ModelState.IsValid)
             {
-                if (id == null)
-                    return NotFound();
+                if (id.ToString() == null)
+                    return View("\\Views\\Shared\\page_erreur.cshtml");
 
                 Corrige cr = await provider.Corrige.FindAsync(id);
 
                 if (cr == null)
-                   return NotFound();
+                    return View("\\Views\\Shared\\page_erreur.cshtml");
 
                 //transfer en ViewModel
                 CorrigeViewModel corrige = new CorrigeViewModel()
@@ -257,7 +265,7 @@ namespace projetmvcfinale.Controllers
         {
             if(ModelState.IsValid)
             {
-              if (id == null)
+              if (id.ToString() == null)
                 return NotFound();
 
                //aller chercher le corrigé dans le contexte
@@ -282,32 +290,40 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<ActionResult> SupprimerCorrigePost(int id)
         {
-            if(ModelState.IsValid)
+            try
             {
-                Corrige corrige = await provider.Corrige.FindAsync(id);
-                string chemin = corrige.Lien;
-                //trouver l'exercice correspondant & mettre l'id du corrige a null
-                Exercice ex = await provider.Exercice.FindAsync(corrige.Idexercice);
-                
-                //updater manuellement dans la BD l'id du corrigé associé
-                string query = @"UPDATE Exercice SET IdCorrige = Null WHERE IdExercice = '" + ex.Idexercice + "'";
-                SqlCommand commande = new SqlCommand(query, sqlConnection);
-                sqlConnection.Open();
-                SqlDataReader reader = commande.ExecuteReader();
-                sqlConnection.Close();
-                
-                //supprimer le corrige de la BD
-                provider.Corrige.Remove(corrige);
-                
-                //supprimer le fichier
-                if (System.IO.File.Exists(chemin))
+                if (ModelState.IsValid)
                 {
-                    System.IO.File.Delete(chemin);
+                    Corrige corrige = await provider.Corrige.FindAsync(id);
+                    string chemin = corrige.Lien;
+                    //trouver l'exercice correspondant & mettre l'id du corrige a null
+                    Exercice ex = await provider.Exercice.FindAsync(corrige.Idexercice);
+
+                    //updater manuellement dans la BD l'id du corrigé associé
+                    string query = @"UPDATE Exercice SET IdCorrige = Null WHERE IdExercice = '" + ex.Idexercice + "'";
+                    SqlCommand commande = new SqlCommand(query, sqlConnection);
+                    sqlConnection.Open();
+                    SqlDataReader reader = commande.ExecuteReader();
+                    sqlConnection.Close();
+
+                    //supprimer le corrige de la BD
+                    provider.Corrige.Remove(corrige);
+
+                    //supprimer le fichier
+                    if (System.IO.File.Exists(chemin))
+                    {
+                        System.IO.File.Delete(chemin);
+                    }
+                    await provider.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListeCorrige));
                 }
-                await provider.SaveChangesAsync();
-              return RedirectToAction(nameof(ListeCorrige));
+                return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            return BadRequest("Erreur");
+            catch(Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
         //source:https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
     }

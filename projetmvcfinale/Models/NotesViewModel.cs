@@ -10,16 +10,17 @@ namespace projetmvcfinale.Models
     public class NotesViewModel
     {
         //public int IdDocument { get; set; }
-        [Display(Name = "Titre")]
-        [Required]
+        [Display(Name = "Nom : ")]
+        [Required(ErrorMessage = "Ce champs est requis")]
         public string NomNote { get; set; }
-        [Required]
+        [Display(Name = "Lien : ")]
+        [Required(ErrorMessage = "Ce champs est requis")]
         public IFormFile Lien { get; set; }
-        //public DateTime DateInsertion { get; set; }
-        //public string AdresseCourriel { get; set; }
-        [Display(Name = "Numéro de catégorie")]
+        [Display(Name = "Catégorie : ")]
+        [Required(ErrorMessage = "Ce champs est requis")]
         public int IdCateg { get; set; }
-        [Display(Name ="Sous-catégorie")]
+        [Display(Name = "Sous-Catégorie : ")]
+        [Required(ErrorMessage = "Ce champs est requis")]
         public string SousCategorie { get; set; }
     }
 }
