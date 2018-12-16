@@ -3,26 +3,24 @@
     ViewData["Title"] = "GererInfos";
 }
 
-<h2>GererInfos</h2>
+<h2>Gerer les informations</h2>
 
+@*Catégorie*@
 <div id="divlisteCateg">
     <partial name="_ListeCategorie" model="ViewBag.ListCategorie" />
 </div>
 
+@*Sous-Catégorie*@
 <div id="divlisteSousCateg">
     <partial name="_ListeSousCategorie" model="ViewBag.ListSousCategorie" />
 </div>
 
+@*Difficulté*@
 <div id="divlisteNiveau">
     <partial name="_ListeDifficulte" model="ViewBag.ListeNiveau" />
 </div>
 
-@*<div id="2">
-        <partial name="_ListeCategorie" model="ViewBag.ListCategorie" />
-    </div>*@
-@*<div id="divAjouterCategorie">
-    <partial name="_AjouterCategorie" model="ViewBag.Categorie" />
-</div>*@
+@*Source : Document Chapitre09, Application Internet*@
 
 
 @section Scripts {

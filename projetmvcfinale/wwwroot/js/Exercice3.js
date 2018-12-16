@@ -1,46 +1,49 @@
 ﻿$(function () {
-    alert("Dossiers!!");
+    //Variable globale permettant de compter l'ordre d'un chois de réponse dans une phrase
     var compteur;
-    //$("#btnExerciceTermine").attr("disabled", true);
-
 });
 
 
 function CommencerExercice() {
+    //Commencer le compteur
     compteur = 0;
     //Valider que ce numéro est disponible
     var numero = $("#inNumeroQuestion").val();
+    //Voir si le numéro entré est valide
     if (VerifierNumero(numero) == true) {
-        //Mettre au texterea
+        //Mettre au textarea
+        //Si celui-ci est vide, ajouter simplement le numéro
         if ($("#txtExercice").val() == "") {
             $("#txtExercice").val(numero + " - ");
         }
+        //sinon, prendre la valeur actuelle dans une variable, ajouter le numéro et mettre cette variable au textarea
         else {
             var textInitiale = $("#txtExercice").val();
             $("#txtExercice").val(textInitiale + "\n" + numero + " - ");
             //https://css-tricks.com/forums/topic/solved-jquery-append-text-to-textarea/
-            //$("#txtExercice").append("\n" + numero + " - ");
         }
-        //Desactiver le boton de commencemen de question
+        //Desactiver / Activer les trucs appropriés
         $("#btnCreerQuestion").attr('disabled', true);
         $("#inNumeroQuestion").attr("readonly", true);
         $("#divActiverCreation").removeAttr('hidden');
-        //Mettre la fin de l'exercice enable
         $("#btnExerciceTermine").prop("disabled", true);
 
     }
+    //Si le numéro n'est pas valide
     else {
         alert("Vous devez entrer un numero valide qui n'a pas été utilisé");
     }
 }
 
+//fonction pour retirer un choix de réponse
 function RetirerDerneirChoix() {
-    //S'il y a au moins 3 colonnes dans le tableau
+    //S'il y a au moins 3 colonnes dans le tableau (nous devons inclure le titre)
     if ($("#tbChoixReponses tr").length != 3) {
         $("#tbChoixReponses tr:last").remove();
     }
     else {
-        alert("Vous devez concerver au moins 2 choix de réposne!");
+        //Sinon, empêcher de retirer une colonne
+        alert("Vous devez concerver au moins 2 choix de réponse!");
     }
 }
 
@@ -56,11 +59,19 @@ function AfficherTableau() {
 }
 
 function AjouterColonne() {
-    if ($("#tbChoixReponses tr:last-child td input").val() != "") {
-        $("#tbChoixReponses").append('<tr><td><input asp-for="ChoixDeReponse" /></td><td></tr>');
+    //if ($("#tbChoixReponses tr:last-child td input").val() != "") {
+    var remplis = true
+    $("#tbChoixReponses tr").each(function () {
+        if ($(this).val() == "") {
+            remplis == false;
+        }
+    });
+    if (remplis == true) {
+         $("#tbChoixReponses").append('<tr><td><input asp-for="ChoixDeReponse" /></td><td></tr>');
     }
+    //Si une colonne est vide
     else {
-        alert("Remplissez la dernière colonne!");
+        alert("Remplissez toutes les colonnes!");
     }
 }
 
@@ -509,6 +520,7 @@ function TerminerLigne(i, y) {
     return false;
 }
 
+//fonction pour valider si le numéro est valide (et s'il s'agit d'un numéro)
 function VerifierNumero(i) {
     var bool = false;
     var url = "/Exercice/VerifierNumero";
@@ -518,12 +530,12 @@ function VerifierNumero(i) {
         async: false,
         url: url,
         dataType: "json",
-        //contentType: "application/json; charset=utf-8",        
         success: function (data) {
             bool = data;
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
+    //Retouner la validité
     return bool;
 }//https://stackoverflow.com/questions/23078650/ajax-return-true-false-i-have-implemented-a-callback
 
