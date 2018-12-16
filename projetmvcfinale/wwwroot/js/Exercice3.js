@@ -76,14 +76,14 @@ function AjouterColonne() {
 }
 
 function OuvrirBonneReponse() {
+    var valider = true;
     var tab = new Array();
     $("#tbChoixReponses tr").not(':first').each(function () {
-        //Si une tavle est vide
+        //Si une table est vide
         if ($(this).find("td input").val() == "") {
             alert("Les champs de choix de réponse doivent être tous remplis!");
-            return false;
-            //https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr            
-
+            valider = false;
+            //https://stackoverflow.com/questions/4996521/jquery-selecting-each-td-in-a-tr
         }
         tab.push($(this).find("td input").val());
     });
@@ -99,7 +99,7 @@ function OuvrirBonneReponse() {
         }
     }
     //https://stackoverflow.com/questions/19655975/check-if-an-array-contains-duplicate-values/45803283
-    if (true) {
+    if (valider == true) {
         //Mettre le selectlist vide
         $("#selectChoixReponse").empty();
         //Avoir la liste des choix de réponse
