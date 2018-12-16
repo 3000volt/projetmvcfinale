@@ -46,7 +46,7 @@ namespace projetmvcfinale.Controllers
         {
             //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             //    return View(listeNote);
-            return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) ||x.IdCategNavigation.NomCategorie.StartsWith(search) ||search == null).ToList());
+            return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) || x.IdCategNavigation.NomCategorie.StartsWith(search) || search == null).ToList());
         }
 
         [Authorize(Roles = "Admin")]
@@ -97,24 +97,27 @@ namespace projetmvcfinale.Controllers
                     return Content("Aucun fichier sélectionné");
 
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
-
-                //ajouter le lien à la base de données
-               // note.Lien = chemin;
-                //provider.Exercice.Update(ex);
-                
+                //Prendre la find du doc(.pdf / .doc / docx)
+                string format = note.Lien.Substring(note.Lien.Length - 4);
+                if(format == "docx")
+                {
+                    format = ".docx";
+                }
+                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
 
                 using (var stream = new FileStream(chemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
                 }
                 //Change le nom du document
-                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf"));
+                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
                 //ajouter le lien à la base de données
-                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf");
+                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeNoteDeCours));
             }
             ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+            ViewBag.pdf_Word = "Avertissement";
             return View(noteVM);
         }
 
