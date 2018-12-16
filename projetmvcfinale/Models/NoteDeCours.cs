@@ -13,9 +13,9 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro")]
         public int IdDocument { get; set; }
         [Display(Name = "Titre du document")]
-        [Required]
+        [Required(ErrorMessage ="Ce champs est nécessaire")]
         public string NomNote { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Veuillez fournir un fichier à associé")]
         public string Lien { get; set; }
         [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }
