@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -64,7 +65,16 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)
         {
-            if (ModelState.IsValid)
+            bool pfdOuWord = false;
+            //Voir si le document est un pdf ou word
+            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+            Match match = reg.Match(noteVM.Lien.FileName);
+            if (match.Success)
+            {
+                pfdOuWord = true;
+            }
+
+            if (ModelState.IsValid && pfdOuWord == true)
             {
                 //Transferer en note
                 NoteDeCours note = new NoteDeCours()
@@ -104,8 +114,8 @@ namespace projetmvcfinale.Controllers
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeNoteDeCours));
             }
-
-            return RedirectToAction(nameof(ListeNoteDeCours));
+            ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+            return View(noteVM);
         }
 
         public IActionResult InfoNote(int id)

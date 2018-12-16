@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace projetmvcfinale.Models
 {
@@ -9,8 +10,9 @@ namespace projetmvcfinale.Models
         {
             NoteDeCours = new HashSet<NoteDeCours>();
         }
-
+       
         public int IdSousCategorie { get; set; }
+        [Display(Name = "sous-catégorie")]
         public string NomSousCategorie { get; set; }
         public int IdCateg { get; set; }
 

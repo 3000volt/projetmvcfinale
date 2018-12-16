@@ -74,7 +74,6 @@ namespace projetmvcfinale.Controllers
             {
                 liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.ExercicesInt != "Normal");
             }
-
             return View("ListeExercice", liste);
         }
 
