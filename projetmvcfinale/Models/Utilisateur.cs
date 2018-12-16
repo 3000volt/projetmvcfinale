@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace projetmvcfinale.Models
 {
@@ -12,6 +13,7 @@ namespace projetmvcfinale.Models
             NoteDeCours = new HashSet<NoteDeCours>();
         }
 
+        [Display(Name = "Courriel")]
         public string AdresseCourriel { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }

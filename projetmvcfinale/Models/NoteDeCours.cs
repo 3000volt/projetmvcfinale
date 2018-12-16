@@ -24,9 +24,10 @@ namespace projetmvcfinale.Models
         [Display(Name = "Sous-catégorie")]
         public int IdSousCategorie { get; set; }
 
-
+        [Display(Name = "Adresse Courriel")]
         public Utilisateur AdresseCourrielNavigation { get; set; }
         public Categorie IdCategNavigation { get; set; }
+        [Display(Name = "Sous catégorie")]
         public SousCategorie IdSousCategorieNavigation { get; set; }
         public ICollection<Exercice> Exercice { get; set; }
     }
