@@ -45,7 +45,7 @@ namespace projetmvcfinale.Controllers
         {
             //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
             //    return View(listeNote);
-            return View(this.provider.NoteDeCours.Where(x => x.NomNote.StartsWith(search) || search == null).ToList());
+            return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) ||x.IdCategNavigation.NomCategorie.StartsWith(search) ||search == null).ToList());
         }
 
         [Authorize(Roles = "Admin")]
