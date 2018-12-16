@@ -232,7 +232,7 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> SupprimerExercicePost(string id)
         {
-            Exercice exercice = await provider.Exercice.FindAsync(id);
+            Exercice exercice = await provider.Exercice.FindAsync(Convert.ToInt32(id));
             provider.Exercice.Remove(exercice);
             await provider.SaveChangesAsync();
             return RedirectToAction(nameof(ListeExercice));
