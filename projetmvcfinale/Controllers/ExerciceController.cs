@@ -51,7 +51,7 @@ namespace projetmvcfinale.Controllers
         {
             ViewBag.listecorriger = this.provider.Corrige.ToList();
             ViewBag.Idexercice= new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
-            ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
+            ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
             ViewBag.model = new AssocierDoc();
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
         }
@@ -545,14 +545,24 @@ namespace projetmvcfinale.Controllers
             this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(exercice));
         }
 
+
         /// <summary>
-        /// retourne le lien du corrigé qui correspond a l'exercice
+        /// Associer un document a l'exercice
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="associer"></param>
         /// <returns></returns>
-        public string AfficherCorrige(int id)
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult AssocierDocument(AssocierDoc associer)
         {
-            return this.provider.Corrige.FirstOrDefault(x => x.Idexercice == id).Lien; 
+            //updater manuellement dans la BD l'id du corrigé associé
+            string query = @"UPDATE Exercice SET IdDocument = '" + associer.IdDocument + "' WHERE IdExercice = '" + associer.Idexercice + "'";
+            SqlCommand commande = new SqlCommand(query, sqlConnection);
+            sqlConnection.Open();
+            SqlDataReader reader = commande.ExecuteReader();
+            sqlConnection.Close();
+
+            return RedirectToAction(nameof(ListeExercice));
         }
 
     }

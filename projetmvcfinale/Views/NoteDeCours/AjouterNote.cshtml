@@ -4,6 +4,10 @@
     ViewData["Title"] = "AjouterNote";
 }
 
+<p>
+    <button class="btn btn-info" data-toggle="modal" data-target="#ModalAjouterSousCategorie">Ajouter une sous-catégorie</button>
+</p>
+
 <h2>Ajouter des Note</h2>
 <hr />
 <div class="row">
@@ -29,7 +33,7 @@
                 <span asp-validation-for="Lien" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-info" />
+                <input type="submit" value="Ajouter" class="btn btn-info" />
             </div>
         </form>
     </div>
@@ -38,6 +42,32 @@
 <div>
     <a asp-action="ListeNoteDeCours" class="btn btn-primary">Retour à la liste</a>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalAjouterSousCategorie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter une sous-catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>Nom de la sous-catégorie</label>
+                <input id="NomSousCategorie" />
+                <br />
+                <label>Catégorie associée</label>
+                <input id="CategorieAssociee" readonly />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="CreerSousCategorieAjax()" data-dismiss="modal">Ajouter cette catégorie</button>
+                <button type="button" class="btn btn-primary" onclick="AnnulerAjouterSousCategorie()">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

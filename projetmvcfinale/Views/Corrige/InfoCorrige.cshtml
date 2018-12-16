@@ -1,12 +1,11 @@
 ﻿@model projetmvcfinale.Models.Corrige
 
 @{
-    ViewData["Title"] = "SupprimerCorrige";
+    ViewData["Title"] = "InfoCorrige";
 }
 
-<h2>Supprimer un corrigé</h2>
+<h2>Informations sur le corrigé</h2>
 <div>
-    <h4>Corrigé</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -28,15 +27,14 @@
             @Html.DisplayFor(model => model.DateInsertion)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.IdexerciceNavigation)
+            @Html.DisplayNameFor(model => model.Idexercice)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.IdexerciceNavigation.AdresseCourriel)
+            @Html.DisplayFor(model => model.Idexercice)
         </dd>
     </dl>
-    
-    <form asp-action="SupprimerCorrigePost" asp-controller="Corrige" asp-route-id="@Model.Idcorrige">
-        <input type="submit" value="Supprimer" class="btn btn-default" /> |
-        <a asp-action="ListeCorrige">Retour à la liste</a>
-    </form>
+</div>
+<div>
+    <a asp-action="ModifierCorrige" asp-route-id="@Model.Idcorrige" class="btn btn-info">Modifier</a> |
+    <a asp-action="ListeCorrige" class="btn btn-info">Retour à la liste</a>
 </div>

@@ -89,19 +89,32 @@ namespace projetmvcfinale.Controllers
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
 
                 //ajouter le lien à la base de données
-                note.Lien = chemin;
+               // note.Lien = chemin;
                 //provider.Exercice.Update(ex);
-                await provider.SaveChangesAsync();
+                
 
                 using (var stream = new FileStream(chemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
                 }
-
+                //Change le nom du document
+                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf"));
+                //ajouter le lien à la base de données
+                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + ".pdf");
+                await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeNoteDeCours));
             }
 
             return RedirectToAction(nameof(ListeNoteDeCours));
+        }
+
+        public IActionResult InfoNote(int id)
+        {
+
+            if (id == null)
+                return NotFound();
+
+            return View();
         }
 
         [Authorize(Roles = "Admin")]
@@ -223,7 +236,6 @@ namespace projetmvcfinale.Controllers
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -278,6 +290,20 @@ namespace projetmvcfinale.Controllers
         public IActionResult creerpdf()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreerSousCategorie([FromBody][Bind("NomSousCategorie,idCateg")] SousCategorie sousCategorie)
+        {
+            //Voir si la donnée est valide
+            if (ModelState.IsValid)
+            {
+                //Ajouter a la bd
+                this.provider.Add(sousCategorie);
+                this.provider.SaveChanges();
+                return Ok("élément modifié avec succès");
+            }
+            return BadRequest("Erreur de modification");
         }
     }
 }

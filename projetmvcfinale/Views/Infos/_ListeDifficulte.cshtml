@@ -1,0 +1,106 @@
+﻿@model IEnumerable<projetmvcfinale.Models.Niveau>
+
+<div class="top-buffer"></div>
+<div class="panel panel-primary">
+    <div class="panel-heading panel-head">Gestion des niveaux de difficultés</div>
+    <div class="panel-body">
+        <div class="btn-group">
+            <a id="btnCreerNiveau" href="#" class="btn btn-primary">
+                <i class="glyphicon glyphicon-plus"></i>  Ajouter un niveau de difficulté
+            </a>
+        </div>
+        <div class="top-buffer"></div>
+        <table id="listeNiveau" class="table table-bordered table-striped table-condensed">
+            <!--Ajout ici-->
+            <thead>
+                <tr>
+                    <th>Identifiant du niveau</th>
+                    <th>Nom du niveau</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.IdDifficulte">
+                        <!--Ajout ici-->
+                        <td>@item.IdDifficulte</td>
+                        <td>@item.NiveauDifficulte</td>
+                        <td>
+                            <a class="btn btn-danger" onclick='ValiderSupprimerNiveau(@item.IdDifficulte)'>
+                                <i class="glyphicon glyphicon-trash"></i>  Supprimer
+                            </a>
+                            <a class="btn btn-primary" onclick='afficherModificationNiveau("@item.IdDifficulte")'>
+                                <i class="glyphicon glyphicon-trash"></i>  Modifier
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalSupprimerNiveau" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="phraseAvertissement3"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AnnulerSupprimerNiveau()" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" onclick="supprimerNiveauAjax()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalAjouterNiveau" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter un niveau</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>Nom du niveau</label>
+                <input id="NomNiveau" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="CreerNiveauAjax()" data-dismiss="modal">Ajouter ce niveau</button>
+                <button type="button" class="btn btn-primary" onclick="AnnulerAjouterNiveau()">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalModifierNiveau" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modifier un niveau</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>Nom de niveau</label>
+                <input id="NomNiveauModif" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="SoumettreModificationNiveau()" data-dismiss="modal">Modifier ce niveau</button>
+                <button type="button" class="btn btn-primary" onclick="AnnulerAjouterNiveau()">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>

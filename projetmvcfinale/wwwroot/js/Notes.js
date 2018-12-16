@@ -1,8 +1,16 @@
 ﻿$(function () {
+    alert("test");
     ChagerAjax();
     $("#IdCateg").on('change', function () {
         ChagerAjax();
     });
+
+    $("#CategorieAssociee").val($("#IdCateg option:selected").text());
+    $("#IdCateg").on('change', function () {
+        $("#CategorieAssociee").val($("#IdCateg option:selected").text());
+    });
+
+    //$("#CategorieAssociee").val($("#IdCateg option:selected").text());
 
 });
 
@@ -26,4 +34,36 @@ function ChagerAjax() {
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
+}
+
+
+function CreerSousCategorieAjax() {
+    var url = "/NoteDeCours/CreerSousCategorie";
+    var data = {
+        NomSousCategorie: $("#NomSousCategorie").val(),
+        idCateg: $("#IdCateg").val(),
+    };
+    $.ajax({
+        data: JSON.stringify(data),
+        type: "POST",
+        url: url,
+        datatype: "text/plain",
+        contentType: "application/json; charset=utf-8",
+        // beforeSend: function (request) {
+        //    request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
+        // },
+        success: function (result) {
+            $("#ModalAjouterSousCategorie").modal('hide');
+            alert("Sous-catégorie ajouté avec succès!");
+            //Rafriachir la page
+            location.reload();
+            return true;
+        },
+        error: function (xhr, status) { alert("erreur:" + status); }
+    });
+    //return false;
+}
+
+function AnnulerAjouterSousCategorie() {
+    $("#ModalAjouterSousCategorie").modal('hide');
 }
