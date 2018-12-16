@@ -253,14 +253,14 @@ namespace projetmvcfinale.Controllers
         public async Task<IActionResult> SupprimerExercice(string id)
         {
             if (id == null)
-                return NotFound();
+                return View("\\Views\\Shared\\page_erreur.cshtml");
 
             //aller chercher le cours dans le contexte
             Exercice ex = await provider.Exercice.FindAsync(id);
 
             //vérifier si le cours est null
             if (ex == null)
-                return NotFound();
+                return View("\\Views\\Shared\\page_erreur.cshtml");
 
             return View(ex);
         }
