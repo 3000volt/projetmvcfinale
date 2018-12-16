@@ -11,6 +11,10 @@
 <p>
     <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal" >Associer à un document</button>
 </p>
+@if(ViewBag.pdf_Word == "Avertissement")
+{
+<p style="color:red;">Échec du téléchargement du lien du document @ViewBag.Nom , car seul les document pdf et word sont accepté</p>
+}
 <table class="table table-responsive table-hover table-condensed" id="myTable">
  
         <thead>

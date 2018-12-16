@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace projetmvcfinale.Controllers
 {
@@ -50,7 +51,7 @@ namespace projetmvcfinale.Controllers
         public IActionResult ListeExercice(string search)
         {
             ViewBag.listecorriger = this.provider.Corrige.ToList();
-            ViewBag.Idexercice= new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+            ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
             ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
             ViewBag.model = new AssocierDoc();
             return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
@@ -180,25 +181,48 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
-            Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
-
-            if (Lien == null || Lien.Length == 0)
-                return Content("Aucun fichier sélectionné");
-
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
-
-            //ajouter le lien à la base de données
-            int Idexercice = this.provider.Exercice.ToList().Find(x => x.NomExercices == ex.NomExercices).Idexercice;
-
-            this.provider.updatelien(chemin,Idexercice);  
-           
-
-            using (var stream = new FileStream(chemin, FileMode.Create))
+            bool pfdOuWord = false;
+            //Voir si le document est un pdf ou word
+            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+            Match match = reg.Match(Lien.FileName);
+            if (match.Success)
             {
-                await Lien.CopyToAsync(stream);
+                pfdOuWord = true;
             }
 
-            return RedirectToAction(nameof(ListeExercice));
+            Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
+
+            if (pfdOuWord == true)
+            {
+                if (Lien == null || Lien.Length == 0)
+                    return Content("Aucun fichier sélectionné");
+
+                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
+                //ajouter le lien à la base de données
+                int Idexercice = this.provider.Exercice.ToList().Find(x => x.NomExercices == ex.NomExercices).Idexercice;
+               
+                string format = Lien.FileName.Substring(Lien.FileName.Length - 4);
+                if (format == "docx")
+                {
+                    format = ".docx";
+                }
+                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+                using (var stream = new FileStream(chemin, FileMode.Create))
+                {
+                    await Lien.CopyToAsync(stream);
+                }
+                //Change le nom du document
+                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice + format));
+                //ajouter le lien à la base de données
+                await provider.SaveChangesAsync();
+                return RedirectToAction(nameof(ListeExercice));
+            }
+
+            ViewBag.Nom = ex.NomExercices;
+            ViewBag.pdf_Word = "Avertissement";
+            List<Exercice> liste = this.provider.Exercice.ToList();
+            return View(nameof(ListeExercice), liste);
+
         }
 
         /// <summary>
@@ -208,7 +232,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> SupprimerExercice(string id)
+        public async Task<IActionResult> SupprimerExercice(int id)
         {
             if (id == null)
                 return NotFound();
