@@ -15,7 +15,7 @@
                 <input asp-for="CorrigeDocNom" class="form-control" />
                 <span asp-validation-for="CorrigeDocNom" class="text-danger"></span>
             </div>
-            @if(((ViewBag.Idexercice) as SelectList).Count() == 0)
+            @if (((ViewBag.Idexercice) as SelectList).Count() == 0)
             {
                 <p style="color:red">Créez des exercices avant d'insérer des corrigés!</p>
             }
@@ -23,9 +23,13 @@
                 <label asp-for="Idexercice" class="control-label"></label>
                 <select asp-for="Idexercice" class="form-control" asp-items="ViewBag.Idexercice"></select>
             </div>
-            @if(ViewBag.pdf_Word == "Avertissement")
+            @if (ViewBag.pdf_Word == "Avertissement")
             {
                 <p style="color:red">Le document doit être un pdf ou word!</p>
+            }
+            else if (ViewBag.pdf_Word2 == "Avertissement")
+            {
+                <p style="color:red">Vous devez insérer un document! (pdf ou word)</p>
             }
             <div class="form-group">
                 <label asp-for="Lien" class="control-label"></label>

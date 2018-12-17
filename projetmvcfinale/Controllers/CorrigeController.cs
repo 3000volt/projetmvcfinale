@@ -71,65 +71,68 @@ namespace projetmvcfinale.Controllers
             try
             {
                 bool pfdOuWord = true;
-
-                if (ModelState.IsValid)
+                if (corrigeVM.Lien != null)
                 {
-                    pfdOuWord = false;
-                    //Voir si le document est un pdf ou word
-                    Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
-                    Match match = reg.Match(corrigeVM.Lien.FileName);
-                    if (match.Success)
+                    if (ModelState.IsValid)
                     {
-                        pfdOuWord = true;
-                    }
-
-                    if (pfdOuWord == true)
-                    {
-                        //conversion du ViewModel en corrigé
-                        Corrige corrige = new Corrige()
+                        pfdOuWord = false;
+                        //Voir si le document est un pdf ou word
+                        Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                        Match match = reg.Match(corrigeVM.Lien.FileName);
+                        if (match.Success)
                         {
-                            CorrigeDocNom = corrigeVM.CorrigeDocNom,
-                            Lien = corrigeVM.Lien.FileName,
-                            DateInsertion = DateTime.Now,
-                            Idexercice = corrigeVM.Idexercice
-                        };
-                        //ajoute le corrige
-                        provider.Add(corrige);
-                        await provider.SaveChangesAsync();
-                        //associer
-                        Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
-                        ex.Idcorrige = corrige.Idcorrige;
-                        provider.Exercice.Update(ex);
-                        await provider.SaveChangesAsync();
-                        //Insérer dans la BD le document     
-                        var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Lien);
-                        //Prendre la find du doc(.pdf / .doc / docx)
-                        string format = corrige.Lien.Substring(corrige.Lien.Length - 4);
-                        if (format == "docx")
-                        {
-                            format = ".docx";
-                        }
-                        //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-
-                        //corrige.Lien = chemin;
-                        //provider.Corrige.Update(corrige);
-                        //await provider.SaveChangesAsync();
-
-                        using (var stream = new FileStream(chemin, FileMode.Create))
-                        {
-                            await corrigeVM.Lien.CopyToAsync(stream);
+                            pfdOuWord = true;
                         }
 
-                        //Change le nom du document
-                        System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Idcorrige.ToString() + format));
-                        //ajouter le lien à la base de données
-                        corrige.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", corrige.Idcorrige.ToString() + format);
-                        await provider.SaveChangesAsync();
+                        if (pfdOuWord == true)
+                        {
+                            //conversion du ViewModel en corrigé
+                            Corrige corrige = new Corrige()
+                            {
+                                CorrigeDocNom = corrigeVM.CorrigeDocNom,
+                                Lien = corrigeVM.Lien.FileName,
+                                DateInsertion = DateTime.Now,
+                                Idexercice = corrigeVM.Idexercice
+                            };
+                            //ajoute le corrige
+                            provider.Add(corrige);
+                            await provider.SaveChangesAsync();
+                            //associer
+                            Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
+                            ex.Idcorrige = corrige.Idcorrige;
+                            provider.Exercice.Update(ex);
+                            await provider.SaveChangesAsync();
+                            //Insérer dans la BD le document     
+                            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Lien);
+                            //Prendre la find du doc(.pdf / .doc / docx)
+                            string format = corrige.Lien.Substring(corrige.Lien.Length - 4);
+                            if (format == "docx")
+                            {
+                                format = ".docx";
+                            }
+                            //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
 
-                        return RedirectToAction(nameof(ListeCorrige));
+                            //corrige.Lien = chemin;
+                            //provider.Corrige.Update(corrige);
+                            //await provider.SaveChangesAsync();
+
+                            using (var stream = new FileStream(chemin, FileMode.Create))
+                            {
+                                await corrigeVM.Lien.CopyToAsync(stream);
+                            }
+
+                            //Change le nom du document
+                            System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Idcorrige.ToString() + format));
+                            //ajouter le lien à la base de données
+                            corrige.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", corrige.Idcorrige.ToString() + format);
+                            await provider.SaveChangesAsync();
+
+                            return RedirectToAction(nameof(ListeCorrige));
+                        }
+                        ViewBag.pdf_Word = "Avertissement";
                     }
-                    ViewBag.pdf_Word = "Avertissement";
                 }
+                ViewBag.pdf_Word2 = "Avertissement";
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 return View("AjouterCorrige");
             }
@@ -341,6 +344,6 @@ namespace projetmvcfinale.Controllers
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
 
-        }        
+        }
     }
 }

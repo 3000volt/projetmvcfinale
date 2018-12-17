@@ -4,11 +4,13 @@
     ViewData["Title"] = "ModifierInteractif";
 }
 
-<h2>ModifierInteractif</h2>
+<h2>Modifier un exercice interactif</h2>
 
-<h4>InsertionExercice</h4>
 <hr />
-@for (int i = 0; i < Model.listeLignes.Count; i++)
+
+<p>Malheureusement, nous n'avons pas eu le temps de monter une page offrant de modifier un exercice interactif.</p>
+<p>Désolé de l'inconvénient, vous pouvez supprimer et refaire votre exercice!</p>
+@*@for (int i = 0; i < Model.listeLignes.Count; i++)
 {
     <div class="editrow">
         <div class="edititem">
@@ -17,7 +19,7 @@
             </div>
             <div class="editor-field">
                 @Html.TextBoxFor(m => m.listeLignes[i].NumeroQuestion)
-                @*@Html.ValidationMessageFor(m => m.items[i].propertyOne)*@
+                @Html.ValidationMessageFor(m => m.items[i].propertyOne)
             </div>
         </div>
         <div class="edititem">
@@ -26,7 +28,7 @@
             </div>
             <div class="editor-field">
                 @Html.TextBoxFor(m => m.listeLignes[i].Ligne)
-                @*@Html.ValidationMessageFor(m => m.listeLignes[i].Ligne)*@
+                @Html.ValidationMessageFor(m => m.listeLignes[i].Ligne)
             </div>
         </div>
         <div class="edititem">
@@ -39,9 +41,9 @@
 
             }
             <div class="editor-field">
-                @*@Html.ValidationMessageFor(m => m.listeLignes[i].propertyThree)*@
+                @Html.ValidationMessageFor(m => m.listeLignes[i].propertyThree)
             </div>
         </div>
     </div>
 }
-@*https://stackoverflow.com/questions/12696988/mvc-editing-a-list-of-objects*@
+https://stackoverflow.com/questions/12696988/mvc-editing-a-list-of-objects*@
