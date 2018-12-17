@@ -1,5 +1,4 @@
 ﻿$(function () {
-    alert("test");
     ChagerAjax();
     $("#IdCateg").on('change', function () {
         ChagerAjax();

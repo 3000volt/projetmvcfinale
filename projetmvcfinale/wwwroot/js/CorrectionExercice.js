@@ -1,5 +1,4 @@
 ﻿$(function () {
-    alert("bb");
 })
 
 function SoummettreCorrection() {
@@ -18,7 +17,6 @@ function SoummettreCorrection() {
     $("#Exercice tbody tr").each(function () {
         $(this).find("td p select").each(function () {
             if (correction[compteur] == true) {
-                alert("bon!");
                 $(this).css('backgroundColor', 'green');
             }
             else {
