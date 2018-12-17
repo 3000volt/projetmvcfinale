@@ -57,11 +57,11 @@
                         @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
                     </td>
                     <td>
-                        @if (item.Lien != null && item.TypeExercice == "Normal")
+                        @if (item.Lien != "" && item.TypeExercice == "Normal")
                         {
                             <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
                         }
-                        else if (item.TypeExercice == "Normal" && item.Lien == null)
+                        else if (item.TypeExercice == "Normal" && item.Lien == "")
                         {
                             <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
                         }

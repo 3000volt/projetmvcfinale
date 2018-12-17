@@ -128,8 +128,6 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
-
         }
 
         /// <summary>
@@ -214,60 +212,76 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
-            // try
-            // {
-            bool pfdOuWord = false;
-            //Voir si le document est un pdf ou word
-            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
-            Match match = reg.Match(Lien.FileName);
-            if (match.Success)
+            try
             {
-                pfdOuWord = true;
+                Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exerciceAjouter"));
+                if (Lien != null)
+                {
+                    bool pfdOuWord = false;
+                    //Voir si le document est un pdf ou word
+                    Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                    Match match = reg.Match(Lien.FileName);
+                    if (match.Success)
+                    {
+                        pfdOuWord = true;
+                    }
+                    if (pfdOuWord == true)
+                    {
+                        if (Lien == null || Lien.Length == 0)
+                            return Content("Aucun fichier sélectionné");
+
+                        var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
+                        //ajouter le lien à la base de données
+                        int Idexercice = ex.Idexercice;
+
+                        string format = Lien.FileName.Substring(Lien.FileName.Length - 4);
+                        if (format == "docx")
+                        {
+                            format = ".docx";
+                        }
+                        //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+                        using (var stream = new FileStream(chemin, FileMode.Create))
+                        {
+                            await Lien.CopyToAsync(stream);
+                        }
+                        //Change le nom du document
+                        System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format));
+                        //Relier le nouveau lien a l'exercice
+                        ex.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format);
+                        //Modifier la BD
+                        this.provider.Update(ex);
+                        await provider.SaveChangesAsync();
+                        return RedirectToAction(nameof(ListeExercice));
+                    }
+                    else
+                    {
+                        ViewBag.Nom = ex.NomExercices;
+                        ViewBag.pdf_Word = "Avertissement";
+                        ex.Lien = "";
+                        this.provider.Update(ex);
+                        await provider.SaveChangesAsync();
+                        List<Exercice> liste = this.provider.Exercice.ToList();
+                        return View(nameof(ListeExercice), liste);
+                    }
+                }
+                else
+                {
+                    ex.Lien = "";
+                    this.provider.Update(ex);
+                    await provider.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListeExercice));
+                }
+
+
             }
-
-            Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exerciceAjouter"));
-
-            if (pfdOuWord == true)
+            catch (Exception e)
             {
-                if (Lien == null || Lien.Length == 0)
-                    return Content("Aucun fichier sélectionné");
-
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
-                //ajouter le lien à la base de données
-                int Idexercice = ex.Idexercice;
-
-                string format = Lien.FileName.Substring(Lien.FileName.Length - 4);
-                if (format == "docx")
-                {
-                    format = ".docx";
-                }
-                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-                using (var stream = new FileStream(chemin, FileMode.Create))
-                {
-                    await Lien.CopyToAsync(stream);
-                }
-                //Change le nom du document
-                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format));
-                //Relier le nouveau lien a l'exercice
-                ex.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format);
-                //Modifier la BD
-                this.provider.Update(ex);
-                await provider.SaveChangesAsync();
-                return RedirectToAction(nameof(ListeExercice));
+                return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
-            ViewBag.Nom = ex.NomExercices;
-            ViewBag.pdf_Word = "Avertissement";
-            List<Exercice> liste = this.provider.Exercice.ToList();
-            return View(nameof(ListeExercice), liste);
-            //  }
-            // catch(Exception e)
-            // {
-            //     return View("\\Views\\Shared\\page_erreur.cshtml");
-            //  }
 
         }
 
+        [HttpGet]
         public IActionResult ModifierExercice(int id)
         {
             if (ModelState.IsValid)
@@ -277,13 +291,13 @@ namespace projetmvcfinale.Controllers
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
 
+
                 if (ex == null)
                     return View("\\Views\\Shared\\page_erreur.cshtml");
 
                 //envoyer a la bonne vue selon le type d'exercice
                 if (ex.TypeExercice == "Interactif")
                 {
-                    //TODO !!!
                     InsertionExercice exerciceModifier = new InsertionExercice()
                     {
                         exercice = ex,
@@ -304,7 +318,8 @@ namespace projetmvcfinale.Controllers
                     };
                     //conserver le lien
                     this.HttpContext.Session.SetString("Lien", ex.Lien);
-
+                    this.HttpContext.Session.SetString("exerciceModifier", JsonConvert.SerializeObject(ex));
+                    this.HttpContext.Session.SetString("exerciceVMModifier", JsonConvert.SerializeObject(exercice));
                     ViewBag.Niveau = new SelectList(this.provider.Niveau, "IdDifficulte", "NiveauDifficulte");
                     ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
 
@@ -332,37 +347,103 @@ namespace projetmvcfinale.Controllers
                 ex.IdCateg = exerciceVM.IdCateg;
                 ex.IdDifficulte = exerciceVM.IdDifficulte;
 
-                //vérifier si le lien est null ou non
-                if (exerciceVM.Lien != null)
+                bool changement = true;
+                bool pfdOuWord = false;
+                //Récupréer le lien si aucun lien n'a été indiqué
+                if (exerciceVM.Lien == null)
                 {
-                    ex.Lien = exerciceVM.Lien.FileName;
-
-                    //changer le document associé
-                    if (exerciceVM.Lien != null || exerciceVM.Lien.Length != 0)
+                    changement = false;
+                }
+                if (ModelState.IsValid)
+                {
+                    if (changement == true)
                     {
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Lien"));
-                        string vieuxChemin = path;
-                        //supprimer le vieux document
-                        if (System.IO.File.Exists(vieuxChemin))
+                        //Voir si le document est un pdf ou word
+                        Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                        Match match = reg.Match(exerciceVM.Lien.FileName);
+                        if (match.Success)
                         {
-                            System.IO.File.Delete(vieuxChemin);
-                        }
-                        //nouveau lien 
-                        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exerciceVM.Lien.FileName);
-                        //inserer le nouveau document
-                        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
-                        {
-                            await exerciceVM.Lien.CopyToAsync(stream);
+                            pfdOuWord = true;
                         }
                     }
+
+                    if (pfdOuWord == true || changement == false)
+                    {
+                        //Trouver la note de cours correspondant
+                        //Récupérer le ID en du note de cours
+                        Exercice exerciceSession = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exerciceModifier"));
+                        int id = exerciceSession.Idexercice;
+                        Exercice exercice = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
+                        //Changer les valeurs
+                        exercice.IdCateg = exerciceVM.IdCateg;
+                        exercice.NomExercices = exerciceVM.NomExercices;
+                        exercice.IdDifficulte = exerciceVM.IdDifficulte;
+
+                        //S'il y a eu des modifications dans les liens
+                        if (changement == true)
+                        {
+                            exercice.Lien = exerciceVM.Lien.FileName;
+                            //Supprimer le vieu document
+                            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Lien"));
+
+                            if (System.IO.File.Exists(chemin))
+                            {
+                                System.IO.File.Delete(chemin);
+                            }
+                            //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+                            var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exercice.Lien);
+                            //Prendre la find du doc(.pdf / .doc / docx)
+                            string format = exercice.Lien.Substring(exercice.Lien.Length - 4);
+                            if (format == "docx")
+                            {
+                                format = ".docx";
+                            }
+                            //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+
+                            using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                            {
+                                await exerciceVM.Lien.CopyToAsync(stream);
+                            }
+                            //Change le nom du document
+                            System.IO.File.Move(nouveauChemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exercice.Idexercice.ToString() + format));
+                            //ajouter le lien à la base de données
+                            exercice.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", exercice.Idexercice.ToString() + format);
+                            this.provider.Update(exercice);
+                            await provider.SaveChangesAsync();
+                            return RedirectToAction(nameof(ListeExercice));
+                        }
+
+
+                        ////        //vérifier si le lien est null ou non
+                        ////        if (exerciceVM.Lien != null)
+                        ////{
+                        ////    ex.Lien = exerciceVM.Lien.FileName;
+
+                        ////    //changer le document associé
+                        ////    if (exerciceVM.Lien != null || exerciceVM.Lien.Length != 0)
+                        ////    {
+                        ////        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Lien"));
+                        ////        string vieuxChemin = path;
+                        ////        //supprimer le vieux document
+                        ////        if (System.IO.File.Exists(vieuxChemin))
+                        ////        {
+                        ////            System.IO.File.Delete(vieuxChemin);
+                        ////        }
+                        ////        //nouveau lien 
+                        ////        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exerciceVM.Lien.FileName);
+                        ////        //inserer le nouveau document
+                        ////        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                        ////        {
+                        ////            await exerciceVM.Lien.CopyToAsync(stream);
+                        ////        }
+                    }
+                    ViewBag.pdf_Word = "Avertissement";
                 }
-
-                provider.Exercice.Update(ex);
-                await provider.SaveChangesAsync();
-                return RedirectToAction(nameof(ListeExercice));
-
             }
-            return BadRequest();
+            ViewBag.Niveau = new SelectList(this.provider.Niveau, "IdDifficulte", "NiveauDifficulte");
+            ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
+            ExerciceVM exercieModifier = JsonConvert.DeserializeObject<ExerciceVM>(this.HttpContext.Session.GetString("exerciceVMModifier"));
+            return View("ModifierExercice", exercieModifier);
         }
 
 
