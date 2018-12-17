@@ -78,7 +78,7 @@
                     @if (item.IdDocument != null)
                     {
                         var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
-                        <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
+                        <a class="btn btn-warning testing" style="color:white" href="../Documents/NoteDeCours/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
                     }
                     else
                     {
