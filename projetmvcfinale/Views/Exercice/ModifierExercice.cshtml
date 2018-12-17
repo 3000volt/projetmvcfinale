@@ -31,6 +31,9 @@
                 <select asp-for="IdCateg" class="form-control" asp-items="ViewBag.Categorie"></select>
                 <span asp-validation-for="IdCateg" class="text-danger"></span>
             </div>
+            @if(ViewBag.pdf_Word == "Avertissement"){
+                <p style="color:red">Entrez un document pdf ou word!</p>
+            }
             <div class="form-group">
                 <label asp-for="Lien" class="control-label"></label>
                 <input asp-for="Lien" class="form-control" type="file" />

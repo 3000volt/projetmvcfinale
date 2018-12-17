@@ -56,7 +56,6 @@ namespace projetmvcfinale.Controllers
         public IActionResult AjouterCorrige()
         {
             ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
-
             return View();
         }
         /// <summary>

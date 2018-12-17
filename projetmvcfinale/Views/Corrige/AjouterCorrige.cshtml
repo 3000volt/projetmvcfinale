@@ -15,6 +15,10 @@
                 <input asp-for="CorrigeDocNom" class="form-control" />
                 <span asp-validation-for="CorrigeDocNom" class="text-danger"></span>
             </div>
+            @if(((ViewBag.Idexercice) as SelectList).Count() == 0)
+            {
+                <p style="color:red">Créez des exercices avant d'insérer des corrigés!</p>
+            }
             <div class="form-group">
                 <label asp-for="Idexercice" class="control-label"></label>
                 <select asp-for="Idexercice" class="form-control" asp-items="ViewBag.Idexercice"></select>
