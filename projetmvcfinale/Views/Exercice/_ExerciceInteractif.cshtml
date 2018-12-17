@@ -9,7 +9,7 @@
             <div class="form-group col-sm-3">
                 <label id="lblNumeroQuestion" class="control-label"> Numéro de la question : </label>
                 <input id="inNumeroQuestion" class="form-control" />
-                <input id="btnCreerQuestion" type="button" value="Créer la question" style="margin-top:8px;" onclick="CommencerExercice()" />
+                <input id="btnCreerQuestion" class="btn btn-default" type="button" value="Créer la question" style="margin-top:8px;background-color:#ed7f10;color:white" onclick="CommencerExercice()" />
             </div>
         </div>
 
@@ -19,8 +19,8 @@
                     <label id="lblPhrase" asp-for="Ligne" class="control-label">Début phrase</label>
                     <textarea id="boutLigne" asp-for="Ligne" class="form-control" style="width:700px; height:150px"></textarea>
                     <span asp-validation-for="Ligne" class="text-danger"></span>
-                    <input type="button" value="Insérer un choix de réponse après ce texte" onclick="AfficherTableau()" class="btn btn-default" style="margin-top:8px;" />
-                    <input id="btnFinPhrase" type="button" value="Phrase terminé" onclick="TerminerPhrase()" disabled class="btn btn-default" style="margin-top:8px;" />
+                    <input type="button" value="Insérer un choix de réponse après ce texte" onclick="AfficherTableau()" class="btn btn-success" style="margin-top:8px;" />
+                    <input id="btnFinPhrase" type="button" value="Phrase terminé" onclick="TerminerPhrase()" disabled class="btn btn-danger" style="margin-top:8px;margin-left:5px" />
                 </div>
             </div>
         </div>
@@ -46,18 +46,18 @@
                 </table>
                 <div class="row" style="margin-top:8px;">
                     <div class="col-sm-2">
-                        <input type="button" value="Ajouter un choix" onclick="AjouterColonne()" class="btn btn-default" />
+                        <input type="button" value="Ajouter un choix" onclick="AjouterColonne()" class="btn btn-default" style="background-color:#ed7f10;color:white" />
                     </div>
 
                     <div class="col-sm-3">
-                        <input type="button" value="Annuler le choix de réponse" onclick="AnnulerChoixReponse()" class="btn btn-default" />
+                        <input type="button" value="Annuler le choix de réponse" onclick="AnnulerChoixReponse()" class="btn btn-default" style="background-color:#6C0277;color:white" />
                     </div>
 
-                    <div class="col-sm-2">
-                        <input type="button" value="Indiquer la bonne réponse" onclick="OuvrirBonneReponse()" class="btn btn-default" />
+                    <div class="col-sm-3">
+                        <input type="button" value="Indiquer la bonne réponse" onclick="OuvrirBonneReponse()" class="btn btn-success" />
                     </div>
-                    <div class="col-sm-2">
-                        <input type="button" value="Retirer le dernier choix de réponse" onclick="RetirerDerneirChoix()" class="btn btn-default" />
+                    <div class="col-sm-4">
+                        <input type="button" value="Retirer le dernier choix de réponse" onclick="RetirerDerneirChoix()" class="btn btn-danger"/>
                     </div>
                 </div>
             </div>
@@ -68,8 +68,8 @@
                 <div id="divBonneReponse" hidden>
                     <h5>Veuillez sélectionner la bonne réponse :</h5>
                     <select class="form-control" id="selectChoixReponse"></select>
-                    <input type="button" value="Valider la bonne réponse" onclick="ChoixReponse()" class="btn btn-default" />
-                    <input type="button" value="Retour aux choix de réponse" onclick="RetourChoix()" class="btn btn-default" />
+                    <input type="button" value="Valider la bonne réponse" onclick="ChoixReponse()" class="btn btn-success" />
+                    <input type="button" value="Retour aux choix de réponse" onclick="RetourChoix()" class="btn btn-default" style="background-color:#6C0277;color:white"  />
                 </div>
             </div>
         </div>
@@ -77,9 +77,9 @@
         <div id="divFinPhrase" hidden class="row" style="margin-top:8px;">
             <div class="col-sm-7">
                 <div>
-                    <input type="button" value="Continuer la phrase" onclick="ContinuerPhrase()" class="btn btn-default" />
-                    <input type="button" value="Arrêter la pharse" onclick="FinPhrase()" class="btn btn-default" />
-                    <input type="button" value="Changer la bonne reponse" onclick="ChangerChoix()" class="btn btn-default" />
+                    <input type="button" value="Continuer la phrase" onclick="ContinuerPhrase()" class="btn btn-default" style="background-color:#ed7f10;color:white"  />
+                    <input type="button" value="Arrêter la pharse" onclick="FinPhrase()" class="btn btn-default" style="background-color:#6C0277;color:white"/>
+                    <input type="button" value="Changer la bonne reponse" onclick="ChangerChoix()" class="btn btn-success" />
                 </div>
             </div>
         </div>
@@ -95,10 +95,10 @@
 
         <div class="row">
             <div class="col-sm-2">
-                <input id="btnExerciceTermine" type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" disabled class="btn btn-default" />
-                <input id="btnSupprimerLigne" type="button" value="Supprimer une ligne" onclick="SupprimerLigne()" disabled class="btn btn-default" />
+                <input id="btnExerciceTermine" type="button" value="Terminer l'exercice" onclick="EnvoyerExercice()" disabled class="btn btn-success" />
+                <input id="btnSupprimerLigne" type="button" value="Supprimer une ligne" onclick="SupprimerLigne()" disabled class="btn btn-danger" />
                 <select class="form-control" id="selectLigneSupprimer" hidden></select>
-                <input id="btnConfirmerSupprimer" type="button" value="Confirmer" onclick="ConfrimerSupprimerLigne()" hidden class="btn btn-default" />
+                <input id="btnConfirmerSupprimer" type="button" value="Confirmer" onclick="ConfrimerSupprimerLigne()" hidden class="btn btn-danger" />
             </div>
         </div>
     </form>

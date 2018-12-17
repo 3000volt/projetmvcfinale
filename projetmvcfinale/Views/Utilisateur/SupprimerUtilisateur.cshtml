@@ -49,9 +49,8 @@
         </dd>
     </dl>
     
-    <form asp-action="SupprimerUtilisateurpost">
-        <input type="hidden" asp-for="AdresseCourriel" />
-        <input type="submit" value="Supprimer l'utilisateur" asp-route-email="@Model.AdresseCourriel" class="btn btn-default" /> |
+    <form asp-action="SupprimerUtilisateurpost" asp-route-email="@Model.AdresseCourriel">
+        <input type="submit" value="Supprimer l'utilisateur"  class="btn btn-default" /> |
         <a class="btn btn-info" asp-action="ListeUtilisateur">Retournez à la liste</a>
     </form>
 </div>

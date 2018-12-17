@@ -243,7 +243,7 @@ namespace projetmvcfinale.Controllers
             
         }
 
-        public async Task<IActionResult> ModifierExercice(int id)
+        public IActionResult ModifierExercice(int id)
         {
             if(ModelState.IsValid)
             {
