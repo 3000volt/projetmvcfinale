@@ -59,11 +59,30 @@
                     <td>
                         @if (item.Lien != "" && item.TypeExercice == "Normal")
                         {
-                            <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
+                            var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
+                            <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher l'exercice</a>
+                            @if (item.IdDocument!=null)
+                            {
+                                <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-warning testing" style="color:white" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour<span>Cour Pdf non associer</span></a>
+                            }
+
                         }
                         else if (item.TypeExercice == "Normal" && item.Lien == "")
                         {
-                            <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
+                                var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
+                                <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher l'exercice<span>Lien manquant</span></a>
+                                @if (item.IdDocument!=null)
+                                {
+                                    <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-warning testing" style="color:white" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour<span>Cour Pdf non associer</span></a>
+                                }
                         }
                         else if (item.ExercicesInt != null && item.TypeExercice == "Interactif")
                         {
@@ -76,7 +95,7 @@
                         |
                         <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierExercice" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
                         <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
-                        
+
                         @if (item.Idcorrige != null)
                         {
                             var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
