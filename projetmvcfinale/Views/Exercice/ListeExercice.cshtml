@@ -88,9 +88,9 @@
                     |
                     @if (User.IsInRole("Admin"))
                     {
-                        
+
                         <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierExercice" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a>
-                        <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> 
+                        <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a>
                         @if (item.Idcorrige != null)
                         {
                             var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
@@ -99,6 +99,18 @@
                         else
                         {
                             <a class="btn btn-info" style="background-color:#3A9D23" asp-action="AjouterCorrige" asp-controller="Corrige" asp-route-id="@item.Idexercice"><i class="fas fa-link"></i> Creer/Associer un corrigé</a>
+                        }
+                    }
+                    else
+                    {                       
+                        @if (item.Idcorrige != null)
+                        {
+                            var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
+                            <a class="btn btn-info" style="background-color:#3A9D23" href="../Documents/Corrige/@list.ToList().Find(x=>x.Idexercice==item.Idexercice).Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher le corrigé associé</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info" style="background-color:#3A9D23"><i class="fas fa-link"></i> Aucun exercice associé</a>
                         }
                     }
 
