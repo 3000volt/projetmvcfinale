@@ -68,43 +68,51 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> AjouterCorrige([Bind("CorrigeDocNom,Lien,Idexercice")] CorrigeViewModel corrigeVM)
         {
-            if (ModelState.IsValid)
+            try
             {
-                //conversion du ViewModel en corrigé
-                Corrige corrige = new Corrige()
+                if (ModelState.IsValid)
                 {
-                    CorrigeDocNom = corrigeVM.CorrigeDocNom,
-                    Lien = corrigeVM.Lien.FileName,
-                    DateInsertion = DateTime.Now,
-                    Idexercice = corrigeVM.Idexercice
-                };
-                //ajoute le corrige
-                provider.Add(corrige);
-                await provider.SaveChangesAsync();
-                //associer
-                Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
-                ex.Idcorrige = corrige.Idcorrige;
-                provider.Exercice.Update(ex);
-                await provider.SaveChangesAsync();
-                
-                //Insérer dans la BD le document
-                if (corrige == null || corrige.Lien.Length == 0)
-                    return Content("Aucun fichier sélectionné");
+                    //conversion du ViewModel en corrigé
+                    Corrige corrige = new Corrige()
+                    {
+                        CorrigeDocNom = corrigeVM.CorrigeDocNom,
+                        Lien = corrigeVM.Lien.FileName,
+                        DateInsertion = DateTime.Now,
+                        Idexercice = corrigeVM.Idexercice
+                    };
+                    //ajoute le corrige
+                    provider.Add(corrige);
+                    await provider.SaveChangesAsync();
+                    //associer
+                    Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
+                    ex.Idcorrige = corrige.Idcorrige;
+                    provider.Exercice.Update(ex);
+                    await provider.SaveChangesAsync();
 
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Lien);
+                    //Insérer dans la BD le document
+                    if (corrige == null || corrige.Lien.Length == 0)
+                        return Content("Aucun fichier sélectionné");
 
-                corrige.Lien = chemin;
-                provider.Corrige.Update(corrige);
-                await provider.SaveChangesAsync();
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Lien);
 
-                using (var stream = new FileStream(chemin, FileMode.Create))
-                {
-                    await corrigeVM.Lien.CopyToAsync(stream);
+                    corrige.Lien = chemin;
+                    provider.Corrige.Update(corrige);
+                    await provider.SaveChangesAsync();
+
+                    using (var stream = new FileStream(chemin, FileMode.Create))
+                    {
+                        await corrigeVM.Lien.CopyToAsync(stream);
+                    }
+
+                    return RedirectToAction(nameof(ListeCorrige));
                 }
-
-                return RedirectToAction(nameof(ListeCorrige));
+                return View(corrigeVM);
             }
-            return RedirectToAction(nameof(ListeCorrige));
+            catch(Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
         /// <summary>
         /// Afficher la vue pour téléverser un corrigé
@@ -163,30 +171,34 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public async Task<ActionResult> ModifierCorrige(int id)
         {
-            if(ModelState.IsValid)
-            {
-                if (id.ToString() == null)
-                    return View("\\Views\\Shared\\page_erreur.cshtml");
+            try
+           {               
+                    if (id.ToString() == null)
+                        return View("\\Views\\Shared\\page_erreur.cshtml");
 
-                Corrige cr = await provider.Corrige.FindAsync(id);
+                    Corrige cr = await provider.Corrige.FindAsync(id);
 
-                if (cr == null)
-                    return View("\\Views\\Shared\\page_erreur.cshtml");
+                    if (cr == null)
+                        return View("\\Views\\Shared\\page_erreur.cshtml");
 
-                //transfer en ViewModel
-                CorrigeViewModel corrige = new CorrigeViewModel()
-                {
-                    idcorrige = cr.Idcorrige,
-                    CorrigeDocNom = cr.CorrigeDocNom,
-                };
-                //lien du document
-                this.HttpContext.Session.SetString("Lien", cr.Lien);
-                //liste d'exercice existant
-                ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
-               
-              return View(corrige);
+                    //transfer en ViewModel
+                    CorrigeViewModel corrige = new CorrigeViewModel()
+                    {
+                        idcorrige = cr.Idcorrige,
+                        CorrigeDocNom = cr.CorrigeDocNom,
+                    };
+                    //lien du document
+                    this.HttpContext.Session.SetString("Lien", cr.Lien);
+                    //liste d'exercice existant
+                    ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+
+                    return View(corrige);               
             }
-            return BadRequest("Impossible d'afficher ce corrigé.");           
+            catch(Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+                 
         }
         /// <summary>
         /// Modifier un corrigé existant
@@ -236,7 +248,7 @@ namespace projetmvcfinale.Controllers
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeCorrige));
             }
-            return BadRequest("Impossible de mettre a jour ce corrigé.");
+            return View(corrigeVM);
         }
         /// <summary>
         /// Afficher la vue avant de supprimer un corrige
@@ -246,10 +258,7 @@ namespace projetmvcfinale.Controllers
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> SupprimerCorrige(int id)
-        {
-
-            if(ModelState.IsValid)
-            {
+        {          
               if (id.ToString() == null)
                 return NotFound();
 
@@ -260,10 +269,7 @@ namespace projetmvcfinale.Controllers
                 if (cr == null)
                 return NotFound();
   
-              return View(cr);
-            }
-            return BadRequest("Erreur");
-            
+              return View(cr); 
         }
 
         /// <summary>

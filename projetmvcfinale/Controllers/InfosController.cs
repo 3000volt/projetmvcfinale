@@ -42,24 +42,32 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult GererInfos()
         {
-            //Les listes necessaires
-            ViewBag.ListCategorie = this.provider.Categorie.ToList();
-            ViewBag.Categorie = new Categorie();
-            List<SousCategorieViewModel> listeSousCat = new List<SousCategorieViewModel>();
-            foreach (SousCategorie s in this.provider.SousCategorie.ToList())
+            try
             {
-                listeSousCat.Add(new SousCategorieViewModel()
+                //Les listes necessaires
+                ViewBag.ListCategorie = this.provider.Categorie.ToList();
+                ViewBag.Categorie = new Categorie();
+                List<SousCategorieViewModel> listeSousCat = new List<SousCategorieViewModel>();
+                foreach (SousCategorie s in this.provider.SousCategorie.ToList())
                 {
-                    IdSousCategorie = s.IdSousCategorie,
-                    NomSousCategorie = s.NomSousCategorie,
-                    NomCategorie = this.provider.Categorie.ToList().Find(x => x.IdCateg == s.IdCateg).NomCategorie
-                });
+                    listeSousCat.Add(new SousCategorieViewModel()
+                    {
+                        IdSousCategorie = s.IdSousCategorie,
+                        NomSousCategorie = s.NomSousCategorie,
+                        NomCategorie = this.provider.Categorie.ToList().Find(x => x.IdCateg == s.IdCateg).NomCategorie
+                    });
+                }
+                ViewBag.ListSousCategorie = listeSousCat;
+                ViewBag.ListeNiveau = this.provider.Niveau.ToList();
+                ViewBag.Difficulte = this.provider.SousCategorie.ToList();
+                ViewBag.SelectCategorie = this.provider.Categorie.ToList();
+                return View();
             }
-            ViewBag.ListSousCategorie = listeSousCat;
-            ViewBag.ListeNiveau = this.provider.Niveau.ToList();
-            ViewBag.Difficulte = this.provider.SousCategorie.ToList();
-            ViewBag.SelectCategorie = this.provider.Categorie.ToList();
-            return View();
+            catch (Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
 
         [HttpPost]
