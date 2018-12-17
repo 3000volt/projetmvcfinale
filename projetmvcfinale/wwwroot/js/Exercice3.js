@@ -157,6 +157,7 @@ function ConfrimerSupprimerLigne() {
 
 }
 
+//Supprimer la ligne du coté serveur
 function SupprimerLigneServeur(i) {
     alert(i);
     var url = "/Exercice/SupprimerLigne";
@@ -171,7 +172,7 @@ function SupprimerLigneServeur(i) {
     });
 }
 
-
+//Retirer la liste des numéros de l'exercice
 function RetirerListeNumero() {
     var liste = new Array();
     var url = "/Exercice/ListeNumero";
@@ -201,10 +202,8 @@ function ChangerChoix() {
 function RetourChoix() {
     //Cacher la selection de bonne reponse
     $("#divBonneReponse").attr("hidden", true);
-    //Remmetre celui de creation des choix disponible
+    //Remmettre celui de creation des choix disponible
     $("#divTableau *").removeAttr("disabled");
-    //Retirer la pharse du coté serveur si necessaire
-    //TODO
 }
 
 function AnnulerChoixReponse() {
@@ -227,7 +226,6 @@ function AnnulerChoixReponse() {
 
 function ContinuerPhrase() {
     //Indiquer a la session que le prochain bout de phrase doit etre coller au vieux
-    //InsererPartie(numero, boutPhrase);
     //Mettre le textbox valide
     var bonneReponse = $("#selectChoixReponse option:selected").val();
     $("#divActiverCreation *").not("#btnFinPhrase").removeAttr("disabled");
@@ -255,7 +253,6 @@ function ContinuerPhrase() {
     //$("#txtExercice").append($("#boutLigne").val());
     var phrase = $("#txtExercice").val();
     $("#txtExercice").val(phrase + $("#boutLigne").val() + "(" + bonneReponse + ")");
-
     //Le vider
     $("#boutLigne").val("");
 }
@@ -274,9 +271,6 @@ function ChoixReponse() {
     var boutPhrase = $("#boutLigne").val();
     //la réponse
     var choix = $("#selectChoixReponse").find(":selected").text();
-    //$("#txtExercice").append(boutPhrase + "(" + choix + ")");
-    //var textInitiale = $("#txtExercice").val();
-    //$("#txtExercice").val(boutPhrase);
     //Montrer la textarea
     $("#divPhrase").removeAttr('hidden');
     //Envoyer les donnees vers controlleur
@@ -339,7 +333,6 @@ function FinPhrase() {
     //Terminer dans le controlleur
     finPhraseAjax();
     //Mettre le text dans le textarea
-    //$("#txtExercice").append($("#boutLigne").val());
     var textInitiale = $("#txtExercice").val();
     $("#txtExercice").val(textInitiale + $("#boutLigne").val() + "(" + bonneReponse + ")");
     //Vider son contenu
@@ -350,6 +343,7 @@ function FinPhrase() {
     $("#btnSupprimerLigne").removeAttr("disabled");
 }
 
+//Indiquer que la pharse est terminé au serveur
 function finPhraseAjax() {
     var url = "/Exercice/TerminerPhrase";
     $.ajax({
@@ -361,7 +355,6 @@ function finPhraseAjax() {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (result) {
-            // alert(status);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
@@ -378,13 +371,12 @@ function RetirerPhraseAjax() {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (result) {
-            // alert(status);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
 }
 
-
+//Indiquer que la pharse est temrinée
 function TerminerPhrase() {
     //Envoyer ce qu'il y a dans la phrase (si aucun choix n'a été envoyé)
     var numero = $("#inNumeroQuestion").val();
@@ -428,6 +420,7 @@ function TerminerPhrase() {
     $("#btnFinPhrase").attr("disabled", true);
 }
 
+//Indiquer que l'exercice est temriné
 function EnvoyerExercice() {
     compteur = 0;
     var url = "/Exercice/EnvoyerExercice";
@@ -440,7 +433,6 @@ function EnvoyerExercice() {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (data) {
-            //alert(status);
             window.location.href = data;
             //Merci https://stackoverflow.com/questions/20011282/redirecttoaction-not-working-after-successful-jquery-ajax-post
         },
@@ -449,6 +441,7 @@ function EnvoyerExercice() {
     return false;
 }
 
+//Envoyer les choix de réponse
 function SauvagardeEnvoyerChoix(tableau_donner) {
 
     var url = "/Exercice/AjoutChoixReponse";
@@ -463,14 +456,13 @@ function SauvagardeEnvoyerChoix(tableau_donner) {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (result) {
-            //alert(status);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
     return false;
 }
 
-
+//Creer la nouvelle ligne
 function CreationLigne(i, y, z) {
 
     var url = "/Exercice/CreationLigne";
@@ -496,6 +488,7 @@ function CreationLigne(i, y, z) {
     return false;
 }
 
+//Termienr la ligne
 function TerminerLigne(i, y) {
 
     var url = "/Exercice/TerminerLigne";
@@ -539,8 +532,8 @@ function VerifierNumero(i) {
     return bool;
 }//https://stackoverflow.com/questions/23078650/ajax-return-true-false-i-have-implemented-a-callback
 
+//Insérer la partie de pharse en cours au serveur
 function InsererPartie(i, y) {
-
     var url = "/Exercice/InsererPartie";
     var data = {
         NumeroQuestion: i,
@@ -556,15 +549,14 @@ function InsererPartie(i, y) {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (result) {
-            // alert(status);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
     return false;
 }
 
-function AnnulerASuivre() {
 
+function AnnulerASuivre() {
     var url = "/Exercice/AnnulerUneSuite";
     $.ajax({
         type: "POST",
@@ -575,7 +567,6 @@ function AnnulerASuivre() {
             request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
         },
         success: function (result) {
-            // alert(status);
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });

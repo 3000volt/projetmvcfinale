@@ -26,7 +26,6 @@ namespace projetmvcfinale.Controllers
             this.provider = new ProjetFrancaisContext(this.Configuration.GetConnectionString("DefaultConnection"));
             this.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             this.sqlConnection = new SqlConnection(this.ConnectionString);
-            //ViewBag.Categories = this.provider.Categorie.ToList();
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)

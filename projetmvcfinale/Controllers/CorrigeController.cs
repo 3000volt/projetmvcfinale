@@ -46,6 +46,7 @@ namespace projetmvcfinale.Controllers
         }
         public IActionResult ListeCorrige(string search)
         {
+            //Retourne la liste des corrigés
             return View(this.provider.Corrige.Where(x => x.CorrigeDocNom.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
@@ -56,7 +57,9 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public IActionResult AjouterCorrige()
         {
+            //Retourne le selectList de tout les exercices
             ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
+            //Retourne la vue pour ajouter un corrigé
             return View();
         }
         /// <summary>
@@ -70,21 +73,24 @@ namespace projetmvcfinale.Controllers
         {
             try
             {
-                bool pfdOuWord = true;
+                //Boolean regardant s'il s'agit d'un exercice pdf ou word
+                bool pdfOuWord = true;
+                //Vérifie si un lien a été ajouté
                 if (corrigeVM.Lien != null)
                 {
                     if (ModelState.IsValid)
                     {
-                        pfdOuWord = false;
+                        pdfOuWord = false;
                         //Voir si le document est un pdf ou word
                         Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
                         Match match = reg.Match(corrigeVM.Lien.FileName);
                         if (match.Success)
                         {
-                            pfdOuWord = true;
+                            //Laisse savoir qu'il s'agit d'un pdf ou word
+                            pdfOuWord = true;
                         }
-
-                        if (pfdOuWord == true)
+                        //s'il s'agit d'un pdf ou word
+                        if (pdfOuWord == true)
                         {
                             //conversion du ViewModel en corrigé
                             Corrige corrige = new Corrige()
@@ -111,16 +117,10 @@ namespace projetmvcfinale.Controllers
                                 format = ".docx";
                             }
                             //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-
-                            //corrige.Lien = chemin;
-                            //provider.Corrige.Update(corrige);
-                            //await provider.SaveChangesAsync();
-
                             using (var stream = new FileStream(chemin, FileMode.Create))
                             {
                                 await corrigeVM.Lien.CopyToAsync(stream);
                             }
-
                             //Change le nom du document
                             System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", corrige.Idcorrige.ToString() + format));
                             //ajouter le lien à la base de données
@@ -129,9 +129,11 @@ namespace projetmvcfinale.Controllers
 
                             return RedirectToAction(nameof(ListeCorrige));
                         }
+                        //S'il ne s'agit aps de pdf ou word, retourner la view d'ajout
                         ViewBag.pdf_Word = "Avertissement";
                     }
                 }
+                //Si aucun lien n'a été rajouté, retourner la vue d'ajout et ne pas accepter la requete
                 ViewBag.pdf_Word2 = "Avertissement";
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 return View("AjouterCorrige");
@@ -142,55 +144,6 @@ namespace projetmvcfinale.Controllers
             }
         }
 
-
-        /// <summary>
-        /// Afficher la vue pour téléverser un corrigé
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult UploadCorrige()
-        {
-            ViewBag.IdCorrige = new SelectList(this.provider.Corrige, "IdCorrige", "NomCorrige");
-            return View();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Lien"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> UploadCorrige(IFormFile Lien)
-        {
-            try
-            {
-                Corrige corrige = JsonConvert.DeserializeObject<Corrige>(this.HttpContext.Session.GetString("corrige"));
-
-                //var idCor = this.provider.Corrige.FindAsync(corrige.Idcorrige);
-
-                if (Lien == null || Lien.Length == 0)
-                    return Content("Aucun fichier sélectionné");
-
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Corrige", Lien.FileName);
-
-                corrige.Lien = chemin;
-                provider.Corrige.Update(corrige);
-                await provider.SaveChangesAsync();
-
-                using (var stream = new FileStream(chemin, FileMode.Create))
-                {
-                    await Lien.CopyToAsync(stream);
-                }
-
-                return Ok("Fichier téléversé avec succès!");
-            }
-            catch (Exception e)
-            {
-                return View("\\Views\\Shared\\page_erreur.cshtml");
-            }
-
-        }
         /// <summary>
         /// Afficher la vue pour modifier un corrige
         /// </summary>
@@ -202,14 +155,14 @@ namespace projetmvcfinale.Controllers
         {
             try
             {
+                //Si le id n est pas valide
                 if (id.ToString() == null)
                     return View("\\Views\\Shared\\page_erreur.cshtml");
-
+                //Trouver le corrigé associé
                 Corrige cr = await provider.Corrige.FindAsync(id);
-
+                //Si le corrigé n'existe pas
                 if (cr == null)
                     return View("\\Views\\Shared\\page_erreur.cshtml");
-
                 //transfer en ViewModel
                 CorrigeViewModel corrige = new CorrigeViewModel()
                 {
@@ -240,11 +193,12 @@ namespace projetmvcfinale.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Si le corrigeVM n'est pas valide
                 if (corrigeVM == null)
                     return NotFound();
-
+                //Trouver le corrigé associé
                 Corrige cr = await provider.Corrige.FindAsync(corrigeVM.idcorrige);
-
+                //Mettre a jour ses variables envoyés
                 cr.CorrigeDocNom = corrigeVM.CorrigeDocNom;
                 cr.Idexercice = corrigeVM.Idexercice;
 
@@ -272,7 +226,7 @@ namespace projetmvcfinale.Controllers
                         }
                     }
                 }
-
+                //Mettre a jour et renvoyer vers la liste des corrigés
                 provider.Corrige.Update(cr);
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeCorrige));
@@ -288,6 +242,7 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public async Task<IActionResult> SupprimerCorrige(int id)
         {
+            //si le id n'ets pa valide
             if (id.ToString() == null)
                 return NotFound();
 

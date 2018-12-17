@@ -1,16 +1,13 @@
-﻿$(function () {
+﻿$(function () {    
     ChagerAjax();
+    //Remplir le selectlist au chagement de l'autre selectList
     $("#IdCateg").on('change', function () {
         ChagerAjax();
     });
-
     $("#CategorieAssociee").val($("#IdCateg option:selected").text());
     $("#IdCateg").on('change', function () {
         $("#CategorieAssociee").val($("#IdCateg option:selected").text());
     });
-
-    //$("#CategorieAssociee").val($("#IdCateg option:selected").text());
-
 });
 
 //Charger le selectlist du groupe
@@ -35,7 +32,7 @@ function ChagerAjax() {
     });
 }
 
-
+//Créer une sous-catégorie
 function CreerSousCategorieAjax() {
     var url = "/NoteDeCours/CreerSousCategorie";
     var data = {
@@ -48,9 +45,6 @@ function CreerSousCategorieAjax() {
         url: url,
         datatype: "text/plain",
         contentType: "application/json; charset=utf-8",
-        // beforeSend: function (request) {
-        //    request.setRequestHeader("RequestVerificationToken", $("input[name='__RequestVerificationToken']").val());
-        // },
         success: function (result) {
             $("#ModalAjouterSousCategorie").modal('hide');
             alert("Sous-catégorie ajouté avec succès!");
@@ -60,9 +54,9 @@ function CreerSousCategorieAjax() {
         },
         error: function (xhr, status) { alert("erreur:" + status); }
     });
-    //return false;
 }
 
+//Cacher le modal
 function AnnulerAjouterSousCategorie() {
     $("#ModalAjouterSousCategorie").modal('hide');
 }

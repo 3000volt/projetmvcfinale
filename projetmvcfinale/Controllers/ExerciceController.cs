@@ -52,11 +52,13 @@ namespace projetmvcfinale.Controllers
         {
             try
             {
+                //Tout les viewag necessaire pour els selectList de la view
                 ViewBag.listecorriger = this.provider.Corrige.ToList();
                 ViewBag.listedocument = this.provider.NoteDeCours.ToList();
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours.ToList().FindAll(x => x.Lien != ""), "IdDocument", "NomNote");
                 ViewBag.model = new AssocierDoc();
+                //Retour de la view
                 return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
             }
             catch (Exception e)
@@ -72,13 +74,16 @@ namespace projetmvcfinale.Controllers
             {
                 //Chercher la liste en consequence de la demande
                 List<Exercice> liste = new List<Exercice>();
+                //Les viewBags nécessaire pour la vue
                 ViewBag.listecorriger = this.provider.Corrige.ToList();
+                ViewBag.listedocument = this.provider.NoteDeCours.ToList();
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
                 ViewBag.model = new AssocierDoc();
                 ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours.ToList().FindAll(x => x.Lien != ""), "IdDocument", "NomNote");
                 int categorie = this.provider.Categorie.ToList().Find(x => x.NomCategorie == categ).IdCateg;
                 int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
+                //Trouver le type d'exerccie et ajuster la liste en conséquent
                 if (interactif == false)
                 {
                     liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.TypeExercice == "Normal");
@@ -87,13 +92,13 @@ namespace projetmvcfinale.Controllers
                 {
                     liste = this.provider.Exercice.ToList().FindAll(x => x.IdCateg == categorie && x.IdDifficulte == difficulte && x.TypeExercice == "Interactif");
                 }
+                //Retourner la vue
                 return View("ListeExercice", liste);
             }
             catch (Exception e)
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
         }
 
         /// <summary>
@@ -109,10 +114,8 @@ namespace projetmvcfinale.Controllers
             try
             {
                 this.provider.Niveau.ToList();
-
                 this.provider.Categorie.ToList();
-
-                //Options de type d,exercice
+                //Options de type d'exercice
                 List<string> listeTypes = new List<string>();
                 listeTypes.Add("Normal");
                 listeTypes.Add("Interactif");
@@ -123,7 +126,7 @@ namespace projetmvcfinale.Controllers
                                       {
                                           Text = x.ToString()
                                       });
-
+                //Retourner la vue
                 return View();
             }
             catch (Exception e)
@@ -170,11 +173,10 @@ namespace projetmvcfinale.Controllers
                     InsertionExercice insertion = new InsertionExercice()
                     {
                         exercice = exercice,
-                        //listeLignes = new SortedList<int, LignePerso>()
                         listeLignes = new List<LignePerso>()
                     };
                     this.HttpContext.Session.SetString("Exercice", JsonConvert.SerializeObject(insertion));
-                    //Pour si une phras ese continue
+                    //Pour si une phrase continue
                     this.HttpContext.Session.SetString("PhraseASuivre", "Innactif");
 
                     //Ajouter au contexte
@@ -190,9 +192,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
         }
-
 
         /// <summary>
         /// Afficher la vue pour téléverser un fichier d'exercice
@@ -257,6 +257,7 @@ namespace projetmvcfinale.Controllers
                     }
                     else
                     {
+                        //Retour de la meem page en cas d'echec
                         ViewBag.Nom = ex.NomExercices;
                         ViewBag.pdf_Word = "Avertissement";
                         ex.Lien = "";
@@ -268,13 +269,12 @@ namespace projetmvcfinale.Controllers
                 }
                 else
                 {
+                    //Sauvegarder et retour a la liste
                     ex.Lien = "";
                     this.provider.Update(ex);
                     await provider.SaveChangesAsync();
                     return RedirectToAction(nameof(ListeExercice));
                 }
-
-
             }
             catch (Exception e)
             {
@@ -414,34 +414,11 @@ namespace projetmvcfinale.Controllers
                             await provider.SaveChangesAsync();
                             return RedirectToAction(nameof(ListeExercice));
                         }
-
-
-                        ////        //vérifier si le lien est null ou non
-                        ////        if (exerciceVM.Lien != null)
-                        ////{
-                        ////    ex.Lien = exerciceVM.Lien.FileName;
-
-                        ////    //changer le document associé
-                        ////    if (exerciceVM.Lien != null || exerciceVM.Lien.Length != 0)
-                        ////    {
-                        ////        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Lien"));
-                        ////        string vieuxChemin = path;
-                        ////        //supprimer le vieux document
-                        ////        if (System.IO.File.Exists(vieuxChemin))
-                        ////        {
-                        ////            System.IO.File.Delete(vieuxChemin);
-                        ////        }
-                        ////        //nouveau lien 
-                        ////        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exerciceVM.Lien.FileName);
-                        ////        //inserer le nouveau document
-                        ////        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
-                        ////        {
-                        ////            await exerciceVM.Lien.CopyToAsync(stream);
-                        ////        }
                     }
                     ViewBag.pdf_Word = "Avertissement";
                 }
             }
+            //Retour de la page en cas d'echec
             ViewBag.Niveau = new SelectList(this.provider.Niveau, "IdDifficulte", "NiveauDifficulte");
             ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
             ExerciceVM exercieModifier = JsonConvert.DeserializeObject<ExerciceVM>(this.HttpContext.Session.GetString("exerciceVMModifier"));
@@ -605,8 +582,6 @@ namespace projetmvcfinale.Controllers
                     //Ajouter le reste de la ligne a la phrase
                     lignePerso.Ligne = lignePerso.Ligne + ligne.Ligne;
                 }
-                //this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
-                //Ajouter cette ligne a la session exercice
                 //Ajouter cette ligne a la liste de la session de l'exercice en cours
                 InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
                 //exercice.listeLignes.Add(ligne.NumeroQuestion, ligne);
@@ -640,7 +615,6 @@ namespace projetmvcfinale.Controllers
                         ChoixDeReponse1 = choixTest.ChoixDeReponse1,
                         Response = choixTest.Response,
                         NoOrdre = choixTest.NoOrdre,
-                        //IdLigne = this.provider.LigneTestInteractif.ToList().Find(x => x.Idexercice == insertion.exercice.Idexercice && x.NumeroQuestion == lignePerso.NumeroQuestion).IdLigne
                     });
                 }
                 //Associer la  liste de choix de reponse a la liste en cours
@@ -704,8 +678,6 @@ namespace projetmvcfinale.Controllers
                 //ajouter le lien à la base de données
                 if (ExercicesAuComplet.ExercicesInt.Contains("'"))
                 {
-                    //int index = ExercicesAuComplet.ExercicesInt.IndexOf("'");
-                    //ExercicesAuComplet.ExercicesInt = ExercicesAuComplet.ExercicesInt.Insert(index, "'");
                     ExercicesAuComplet.ExercicesInt = ExercicesAuComplet.ExercicesInt.Replace("'", "''");
                 }
                 string query = @"UPDATE Exercice SET ExercicesInt ='" + ExercicesAuComplet.ExercicesInt + "' WHERE NomExercices = '" + ExercicesAuComplet.NomExercices + "'";
@@ -723,7 +695,6 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
         }
 
         [Authorize(Roles = "Admin")]
@@ -842,7 +813,7 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public List<int> ListeNumero()
         {
-
+            //Retirer la liste des numeros de l'exercice
             InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
             List<int> listeNumero = new List<int>();
 
@@ -873,9 +844,7 @@ namespace projetmvcfinale.Controllers
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-
         }
-
 
         /// <summary>
         /// Associer un document a l'exercice
@@ -903,8 +872,6 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-
         }
-
     }
 }

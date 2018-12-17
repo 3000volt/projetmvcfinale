@@ -93,6 +93,7 @@ namespace projetmvcfinale.Controllers
                     {
                         //Transferer en note
                         NoteDeCours note;
+                        //Voir s'il y a un lien ou non qui a été envoyé
                         if (noteVM.Lien != null)
                         {
                             note = new NoteDeCours()
@@ -119,9 +120,6 @@ namespace projetmvcfinale.Controllers
 
                             };
                         }
-
-                        //note.DateInsertion = DateTime.Today;
-                        //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
                         provider.Add(note);
                         await provider.SaveChangesAsync();
                         //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
@@ -146,13 +144,12 @@ namespace projetmvcfinale.Controllers
                             note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
                             await provider.SaveChangesAsync();
                         }
-
-
                         return RedirectToAction(nameof(ListeNoteDeCours));
                     }
                     ViewBag.pdf_Word = "Avertissement";
 
                 }
+                //Retour de la page en cas d'erreur
                 ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
                 return View(noteVM);
             }
@@ -160,7 +157,6 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
         }
 
         /// <summary>
@@ -180,13 +176,12 @@ namespace projetmvcfinale.Controllers
                 NotesViewModel noteVM = new NotesViewModel()
                 {
                     NomNote = noteDeCours.NomNote,
-                    //Lien = noteDeCours.Lien,
                     IdCateg = noteDeCours.IdCateg,
                     SousCategorie = this.provider.SousCategorie.ToList().Find(x => x.IdSousCategorie == noteDeCours.IdSousCategorie).NomSousCategorie
                 };
                 //Insérer le ID dans une session
-                this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
-                                                                             //Le lien actuel dans une session egalement
+                this.HttpContext.Session.SetString("IdNotes", id.ToString());
+                //Le lien actuel dans une session egalement
                 this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
                 this.HttpContext.Session.SetString("Lien", JsonConvert.SerializeObject(noteDeCours.Lien));
                 //Viewbag contenant le lien du document
@@ -200,7 +195,6 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
         }
 
         [Authorize(Roles = "Admin")]
@@ -288,7 +282,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
 
         /// <summary>
@@ -318,14 +312,14 @@ namespace projetmvcfinale.Controllers
                 this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
                 //Viewbag contenant le lien du document
                 ViewBag.Link = noteDeCours.Lien;
-                //Retourenr la vue permettant de modifier
+                //Retourner la vue permettant de modifier
                 return View(noteVM);
             }
             catch (Exception e)
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
         /// <summary>
         /// Supprimer la note ainsi que son document
@@ -342,7 +336,7 @@ namespace projetmvcfinale.Controllers
                 //Récupérer le ID en du note de cours
                 int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
                 NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-                //Supprimer le vieu document
+                //Supprimer le vieux document
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
                 string fullPath = chemin;
                 if (System.IO.File.Exists(fullPath))
@@ -359,7 +353,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
 
         /// <summary>
@@ -408,7 +402,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
         /// <summary>
         /// Retrier une sous-catégorie
