@@ -1,5 +1,4 @@
 ﻿$(function () {
-    alert("pou!!");
 });
 
 function CommencerExercice() {
@@ -32,7 +31,6 @@ function AjouterColonne() {
 }
 
 function OuvrirBonneReponse() {
-    alert("PreEntre");
     $("#tbChoixReponses tr").not(':first').each(function () {
         if ($(this).find("td input").val() == "") {
             alert("Les champs de choix de réponse doivent être tous remplis!");
@@ -41,7 +39,6 @@ function OuvrirBonneReponse() {
         }
     });
     if (true) {
-        alert("sortie");
         //Avoir la liste des choix de réponse
         var liste = new Array();
         $("#tbChoixReponses tr").not(':first').each(function () {
@@ -73,7 +70,6 @@ function AnnulerChoixReponse() {
 }
 
 function ContinuerPhrase() {
-    alert("test");
     //Mettre le textbox valide
     $("#boutLigne").removeAttr("readonly");
     //Le vider

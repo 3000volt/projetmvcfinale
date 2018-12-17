@@ -8,13 +8,14 @@ namespace projetmvcfinale.Models.Authentification
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="Ce champs est obligatoire")]
         [Display(Name = "Courriel")]
+        [EmailAddress(ErrorMessage = "Ce email est invalide")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ce champs est obligatoire")]
         [Display(Name = "Mot de passe")]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password,ErrorMessage ="Ce mot de passe est incorect")]
         public string Password { get; set; }
 
         [Display(Name = "Se souvenir de moi?")]

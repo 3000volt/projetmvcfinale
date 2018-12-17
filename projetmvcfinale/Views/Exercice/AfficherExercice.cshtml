@@ -2,7 +2,7 @@
     ViewData["Title"] = "AfficherExercice";
 }
 
-<h2>AfficherExercice</h2>
+<h2>Afficher l'exercice</h2>
 
 
 <table id="Exercice" class="table">
@@ -19,7 +19,7 @@
 
             <tr>
                 <td>
-                    @ligne.InnerHtml.AppendHtml("<p>")
+                    @ligne.InnerHtml.AppendHtml("<p style=\"font-size: larger;color: black;\">")
                     @ligne.InnerHtml.AppendHtml(item.NumeroQuestion.ToString() + ")")
                     @ligne.InnerHtml.AppendHtml("&nbsp;")
 
@@ -47,7 +47,7 @@
         }
     </tbody>
 </table>
-<input type="button" value="Soumettre les réponses" onclick="SoummettreCorrection()" />
+<input type="button" class="btn btn-info" value="Soumettre les réponses" onclick="SoummettreCorrection()" />
 
 @section Scripts {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

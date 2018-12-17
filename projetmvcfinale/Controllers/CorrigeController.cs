@@ -341,7 +341,6 @@ namespace projetmvcfinale.Controllers
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
 
-        }
-        //source:https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+        }        
     }
 }

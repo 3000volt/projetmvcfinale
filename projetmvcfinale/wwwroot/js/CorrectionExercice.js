@@ -1,5 +1,4 @@
 ﻿$(function () {
-    alert("bb");
 })
 
 function SoummettreCorrection() {
@@ -18,11 +17,10 @@ function SoummettreCorrection() {
     $("#Exercice tbody tr").each(function () {
         $(this).find("td p select").each(function () {
             if (correction[compteur] == true) {
-                alert("bon!");
                 $(this).css('backgroundColor', 'green');
             }
             else {
-                alert("pas bon");
+
                 $(this).css('backgroundColor', 'red');
             }
             //https://stackoverflow.com/questions/5068087/set-background-colour-of-select-to-selected-option-in-jquery
