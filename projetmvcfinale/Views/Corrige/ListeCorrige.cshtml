@@ -5,9 +5,13 @@
 }
 
 <h1>Liste des corrigés disponibles</h1>
+@if (User.IsInRole("Admin"))
+{
 <p>
     <a asp-action="AjouterCorrige" class=" btn btn-info">Ajouter un corrigé</a>
 </p>
+}
+
 
 <table class="table table-responsive table-hover table-condensed" id="myTable">
     <thead>
@@ -47,8 +51,12 @@
                         <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
                     }
                     |
-                    <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-edit"></i> Modifier</a> |
+                    @if (User.IsInRole("Admin"))
+                    {                     
+                    <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-edit"></i> Modifier</a>
                     <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                    }
+                    
                 </td>
             </tr>
         }

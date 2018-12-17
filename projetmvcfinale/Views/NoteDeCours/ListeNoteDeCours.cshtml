@@ -5,60 +5,67 @@
 }
 
 <h3>Liste des notes de cours disponibles</h3>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="AjouterNote" class="btn btn-info">Ajouter des notes de cours</a>
+    </p>
+}
 
-<p>
-    <a asp-action="AjouterNote" class="btn btn-info">Ajouter des notes de cours</a>
-</p>
-<table class="table table-responsive table-hover table-condensed" id="myTable">   
-        <thead>
+
+<table class="table table-responsive table-hover table-condensed" id="myTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdSousCategorieNavigation.NomSousCategorie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.NomNote)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdSousCategorieNavigation.NomSousCategorie)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NomNote)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
-                    </td>
-                    <td>
-                        @if (item.Lien != "")
-                        {
-                            <a class="btn btn-info" href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
-                        }
-                        else
-                        {
-                            <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf"></i>Afficher<span>Lien manquant</span></a>
-                        }
-                        |
-                        <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierNote" asp-route-id="@item.IdDocument"><i class="fas fa-edit"></i> Modifier</a> |
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomNote)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
+                </td>
+                <td>
+                    @if (item.Lien != "")
+                    {
+                        <a class="btn btn-info" href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher le cour</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf"></i>Afficher le cour<span>Lien manquant</span></a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierNote" asp-route-id="@item.IdDocument"><i class="fas fa-edit"></i> Modifier</a>
                         <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerNote" asp-route-id="@item.IdDocument"><i class="fas fa-trash-alt"></i> Supprimer</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 @section Scripts{
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
