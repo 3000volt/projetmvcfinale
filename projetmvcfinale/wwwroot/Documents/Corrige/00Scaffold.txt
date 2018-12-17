@@ -1,0 +1,25 @@
+Scaffold-DbContext " Server=localhost;Database=ProjetFrancais ;User Id=sa;Password=sql" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables Categorie,ChoixDeReponse,Commentaires,Corrige,Exercice,LigneTestInteractif,Niveau,NoteDeCours,SousCategorie,Utilisateur -f
+
+
+
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+
+namespace projetmvcfinale.Models
+{
+    public partial class ProjetFrancaisContext : DbContext
+    {
+        private readonly string ConnectionString;
+        public ProjetFrancaisContext(string connectionstring)
+        {
+            this.ConnectionString = connectionstring;
+        }
+        public ProjetFrancaisContext()
+        {
+        }
+
+        public ProjetFrancaisContext(DbContextOptions<ProjetFrancaisContext> options)
+            : base(options)
+        {
+        }

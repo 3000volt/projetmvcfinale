@@ -11,11 +11,11 @@ namespace projetmvcfinale.Models
     {
         public int idcorrige { get; set; }
         [Display(Name ="Titre")]
-        [Required]
+        [Required (ErrorMessage="Champs obligatoire")]
         public string CorrigeDocNom { get; set; }
         public IFormFile Lien { get; set; }
         [Display(Name = "Exercice associé")]
-        [Required]
+        [Required(ErrorMessage = "Champs obligatoire")]
         public int Idexercice { get; set; }
     }
 }
