@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace projetmvcfinale.Controllers
 {
@@ -61,7 +62,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
         public IActionResult ListeExercice2(string diff, string categ, bool interactif)
@@ -90,7 +91,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
 
         /// <summary>
@@ -120,15 +121,15 @@ namespace projetmvcfinale.Controllers
                                       {
                                           Text = x.ToString()
                                       });
-                
+
                 return View();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
-           
+
+
         }
 
         /// <summary>
@@ -154,9 +155,6 @@ namespace projetmvcfinale.Controllers
                         IdDifficulte = exerciceVM.IdDifficulte,
                         IdCateg = exerciceVM.IdCateg
                     };
-
-                    HttpContext.Session.SetString("exercice", JsonConvert.SerializeObject(exercice));//pour aller le chercher pour l'upload
-
                     string test = exercice.AdresseCourriel;
 
                     //Envoyer vers l'autre page
@@ -182,6 +180,7 @@ namespace projetmvcfinale.Controllers
                     //Ajouter au contexte
                     provider.Add(exercice);
                     await provider.SaveChangesAsync();
+                    HttpContext.Session.SetString("exerciceAjouter", JsonConvert.SerializeObject(exercice));//pour aller le chercher pour l'upload
                     //Envoyer vers la vue pour continuer la creation selon le type
                     return View("CompleterCreation", exerciceVM);
                 }
@@ -191,8 +190,9 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
+
 
         /// <summary>
         /// Afficher la vue pour téléverser un fichier d'exercice
@@ -214,33 +214,58 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExercice(IFormFile Lien)
         {
-            try
+            // try
+            // {
+            bool pfdOuWord = false;
+            //Voir si le document est un pdf ou word
+            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+            Match match = reg.Match(Lien.FileName);
+            if (match.Success)
             {
-                Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exercice"));
+                pfdOuWord = true;
+            }
 
+            Exercice ex = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("exerciceAjouter"));
+
+            if (pfdOuWord == true)
+            {
                 if (Lien == null || Lien.Length == 0)
                     return Content("Aucun fichier sélectionné");
 
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
-
                 //ajouter le lien à la base de données
-                int Idexercice = this.provider.Exercice.ToList().Find(x => x.NomExercices == ex.NomExercices).Idexercice;
+                int Idexercice = ex.Idexercice;
 
-                this.provider.updatelien(chemin, Idexercice);
-
-
+                string format = Lien.FileName.Substring(Lien.FileName.Length - 4);
+                if (format == "docx")
+                {
+                    format = ".docx";
+                }
+                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
                 using (var stream = new FileStream(chemin, FileMode.Create))
                 {
                     await Lien.CopyToAsync(stream);
                 }
-
+                //Change le nom du document
+                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format));
+                //Relier le nouveau lien a l'exercice
+                ex.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", ex.Idexercice.ToString() + format);
+                //Modifier la BD
+                this.provider.Update(ex);
+                await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeExercice));
             }
-            catch(Exception e)
-            {
-                return View("\\Views\\Shared\\page_erreur.cshtml");
-            }
-            
+
+            ViewBag.Nom = ex.NomExercices;
+            ViewBag.pdf_Word = "Avertissement";
+            List<Exercice> liste = this.provider.Exercice.ToList();
+            return View(nameof(ListeExercice), liste);
+            //  }
+            // catch(Exception e)
+            // {
+            //     return View("\\Views\\Shared\\page_erreur.cshtml");
+            //  }
+
         }
 
         /// <summary>
@@ -250,7 +275,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> SupprimerExercice(string id)
+        public async Task<IActionResult> SupprimerExercice(int id)
         {
             if (id == null)
                 return View("\\Views\\Shared\\page_erreur.cshtml");
@@ -261,7 +286,13 @@ namespace projetmvcfinale.Controllers
             //vérifier si le cours est null
             if (ex == null)
                 return View("\\Views\\Shared\\page_erreur.cshtml");
+            //Mettre le lien du doc dans la session s'il s'agit d'un exercie
+            //S'il s'agit d'un exercie normal
+            if (ex.TypeExercice == "Normal")
+            {
+                this.HttpContext.Session.SetString("Link", ex.Lien);
 
+            }
             return View(ex);
         }
         /// <summary>
@@ -271,20 +302,32 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> SupprimerExercicePost(string id)
+        public async Task<IActionResult> SupprimerExercicePost(int id)
         {
             try
             {
                 Exercice exercice = await provider.Exercice.FindAsync(Convert.ToInt32(id));
                 provider.Exercice.Remove(exercice);
+                //Supprimer le vieu document
+                if (this.provider.Exercice.ToList().Find(x => x.Idexercice == exercice.Idexercice).TypeExercice == "Normal")
+                {
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Link"));
+                    string fullPath = chemin;
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+                }
+
                 await provider.SaveChangesAsync();
                 return RedirectToAction(nameof(ListeExercice));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -340,11 +383,11 @@ namespace projetmvcfinale.Controllers
                 //Associer la ligne en cours a la session
                 this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(ligneSession));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -392,11 +435,11 @@ namespace projetmvcfinale.Controllers
                 //Mettre fin a la sesisond e ligne
                 this.HttpContext.Session.Remove("Ligne");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
         [HttpPost]
@@ -424,11 +467,11 @@ namespace projetmvcfinale.Controllers
                 //Mettre la session a jours
                 this.HttpContext.Session.SetString("Ligne", JsonConvert.SerializeObject(lignePerso));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
 
@@ -449,11 +492,11 @@ namespace projetmvcfinale.Controllers
                 //Mettre fin a la sesisond e ligne
                 this.HttpContext.Session.Remove("Ligne");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
 
@@ -500,13 +543,18 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
+
+
+
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public bool VerifierNumero(string numero)
         {
+            try
+            {
                 int num = int.Parse(numero);
                 bool disponible = true;
                 //Voir si la session existe
@@ -522,6 +570,11 @@ namespace projetmvcfinale.Controllers
                 }
                 //Si la session n'existe pas, c'ests ur que le numeroe st disponible
                 return disponible;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -557,71 +610,71 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-           
+
         }
 
         //page d'erreur a mettre
         [AllowAnonymous]
         [HttpPost]
         public List<bool> Correction(List<string> ListReponse)
-        {            
-                Exercice exercice = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("ExerciceAffiche"));
-                //Liste comparative des bonnes reponses
-                List<string> listeReponse = new List<string>();
-                //Liste de validation
-                List<bool> listeResultat = new List<bool>();
-                //Liste des bonnes reponses
-                List<LignePerso> listePhrase = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
-                foreach (LignePerso l in listePhrase)
+        {
+            Exercice exercice = JsonConvert.DeserializeObject<Exercice>(this.HttpContext.Session.GetString("ExerciceAffiche"));
+            //Liste comparative des bonnes reponses
+            List<string> listeReponse = new List<string>();
+            //Liste de validation
+            List<bool> listeResultat = new List<bool>();
+            //Liste des bonnes reponses
+            List<LignePerso> listePhrase = JsonConvert.DeserializeObject<List<LignePerso>>(exercice.ExercicesInt);
+            foreach (LignePerso l in listePhrase)
+            {
+                //Pour chaque choix de reponse dans la question
+                foreach (ChoixDeReponse c in l.listeChoixReponses)
                 {
-                    //Pour chaque choix de reponse dans la question
-                    foreach (ChoixDeReponse c in l.listeChoixReponses)
+                    //S'il s'agit d'une bonne réponse
+                    if (c.Response == true)
                     {
-                        //S'il s'agit d'une bonne réponse
-                        if (c.Response == true)
-                        {
-                            //Ajouter a la liste de réponse
-                            listeReponse.Add(c.ChoixDeReponse1);
-                        }
+                        //Ajouter a la liste de réponse
+                        listeReponse.Add(c.ChoixDeReponse1);
                     }
                 }
-                //Comparer les réponses de l'utilisateur au corrigé
-                int compteur = 0;
-                foreach (string s in ListReponse)
+            }
+            //Comparer les réponses de l'utilisateur au corrigé
+            int compteur = 0;
+            foreach (string s in ListReponse)
+            {
+                //Si la réponse transmise est la même que la bonne réponse
+                if (s == listeReponse[compteur])
                 {
-                    //Si la réponse transmise est la même que la bonne réponse
-                    if (s == listeReponse[compteur])
-                    {
-                        //Mettre vrai dans le corrigé
-                        listeResultat.Add(true);
-                    }
-                    //s'il s'agit d'une mauvaise réponse, envoyer une erreur
-                    else
-                    {
-                        //listeResultat.Add(compteur, false);
-                        listeResultat.Add(false);
-                    }
-                    //Ajouter au compteur
-                    compteur++;
+                    //Mettre vrai dans le corrigé
+                    listeResultat.Add(true);
                 }
-                return listeResultat;
-           
-            
+                //s'il s'agit d'une mauvaise réponse, envoyer une erreur
+                else
+                {
+                    //listeResultat.Add(compteur, false);
+                    listeResultat.Add(false);
+                }
+                //Ajouter au compteur
+                compteur++;
+            }
+            return listeResultat;
+
+
         }
 
         [HttpPost]
         public List<int> ListeNumero()
         {
-           
-                InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
-                List<int> listeNumero = new List<int>();
 
-                foreach (LignePerso s in exercice.listeLignes)
-                {
-                    listeNumero.Add(s.NumeroQuestion);
-                }
+            InsertionExercice exercice = JsonConvert.DeserializeObject<InsertionExercice>(this.HttpContext.Session.GetString("Exercice"));
+            List<int> listeNumero = new List<int>();
 
-                return listeNumero;           
+            foreach (LignePerso s in exercice.listeLignes)
+            {
+                listeNumero.Add(s.NumeroQuestion);
+            }
+
+            return listeNumero;
         }
 
         [HttpPost]
@@ -643,7 +696,7 @@ namespace projetmvcfinale.Controllers
             {
                 Redirect("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
 
 
@@ -671,7 +724,7 @@ namespace projetmvcfinale.Controllers
             {
                 return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            
+
         }
 
     }
