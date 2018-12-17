@@ -21,9 +21,9 @@ namespace projetmvcfinale.Models
         public string ExercicesInt { get; set; }
         [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }
-        [Display(Name = "Type")]
+        [Display(Name = "Type d'exercice")]
         public string TypeExercice { get; set; }
-        [Display(Name = "Courriel")]
+        [Display(Name = "Adresse Courriel")]
         public string AdresseCourriel { get; set; }
         [Display(Name = "Difficulté")]
         [Required]

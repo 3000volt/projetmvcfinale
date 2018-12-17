@@ -18,7 +18,7 @@ namespace projetmvcfinale.Models
         public string Lien { get; set; }
         [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }
-        [Display(Name = "Courriel")]
+        [Display(Name = "Adresse Courriel")]
         public string AdresseCourriel { get; set; }
         [Display(Name = "Catégorie")]
         [Required]

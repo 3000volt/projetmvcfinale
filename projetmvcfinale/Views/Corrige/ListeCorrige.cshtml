@@ -4,7 +4,7 @@
     ViewData["Title"] = "ListeCorrige";
 }
 
-<h1>Liste des corrigés disponibles</h1>
+<h2><u>Liste des corrigés disponibles</u></h2><br />
 @if (User.IsInRole("Admin"))
 {
 <p>
@@ -50,7 +50,7 @@
                     {
                         <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher<span>Lien manquant</span></a>
                     }
-                    |
+                    
                     @if (User.IsInRole("Admin"))
                     {                     
                     <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierCorrige" asp-route-id="@item.Idcorrige"><i class="fas fa-edit"></i> Modifier</a>

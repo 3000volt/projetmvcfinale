@@ -4,7 +4,7 @@
     ViewData["Title"] = "ListeExercice";
 }
 
-<h2>Liste des exercices</h2>
+<h2><u>Liste des exercices</u></h2><br />
 @if (User.IsInRole("Admin"))
 {
     <p>
@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.TypeExercice)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation.AdresseCourriel)
+                @Html.DisplayNameFor(model => model.AdresseCourriel)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)

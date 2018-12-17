@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h3>Liste des notes de cours disponibles</h3>
+<h2><u>Liste des notes de cours disponibles</u></h2><br />
 @if (User.IsInRole("Admin"))
 {
     <p>
@@ -20,7 +20,10 @@
                 @Html.DisplayNameFor(model => model.NomNote)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation)
+                @Html.DisplayNameFor(model => model.AdresseCourriel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateInsertion)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
@@ -39,7 +42,10 @@
                     @Html.DisplayFor(modelItem => item.NomNote)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AdresseCourrielNavigation.AdresseCourriel)
+                    @Html.DisplayFor(modelItem => item.AdresseCourriel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateInsertion)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
