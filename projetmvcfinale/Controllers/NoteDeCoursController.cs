@@ -44,8 +44,6 @@ namespace projetmvcfinale.Controllers
 
         public IActionResult ListeNoteDeCours(string search)
         {
-            //    List<NoteDeCours> listeNote = this.provider.NoteDeCours.ToList();
-            //    return View(listeNote);
             return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) || x.IdCategNavigation.NomCategorie.StartsWith(search) || search == null).ToList());
         }
         /// <summary>
@@ -68,59 +66,67 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)
         {
-            bool pfdOuWord = false;
-            //Voir si le document est un pdf ou word
-            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
-            Match match = reg.Match(noteVM.Lien.FileName);
-            if (match.Success)
+            try
             {
-                pfdOuWord = true;
-            }
+                bool pfdOuWord = false;
+                //Voir si le document est un pdf ou word
+                Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                Match match = reg.Match(noteVM.Lien.FileName);
+                if (match.Success)
+                {
+                    pfdOuWord = true;
+                }
 
-            if (ModelState.IsValid && pfdOuWord == true)
+                if (ModelState.IsValid && pfdOuWord == true)
+                {
+                    //Transferer en note
+                    NoteDeCours note = new NoteDeCours()
+                    {
+                        NomNote = noteVM.NomNote,
+                        IdCateg = noteVM.IdCateg,
+                        IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie,
+                        Lien = noteVM.Lien.FileName,
+                        AdresseCourriel = this.HttpContext.User.Identity.Name,
+                        DateInsertion = DateTime.Now
+
+                    };
+                    //note.DateInsertion = DateTime.Today;
+                    //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
+                    provider.Add(note);
+                    await provider.SaveChangesAsync();
+                    //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
+                    //Insérer dans la BD le document
+                    if (note.Lien == null || note.Lien.Length == 0)
+                        return Content("Aucun fichier sélectionné");
+
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
+                    //Prendre la find du doc(.pdf / .doc / docx)
+                    string format = note.Lien.Substring(note.Lien.Length - 4);
+                    if (format == "docx")
+                    {
+                        format = ".docx";
+                    }
+                    //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+                    using (var stream = new FileStream(chemin, FileMode.Create))
+                    {
+                        await noteVM.Lien.CopyToAsync(stream);
+                    }
+                    //Change le nom du document
+                    System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
+                    //ajouter le lien à la base de données
+                    note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
+                    await provider.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListeNoteDeCours));
+                }
+                ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+                ViewBag.pdf_Word = "Avertissement";
+                return View(noteVM);
+            }
+            catch(Exception e)
             {
-                //Transferer en note
-                NoteDeCours note = new NoteDeCours()
-                {
-                    NomNote = noteVM.NomNote,
-                    IdCateg = noteVM.IdCateg,
-                    IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie,
-                    Lien = noteVM.Lien.FileName,
-                    AdresseCourriel = this.HttpContext.User.Identity.Name,
-                    DateInsertion = DateTime.Now
-
-                };
-                //note.DateInsertion = DateTime.Today;
-                //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
-                provider.Add(note);
-                await provider.SaveChangesAsync();
-                //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
-                //Insérer dans la BD le document
-                if (note.Lien == null || note.Lien.Length == 0)
-                    return Content("Aucun fichier sélectionné");
-
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
-                //Prendre la find du doc(.pdf / .doc / docx)
-                string format = note.Lien.Substring(note.Lien.Length - 4);
-                if(format == "docx")
-                {
-                    format = ".docx";
-                }
-                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-                using (var stream = new FileStream(chemin, FileMode.Create))
-                {
-                    await noteVM.Lien.CopyToAsync(stream);
-                }
-                //Change le nom du document
-                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
-                //ajouter le lien à la base de données
-                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
-                await provider.SaveChangesAsync();
-                return RedirectToAction(nameof(ListeNoteDeCours));
+                return View("\\Views\\Shared\\page_erreur.cshtml");
             }
-            ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
-            ViewBag.pdf_Word = "Avertissement";
-            return View(noteVM);
+            
         }
 
         /// <summary>
@@ -132,66 +138,82 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public IActionResult ModifierNote(int id)
         {
-            //Retirer les bonnes notes de cours
-            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-            //Version view Model
-            NotesViewModel noteVM = new NotesViewModel()
+            try
             {
-                NomNote = noteDeCours.NomNote,
-                //Lien = noteDeCours.Lien,
-                IdCateg = noteDeCours.IdCateg,
-                SousCategorie = this.provider.SousCategorie.ToList().Find(x => x.IdSousCategorie == noteDeCours.IdSousCategorie).NomSousCategorie
-            };
-            //Insérer le ID dans une session
-            this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
-                                                                         //Le lien actuel dans une session egalement
-            this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
-            //Viewbag contenant le lien du document
-            ViewBag.Link = noteDeCours.Lien;
-            //Retourenr la vue permettant de modifier
-            return View(noteVM);
+                //Retirer les bonnes notes de cours
+                NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+                //Version view Model
+                NotesViewModel noteVM = new NotesViewModel()
+                {
+                    NomNote = noteDeCours.NomNote,
+                    //Lien = noteDeCours.Lien,
+                    IdCateg = noteDeCours.IdCateg,
+                    SousCategorie = this.provider.SousCategorie.ToList().Find(x => x.IdSousCategorie == noteDeCours.IdSousCategorie).NomSousCategorie
+                };
+                //Insérer le ID dans une session
+                this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
+                                                                             //Le lien actuel dans une session egalement
+                this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
+                //Viewbag contenant le lien du document
+                ViewBag.Link = noteDeCours.Lien;
+                //Retourenr la vue permettant de modifier
+                return View(noteVM);
+            }
+            catch(Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ModifierNote(NotesViewModel noteVM)
         {
-            //Trouver la note de cours correspondant
-            //Récupérer le ID en du note de cours
-            int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
-            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-            //Changer les valeurs
-            noteDeCours.IdCateg = noteVM.IdCateg;
-            noteDeCours.NomNote = noteVM.NomNote;
-            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
-           
-            //S'il y a eu des modifications dans les liens
-            if (noteVM.Lien != null)
+            try
             {
-                noteDeCours.Lien = noteVM.Lien.FileName;
-                //Supprimer le vieu document
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
+                //Trouver la note de cours correspondant
+                //Récupérer le ID en du note de cours
+                int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
+                NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+                //Changer les valeurs
+                noteDeCours.IdCateg = noteVM.IdCateg;
+                noteDeCours.NomNote = noteVM.NomNote;
+                noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
 
-                if (System.IO.File.Exists(chemin))
+                //S'il y a eu des modifications dans les liens
+                if (noteVM.Lien != null)
                 {
-                    System.IO.File.Delete(chemin);
-                }
-                //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
-                var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
-                //ajouter le lien à la base de données
-                noteDeCours.Lien = nouveauChemin;
+                    noteDeCours.Lien = noteVM.Lien.FileName;
+                    //Supprimer le vieu document
+                    var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
 
+                    if (System.IO.File.Exists(chemin))
+                    {
+                        System.IO.File.Delete(chemin);
+                    }
+                    //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+                    var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
+                    //ajouter le lien à la base de données
+                    noteDeCours.Lien = nouveauChemin;
+
+                    await provider.SaveChangesAsync();
+                    using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                    {
+                        await noteVM.Lien.CopyToAsync(stream);
+                    }
+                }
+
+                //Sauvegarder dans la bd
+                provider.Update(noteDeCours);
                 await provider.SaveChangesAsync();
-                using (var stream = new FileStream(nouveauChemin, FileMode.Create))
-                {
-                    await noteVM.Lien.CopyToAsync(stream);
-                }
+                return RedirectToAction(nameof(ListeNoteDeCours));
             }
-
-            //Sauvegarder dans la bd
-            provider.Update(noteDeCours);
-            await provider.SaveChangesAsync();
-            return RedirectToAction(nameof(ListeNoteDeCours));
+            catch (Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
 
         /// <summary>
@@ -203,24 +225,32 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public IActionResult SupprimerNote(int id)
         {
-            //Retirer les bonnes notes de cours
-            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-            //Version view Model
-            NotesViewModel noteVM = new NotesViewModel()
+            try
             {
-                NomNote = noteDeCours.NomNote,
-                //Lien = noteDeCours.Lien,
-                IdCateg = noteDeCours.IdCateg,
-                SousCategorie = this.provider.SousCategorie.ToList().Find(x => x.IdSousCategorie == noteDeCours.IdSousCategorie).NomSousCategorie
-            };
-            //Insérer le ID dans une session
-            this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
-                                                                         //Le lien actuel dans une session egalement
-            this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
-            //Viewbag contenant le lien du document
-            ViewBag.Link = noteDeCours.Lien;
-            //Retourenr la vue permettant de modifier
-            return View(noteVM);
+                //Retirer les bonnes notes de cours
+                NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+                //Version view Model
+                NotesViewModel noteVM = new NotesViewModel()
+                {
+                    NomNote = noteDeCours.NomNote,
+                    //Lien = noteDeCours.Lien,
+                    IdCateg = noteDeCours.IdCateg,
+                    SousCategorie = this.provider.SousCategorie.ToList().Find(x => x.IdSousCategorie == noteDeCours.IdSousCategorie).NomSousCategorie
+                };
+                //Insérer le ID dans une session
+                this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
+                                                                             //Le lien actuel dans une session egalement
+                this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
+                //Viewbag contenant le lien du document
+                ViewBag.Link = noteDeCours.Lien;
+                //Retourenr la vue permettant de modifier
+                return View(noteVM);
+            }
+            catch (Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
         /// <summary>
         /// Supprimer la note ainsi que son document
@@ -231,22 +261,30 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> SupprimerNote(NotesViewModel noteVM)
         {
-            //Trouver la note de cours correspondant
-            //Récupérer le ID en du note de cours
-            int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
-            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-            //Supprimer le vieu document
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
-            string fullPath = chemin;
-            if (System.IO.File.Exists(fullPath))
+            try
             {
-                System.IO.File.Delete(fullPath);
+                //Trouver la note de cours correspondant
+                //Récupérer le ID en du note de cours
+                int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
+                NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+                //Supprimer le vieu document
+                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
+                string fullPath = chemin;
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+                //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+                //Sauvegarder dans la bd
+                provider.Remove(noteDeCours);
+                await provider.SaveChangesAsync();
+                return RedirectToAction(nameof(ListeNoteDeCours));
             }
-            //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
-            //Sauvegarder dans la bd
-            provider.Remove(noteDeCours);
-            await provider.SaveChangesAsync();
-            return RedirectToAction(nameof(ListeNoteDeCours));
+            catch (Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
 
         /// <summary>
@@ -268,26 +306,34 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadNote(IFormFile Lien)
         {
-            //Trouver la bonne note
-            NoteDeCours note = JsonConvert.DeserializeObject<NoteDeCours>(this.HttpContext.Session.GetString("NoteDeCours"));
-
-            //vérifier si le lien est null
-            if (Lien == null || Lien.Length == 0)
-                return Content("Aucun fichier sélectionné");
-
-            //créer le chemin
-            var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
-
-            note.Lien = chemin;
-            provider.NoteDeCours.Update(note);
-            await provider.SaveChangesAsync();
-
-            using (var stream = new FileStream(chemin, FileMode.Create))
+            try
             {
-                await Lien.CopyToAsync(stream);
-            }
+                //Trouver la bonne note
+                NoteDeCours note = JsonConvert.DeserializeObject<NoteDeCours>(this.HttpContext.Session.GetString("NoteDeCours"));
 
-            return Ok("Fichier téléversé avec succès!");
+                //vérifier si le lien est null
+                if (Lien == null || Lien.Length == 0)
+                    return Content("Aucun fichier sélectionné");
+
+                //créer le chemin
+                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
+
+                note.Lien = chemin;
+                provider.NoteDeCours.Update(note);
+                await provider.SaveChangesAsync();
+
+                using (var stream = new FileStream(chemin, FileMode.Create))
+                {
+                    await Lien.CopyToAsync(stream);
+                }
+
+                return Ok("Fichier téléversé avec succès!");
+            }
+            catch (Exception e)
+            {
+                return View("\\Views\\Shared\\page_erreur.cshtml");
+            }
+            
         }
         /// <summary>
         /// Retrier une sous-catégorie

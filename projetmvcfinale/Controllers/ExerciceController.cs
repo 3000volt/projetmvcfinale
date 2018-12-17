@@ -247,16 +247,16 @@ namespace projetmvcfinale.Controllers
         {
             if(ModelState.IsValid)
             {
-                if (id == null)
-                return NotFound();
+                if (id.ToString() == null)
+                    return View("\\Views\\Shared\\page_erreur.cshtml");
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
 
                 if (ex == null)
-                    return NotFound();
+                    return View("\\Views\\Shared\\page_erreur.cshtml");
 
                 //envoyer a la bonne vue selon le type d'exercice
-             if(ex.TypeExercice =="Interactif")
+             if (ex.TypeExercice =="Interactif")
              {
                 testInteractifViewModel test= new testInteractifViewModel()
                 {
@@ -265,8 +265,8 @@ namespace projetmvcfinale.Controllers
 
                 return View("ModifierExerciceInt",ex);
               }
-                else
-                {
+              else
+              {
                     //transférer en ViewModel
                     ExerciceVM exercice = new ExerciceVM()
                     {
@@ -283,7 +283,7 @@ namespace projetmvcfinale.Controllers
                     ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
 
                     return View("ModifierExercice",exercice);
-                }
+              }
             }
             return BadRequest();
 
@@ -347,9 +347,9 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> SupprimerExercice(int id)
+        public IActionResult SupprimerExercice(int id)
         {
-            if (id == null)
+            if (id.ToString() == null)
                 return View("\\Views\\Shared\\page_erreur.cshtml");
 
             //aller chercher le cours dans le contexte
