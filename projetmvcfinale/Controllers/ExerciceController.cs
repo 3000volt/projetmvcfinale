@@ -270,10 +270,10 @@ namespace projetmvcfinale.Controllers
 
         public async Task<IActionResult> ModifierExercice(int id)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (id == null)
-                return NotFound();
+                    return NotFound();
 
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
 
@@ -281,15 +281,19 @@ namespace projetmvcfinale.Controllers
                     return NotFound();
 
                 //envoyer a la bonne vue selon le type d'exercice
-             if(ex.TypeExercice =="Interactif")
-             {
-                testInteractifViewModel test= new testInteractifViewModel()
+                if (ex.TypeExercice == "Interactif")
                 {
-                    
-                };
+                    //TODO !!!
+                    InsertionExercice exerciceModifier = new InsertionExercice()
+                    {
+                        exercice = ex,
+                        listeLignes = JsonConvert.DeserializeObject<List<LignePerso>>(ex.ExercicesInt)
+                    };
 
-                return View("ModifierExerciceInt",ex);
-              }
+
+
+                    return View("ModifierInteractif", exerciceModifier);
+                }
                 else
                 {
                     //transférer en ViewModel
@@ -300,14 +304,14 @@ namespace projetmvcfinale.Controllers
                         IdCateg = ex.IdCateg,
                         IdDifficulte = ex.IdDifficulte,
                         TypeExercice = ex.TypeExercice,
-                     };
-                     //conserver le lien
+                    };
+                    //conserver le lien
                     this.HttpContext.Session.SetString("Lien", ex.Lien);
 
                     ViewBag.Niveau = new SelectList(this.provider.Niveau, "IdDifficulte", "NiveauDifficulte");
                     ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
 
-                    return View("ModifierExercice",exercice);
+                    return View("ModifierExercice", exercice);
                 }
             }
             return BadRequest();
@@ -320,7 +324,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         public async Task<IActionResult> ModifierExerciceNormal(ExerciceVM exerciceVM)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (exerciceVM == null)
                     return NotFound();
@@ -595,7 +599,6 @@ namespace projetmvcfinale.Controllers
             }
 
         }
-
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

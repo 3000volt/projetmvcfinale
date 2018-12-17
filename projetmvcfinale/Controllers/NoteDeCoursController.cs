@@ -68,58 +68,92 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)
         {
-            bool pfdOuWord = false;
-            //Voir si le document est un pdf ou word
-            Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
-            Match match = reg.Match(noteVM.Lien.FileName);
-            if (match.Success)
+            bool pfdOuWord = true;
+            bool lienAjoute = true;
+
+            if (ModelState.IsValid)
             {
-                pfdOuWord = true;
-            }
-
-            if (ModelState.IsValid && pfdOuWord == true)
-            {
-                //Transferer en note
-                NoteDeCours note = new NoteDeCours()
+                if (noteVM.Lien == null)
                 {
-                    NomNote = noteVM.NomNote,
-                    IdCateg = noteVM.IdCateg,
-                    IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie,
-                    Lien = noteVM.Lien.FileName,
-                    AdresseCourriel = this.HttpContext.User.Identity.Name,
-                    DateInsertion = DateTime.Now
-
-                };
-                //note.DateInsertion = DateTime.Today;
-                //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
-                provider.Add(note);
-                await provider.SaveChangesAsync();
-                //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
-                //Insérer dans la BD le document
-                if (note.Lien == null || note.Lien.Length == 0)
-                    return Content("Aucun fichier sélectionné");
-
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
-                //Prendre la find du doc(.pdf / .doc / docx)
-                string format = note.Lien.Substring(note.Lien.Length - 4);
-                if(format == "docx")
-                {
-                    format = ".docx";
+                    lienAjoute = false;
                 }
-                //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-                using (var stream = new FileStream(chemin, FileMode.Create))
+                else
                 {
-                    await noteVM.Lien.CopyToAsync(stream);
+                    pfdOuWord = false;
+                    //Voir si le document est un pdf ou word
+                    Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                    Match match = reg.Match(noteVM.Lien.FileName);
+                    if (match.Success)
+                    {
+                        pfdOuWord = true;
+                    }
                 }
-                //Change le nom du document
-                System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
-                //ajouter le lien à la base de données
-                note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
-                await provider.SaveChangesAsync();
-                return RedirectToAction(nameof(ListeNoteDeCours));
+
+                if (pfdOuWord == true)
+                {
+                    //Transferer en note
+                    NoteDeCours note;
+                    if (noteVM.Lien != null)
+                    {
+                        note = new NoteDeCours()
+                        {
+                            NomNote = noteVM.NomNote,
+                            IdCateg = noteVM.IdCateg,
+                            IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie,
+                            Lien = noteVM.Lien.FileName,
+                            AdresseCourriel = this.HttpContext.User.Identity.Name,
+                            DateInsertion = DateTime.Now
+
+                        };
+                    }
+                    else
+                    {
+                        note = new NoteDeCours()
+                        {
+                            NomNote = noteVM.NomNote,
+                            IdCateg = noteVM.IdCateg,
+                            IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie,
+                            AdresseCourriel = this.HttpContext.User.Identity.Name,
+                            Lien = "",
+                            DateInsertion = DateTime.Now
+
+                        };
+                    }
+
+                    //note.DateInsertion = DateTime.Today;
+                    //note.AdresseCourriel = JsonConvert.DeserializeObject<Utilisateur>(this.HttpContext.Session.GetString("user")).AdresseCourriel;
+                    provider.Add(note);
+                    await provider.SaveChangesAsync();
+                    //HttpContext.Session.SetString("NoteDeCours", JsonConvert.SerializeObject(note));//pour aller le chercher pour l'upload
+                    //Insérer dans la BD le document
+                    if (lienAjoute == true)
+                    {
+                        var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.Lien);
+                        //Prendre la find du doc(.pdf / .doc / docx)
+                        string format = note.Lien.Substring(note.Lien.Length - 4);
+                        if (format == "docx")
+                        {
+                            format = ".docx";
+                        }
+                        //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+                        using (var stream = new FileStream(chemin, FileMode.Create))
+                        {
+                            await noteVM.Lien.CopyToAsync(stream);
+                        }
+                        //Change le nom du document
+                        System.IO.File.Move(chemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format));
+                        //ajouter le lien à la base de données
+                        note.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", note.IdDocument.ToString() + format);
+                        await provider.SaveChangesAsync();
+                    }
+
+
+                    return RedirectToAction(nameof(ListeNoteDeCours));
+                }
+                ViewBag.pdf_Word = "Avertissement";
+
             }
             ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
-            ViewBag.pdf_Word = "Avertissement";
             return View(noteVM);
         }
 
@@ -145,10 +179,13 @@ namespace projetmvcfinale.Controllers
             //Insérer le ID dans une session
             this.HttpContext.Session.SetString("IdNotes", id.ToString());//TODO: Bien le gérer
                                                                          //Le lien actuel dans une session egalement
-            this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
+                this.HttpContext.Session.SetString("Link", noteDeCours.Lien);
+            this.HttpContext.Session.SetString("Lien", JsonConvert.SerializeObject(noteDeCours.Lien));
             //Viewbag contenant le lien du document
             ViewBag.Link = noteDeCours.Lien;
             //Retourenr la vue permettant de modifier
+            ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+            this.HttpContext.Session.SetString("noteVm", JsonConvert.SerializeObject(noteVM));
             return View(noteVM);
         }
 
@@ -156,42 +193,80 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> ModifierNote(NotesViewModel noteVM)
         {
-            //Trouver la note de cours correspondant
-            //Récupérer le ID en du note de cours
-            int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
-            NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
-            //Changer les valeurs
-            noteDeCours.IdCateg = noteVM.IdCateg;
-            noteDeCours.NomNote = noteVM.NomNote;
-            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
-           
-            //S'il y a eu des modifications dans les liens
-            if (noteVM.Lien != null)
+            bool changement = true;
+            bool pfdOuWord = false;
+            //Récupréer le lien si aucun lien n'a été indiqué
+            if (noteVM.Lien == null)
             {
-                noteDeCours.Lien = noteVM.Lien.FileName;
-                //Supprimer le vieu document
-                var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
-
-                if (System.IO.File.Exists(chemin))
-                {
-                    System.IO.File.Delete(chemin);
-                }
-                //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
-                var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
-                //ajouter le lien à la base de données
-                noteDeCours.Lien = nouveauChemin;
-
-                await provider.SaveChangesAsync();
-                using (var stream = new FileStream(nouveauChemin, FileMode.Create))
-                {
-                    await noteVM.Lien.CopyToAsync(stream);
-                }
+                changement = false;
             }
+            if (ModelState.IsValid)
+            {
+                if (changement == true)
+                {
+                    //Voir si le document est un pdf ou word
+                    Regex reg = new Regex("\\.pdf$|\\.docx$|\\.doc$");
+                    Match match = reg.Match(noteVM.Lien.FileName);
+                    if (match.Success)
+                    {
+                        pfdOuWord = true;
+                    }
+                }
 
-            //Sauvegarder dans la bd
-            provider.Update(noteDeCours);
-            await provider.SaveChangesAsync();
-            return RedirectToAction(nameof(ListeNoteDeCours));
+                if (pfdOuWord == true || changement == false)
+                {
+                    //Trouver la note de cours correspondant
+                    //Récupérer le ID en du note de cours
+                    int id = int.Parse(this.HttpContext.Session.GetString("IdNotes"));
+                    NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
+                    //Changer les valeurs
+                    noteDeCours.IdCateg = noteVM.IdCateg;
+                    noteDeCours.NomNote = noteVM.NomNote;
+                    noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
+
+                    //S'il y a eu des modifications dans les liens
+                    if (changement == true)
+                    {
+                        noteDeCours.Lien = noteVM.Lien.FileName;
+                        //Supprimer le vieu document
+                        var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
+
+                        if (System.IO.File.Exists(chemin))
+                        {
+                            System.IO.File.Delete(chemin);
+                        }
+                        //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
+                        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
+                        //Prendre la find du doc(.pdf / .doc / docx)
+                        string format = noteDeCours.Lien.Substring(noteDeCours.Lien.Length - 4);
+                        if (format == "docx")
+                        {
+                            format = ".docx";
+                        }
+                        //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
+
+                        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                        {
+                            await noteVM.Lien.CopyToAsync(stream);
+                        }
+                        //Change le nom du document
+                        System.IO.File.Move(nouveauChemin, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.IdDocument.ToString() + format));
+                        //ajouter le lien à la base de données
+                        noteDeCours.Lien = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.IdDocument.ToString() + format);
+                        this.provider.Update(noteDeCours);
+                        await provider.SaveChangesAsync();
+                    }
+
+                    //Sauvegarder dans la bd
+                    provider.Update(noteDeCours);
+                    await provider.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListeNoteDeCours));
+                }
+                ViewBag.pdf_Word = "Avertissement";
+            }
+            ViewBag.IdCateg = new SelectList(this.provider.Categorie.ToList(), "IdCateg", "NomCategorie");
+            NotesViewModel noteEchec = JsonConvert.DeserializeObject<NotesViewModel>(this.HttpContext.Session.GetString("noteVm"));
+            return View(noteEchec);
         }
 
         /// <summary>

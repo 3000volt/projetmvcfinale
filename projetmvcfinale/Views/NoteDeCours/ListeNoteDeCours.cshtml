@@ -44,7 +44,7 @@
                         @Html.DisplayFor(modelItem => item.IdSousCategorieNavigation.NomSousCategorie)
                     </td>
                     <td>
-                        @if (item.Lien != null)
+                        @if (item.Lien != "")
                         {
                             <a class="btn btn-info" href="../Documents/NoteDeCours/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher</a>
                         }
