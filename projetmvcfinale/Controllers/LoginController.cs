@@ -80,7 +80,7 @@ namespace projetmvcfinale.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Adresse courriel ou Mot de passe invalide");
                     return View(model);
                 }
             }

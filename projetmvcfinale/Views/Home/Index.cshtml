@@ -6,7 +6,6 @@
     <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
     </ol>
     <div class="carousel-inner">
         <div class="carousel-item active">
@@ -25,17 +24,7 @@
                 </p>
             </div>
         </div>
-        @*<div class="carousel-item">
-            <img src="~/images/banner3.svg" alt="Microsoft Azure" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>*@
+
     </div>
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -47,7 +36,8 @@
     </a>
 </div>
 
-
+@* Desingn prit sur *@
+@*https://www.ortholud.com/index.html*@
 <div style="margin: 0px auto;width:85%;display:block;margin-top:10px">
     <h3 style="text-align:center;">Bienvenue sur notre site</h3>
     <h3 style="text-align:center;">Quelques Jeux et exercices pour apprendre le français </h3>
@@ -55,7 +45,7 @@
 @{
     var listexo = ViewBag.exercice as IEnumerable<projetmvcfinale.Models.Exercice>;
     var listcategorie = ViewBag.Categories as IEnumerable<projetmvcfinale.Models.Categorie>;
-    projetmvcfinale.Models.Categorie id ;
+    projetmvcfinale.Models.Categorie id;
     var compteur = 0;
     var count = 0;
 
@@ -81,51 +71,51 @@
                         count = listgrammaire.Count();
                         if (count >= 3)
                         {
-                                @foreach (var exo in listgrammaire)
+                            @foreach (var exo in listgrammaire)
+                            {
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur == 3)
                                 {
-                                    <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
-                                    compteur++;
-                                    if (compteur == 3)
-                                    {
-                                        break;
-                                    }
+                                    break;
                                 }
                             }
-                            else if (count > 0 && count < 3)
+                        }
+                        else if (count > 0 && count < 3)
+                        {
+                            @foreach (var exo in listgrammaire)
                             {
-                                @foreach (var exo in listgrammaire)
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                compteur++;
+                                if (compteur > @count - 1 && compteur < 3)
                                 {
-                                    <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
-                                    compteur++;
-                                    if (compteur > @count - 1 && compteur < 3)
+                                    while (compteur < 3)
                                     {
-                                        while (compteur < 3)
+                                        <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                        compteur++;
+                                        if (compteur == 3)
                                         {
-                                            <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
-                                            compteur++;
-                                            if (compteur == 3)
-                                            {
-                                                break;
-                                            }
+                                            break;
                                         }
-
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                while (compteur <= 2)
-                                {
-                                    <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
-                                    compteur++;
-                                    if (compteur == 3)
-                                    {
-                                        break;
                                     }
 
                                 }
                             }
                         }
+                        else
+                        {
+                            while (compteur <= 2)
+                            {
+                                <a href="#" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">À venir</a>
+                                compteur++;
+                                if (compteur == 3)
+                                {
+                                    break;
+                                }
+
+                            }
+                        }
+                    }
 
 
                 </div>
@@ -148,7 +138,7 @@
                 </div>
             </div>
             <div class="row" style="margin-top:10px;">
-                <div class="col" style="display: block;">                    
+                <div class="col" style="display: block;">
 
                     @{
                         id = listcategorie.ToList().Find(y => y.NomCategorie == "Conjugaison");
@@ -301,7 +291,7 @@
                         {
                             @foreach (var exo in listStructure)
                             {
-                                <a  asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
+                                <a asp-controller="Exercice" asp-action="AfficherExercice" asp-route-id="@exo.Idexercice" class="list-group-item" style="background-color: #E0CDA9;border-radius:10px;margin-bottom:5px;font-size:medium">@exo.NomExercices</a>
                                 compteur++;
                                 if (compteur == 3)
                                 {
@@ -346,6 +336,6 @@
                 </div>
             </div>
         </div>
-    </div>                     
+    </div>
 
 }
