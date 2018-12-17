@@ -16,12 +16,6 @@
             @Html.DisplayFor(model => model.CorrigeDocNom)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Lien)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Lien)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.DateInsertion)
         </dt>
         <dd>
@@ -36,7 +30,7 @@
     </dl>
     
     <form asp-action="SupprimerCorrigePost" asp-controller="Corrige" asp-route-id="@Model.Idcorrige">
-        <input type="submit" value="Supprimer" class="btn btn-default" /> |
-        <a asp-action="ListeCorrige">Retour à la liste</a>
+        <input type="submit" value="Supprimer" class="btn btn-info" /> |
+        <a asp-action="ListeCorrige" class="btn btn-info">Retour à la liste</a>
     </form>
 </div>

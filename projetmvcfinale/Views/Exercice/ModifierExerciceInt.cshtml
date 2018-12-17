@@ -1,0 +1,79 @@
+﻿@model projetmvcfinale.Models.Exercice
+
+@{
+    ViewData["Title"] = "ModifierExerciceInt";
+}
+
+<h2>ModifierExerciceInt</h2>
+
+<h4>Exercice</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ModifierExerciceInt">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Idexercice" />
+            <div class="form-group">
+                <label asp-for="NomExercices" class="control-label"></label>
+                <input asp-for="NomExercices" class="form-control" />
+                <span asp-validation-for="NomExercices" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Lien" class="control-label"></label>
+                <input asp-for="Lien" class="form-control" />
+                <span asp-validation-for="Lien" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExercicesInt" class="control-label"></label>
+                <input asp-for="ExercicesInt" class="form-control" />
+                <span asp-validation-for="ExercicesInt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateInsertion" class="control-label"></label>
+                <input asp-for="DateInsertion" class="form-control" />
+                <span asp-validation-for="DateInsertion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeExercice" class="control-label"></label>
+                <input asp-for="TypeExercice" class="form-control" />
+                <span asp-validation-for="TypeExercice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdresseCourriel" class="control-label"></label>
+                <select asp-for="AdresseCourriel" class="form-control" asp-items="ViewBag.AdresseCourriel"></select>
+                <span asp-validation-for="AdresseCourriel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdDifficulte" class="control-label"></label>
+                <select asp-for="IdDifficulte" class="form-control" asp-items="ViewBag.IdDifficulte"></select>
+                <span asp-validation-for="IdDifficulte" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Idcorrige" class="control-label"></label>
+                <select asp-for="Idcorrige" class="form-control" asp-items="ViewBag.Idcorrige"></select>
+                <span asp-validation-for="Idcorrige" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdDocument" class="control-label"></label>
+                <select asp-for="IdDocument" class="form-control" asp-items="ViewBag.IdDocument"></select>
+                <span asp-validation-for="IdDocument" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCateg" class="control-label"></label>
+                <select asp-for="IdCateg" class="form-control" asp-items="ViewBag.IdCateg"></select>
+                <span asp-validation-for="IdCateg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

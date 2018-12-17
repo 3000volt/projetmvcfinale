@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace projetmvcfinale.Models
 {
     public class ExerciceVM
     {
+        public int IdExercice { get; set; }
         [Display(Name ="Nom de l'exercice")]
         [Required]
         public string NomExercices { get; set; }
@@ -17,5 +19,6 @@ namespace projetmvcfinale.Models
         public int IdDifficulte { get; set; }
         [Display(Name = "Catégorie")]
         public int IdCateg { get; set; }
+        public IFormFile Lien { get; set; }
     }
 }

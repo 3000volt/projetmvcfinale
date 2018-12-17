@@ -16,7 +16,7 @@ using projetmvcfinale.Models;
 
 namespace projetmvcfinale.Controllers
 {
-    public class NoteDeCoursController : Controller//
+    public class NoteDeCoursController : Controller
     {
         private readonly ProjetFrancaisContext provider;
         private readonly IConfiguration Configuration;
@@ -123,29 +123,12 @@ namespace projetmvcfinale.Controllers
             ViewBag.pdf_Word = "Avertissement";
             return View(noteVM);
         }
+
         /// <summary>
-        /// Voir les info d'une note
+        /// Modifier une note éxistante
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
-        public async Task <IActionResult> InfoNote(int id)
-        {
-            //vérifier si l'id est null
-            if (id == null)
-                return NotFound();
-
-            //prendre les notes associé a l'id
-            NoteDeCours note = await provider.NoteDeCours.FindAsync(id);
-
-            //vérfier si l'objet est null
-            if (note == null)
-                return NotFound();
-
-            //afficher les notes associé dans la vue
-            return View(note);
-        }
-
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult ModifierNote(int id)
@@ -180,44 +163,38 @@ namespace projetmvcfinale.Controllers
             NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
             //Changer les valeurs
             noteDeCours.IdCateg = noteVM.IdCateg;
+            noteDeCours.NomNote = noteVM.NomNote;
+            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
+           
+            //S'il y a eu des modifications dans les liens
             if (noteVM.Lien != null)
             {
                 noteDeCours.Lien = noteVM.Lien.FileName;
-            }
-
-            noteDeCours.NomNote = noteVM.NomNote;
-            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
-            //Mettre le document a jour
-            //S'il y a eu des modifications dans les liens
-            if (noteDeCours.Lien == null || noteDeCours.Lien.Length == 0)
-            {
-            }
-
-            else //(noteDeCours.Lien != null || noteDeCours.Lien.Length != 0)
-            {
                 //Supprimer le vieu document
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
-                string fullPath = chemin;
-                if (System.IO.File.Exists(fullPath))
+
+                if (System.IO.File.Exists(chemin))
                 {
-                    System.IO.File.Delete(fullPath);
+                    System.IO.File.Delete(chemin);
                 }
                 //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
                 var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
                 //ajouter le lien à la base de données
                 noteDeCours.Lien = nouveauChemin;
-                //provider.Exercice.Update(ex);
+
                 await provider.SaveChangesAsync();
                 using (var stream = new FileStream(nouveauChemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
                 }
             }
+
             //Sauvegarder dans la bd
             provider.Update(noteDeCours);
             await provider.SaveChangesAsync();
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
+
         /// <summary>
         /// afficher la note a supprimer
         /// </summary>
