@@ -20,7 +20,7 @@ function SoummettreCorrection() {
                 $(this).css('backgroundColor', 'green');
             }
             else {
-                alert("pas bon");
+
                 $(this).css('backgroundColor', 'red');
             }
             //https://stackoverflow.com/questions/5068087/set-background-colour-of-select-to-selected-option-in-jquery
