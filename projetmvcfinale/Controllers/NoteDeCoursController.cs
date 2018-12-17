@@ -107,7 +107,6 @@ namespace projetmvcfinale.Controllers
                     format = ".docx";
                 }
                 //https://stackoverflow.com/questions/6413572/how-do-i-get-the-last-four-characters-from-a-string-in-c
-
                 using (var stream = new FileStream(chemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
