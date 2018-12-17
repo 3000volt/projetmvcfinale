@@ -5,97 +5,91 @@
 }
 
 <h2>Liste des exercices</h2>
-<p>
-    <a asp-action="AjoutExercice" class="btn btn-info">Ajouter un exercice</a><br />
-</p>
-<p>
-    <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal" >Associer à un document</button>
-</p>
-@if(ViewBag.pdf_Word == "Avertissement")
+@if (User.IsInRole("Admin"))
 {
-<p style="color:red;">Échec du téléchargement du lien du document @ViewBag.Nom , car seul les document pdf et word sont accepté</p>
+    <p>
+        <a asp-action="AjoutExercice" class="btn btn-info">Ajouter un exercice</a><br />
+    </p>
+    <p>
+        <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Associer à un document</button>
+    </p>
 }
+
+
 <table class="table table-responsive table-hover table-condensed" id="myTable">
- 
-        <thead>
+
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomExercices)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeExercice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdresseCourrielNavigation.AdresseCourriel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDifficulteNavigation.NiveauDifficulte)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.NomExercices)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TypeExercice)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AdresseCourrielNavigation.AdresseCourriel)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdCategNavigation.NomCategorie)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdDifficulteNavigation.NiveauDifficulte)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NomExercices)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TypeExercice)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AdresseCourriel)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
-                    </td>
-                    <td>
-                        @if (item.Lien != null && item.TypeExercice == "Normal")
-                        {
-                            var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
-                            <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher l'exercice</a>
-                            @if (item.IdDocument!=null)
-                            {
-                                <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
-                            }
-                            else
-                            {
-                                <a class="btn btn-warning testing" style="color:white" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour<span>Cour Pdf non associer</span></a>
-                            }
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomExercices)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeExercice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdresseCourriel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCategNavigation.NomCategorie)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdDifficulteNavigation.NiveauDifficulte)
+                </td>
+                <td>
+                    @if (item.Lien != null && item.TypeExercice == "Normal")
+                    {
+                        <a class="btn btn-info" href="../Documents/Exercices/@item.Lien.Split('\\').Last()"><i class="fas fa-file-pdf"></i> Afficher l'exercice</a>
+                    }
+                    else if (item.TypeExercice == "Normal" && item.Lien == null)
+                    {
+                        <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher l'exercice<span>Lien manquant</span></a>
+                    }
+                    else if (item.ExercicesInt != null && item.TypeExercice == "Interactif")
+                    {
+                        <a class="btn btn-info" asp-action="AfficherExercice" asp-route-id="@item.Idexercice"><i class="fas fa-external-link-square-alt"></i> Afficher</a>
+                    }
+                    else if (item.ExercicesInt == null && item.TypeExercice == "Interactif")
+                    {
+                        <a class="btn btn-info testing" href="#"><i class="fas fa-external-link-square-alt"></i> Afficher<span>Lien manquant</span></a>
+                    }
+                    |
+                    @if (item.IdDocument != null)
+                    {
+                        var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
+                        <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
+                    }
+                    else
+                    {
+                        var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
+                        <a class="btn btn-warning testing" style="color:white" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour<span>Cour Pdf non associer</span></a>
+                    }|
+                    <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierExercice" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
+                    <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
 
-                        }
-                        else if (item.TypeExercice == "Normal" && item.Lien == null)
-                        {
-                                var list = ViewBag.listedocument as IEnumerable<projetmvcfinale.Models.NoteDeCours>;
-                                <a class="btn btn-info testing" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher l'exercice<span>Lien manquant</span></a>
-                                @if (item.IdDocument!=null)
-                                {
-                                    <a class="btn btn-warning testing" style="color:white" href="../Documents/Exercices/@list.ToList().Find(x => x.IdDocument == item.IdDocument).Lien.Split('\\').Last()"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour</a>
-                                }
-                                else
-                                {
-                                    <a class="btn btn-warning testing" style="color:white" href="#"><i class="fas fa-file-pdf iconlist"></i> Afficher le cour<span>Cour Pdf non associer</span></a>
-                                }
-                        }
-                        else if (item.ExercicesInt != null && item.TypeExercice == "Interactif")
-                        {
-                            <a class="btn btn-info" asp-action="AfficherExercice" asp-route-id="@item.Idexercice"><i class="fas fa-external-link-square-alt"></i> Afficher</a>
-                        }
-                        else if (item.ExercicesInt == null && item.TypeExercice == "Interactif")
-                        {
-                            <a class="btn btn-info testing" href="#"><i class="fas fa-external-link-square-alt"></i> Afficher<span>Lien manquant</span></a>
-                        }
-                        |
-                        <a class="btn btn-info" style="background-color:#863e94" asp-action="ModifierExercice" asp-route-id="@item.Idexercice"><i class="fas fa-edit"></i> Modifier</a> |
-                        <a class="btn btn-info" style="background-color:#e03689" asp-action="SupprimerExercice" asp-route-id="@item.Idexercice"><i class="fas fa-trash-alt"></i> Supprimer</a> |
-
+                    @if (User.IsInRole("Admin"))
+                    {
                         @if (item.Idcorrige != null)
                         {
                             var list = ViewBag.listecorriger as IEnumerable<projetmvcfinale.Models.Corrige>;
@@ -105,11 +99,13 @@
                         {
                             <a class="btn btn-info" style="background-color:#3A9D23" asp-action="AjouterCorrige" asp-controller="Corrige" asp-route-id="@item.Idexercice"><i class="fas fa-link"></i> Creer/Associer un corrigé</a>
                         }
-                    </td>
-                </tr>
-            }
+                    }
 
-        </tbody>   
+                </td>
+            </tr>
+        }
+
+    </tbody>
 </table>
 
 <!-- Modal -->
@@ -141,7 +137,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-    
+
 
     <script>
         $(document).ready(function () {
