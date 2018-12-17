@@ -64,7 +64,7 @@ namespace projetmvcfinale.Controllers
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)
+        public async Task<IActionResult> AjouterNote([Bind("NomNote,IdCateg,SousCategorie,Lien")] NotesViewModel noteVM)//
         {
             bool pfdOuWord = true;
             bool lienAjoute = true;

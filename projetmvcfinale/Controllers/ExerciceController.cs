@@ -289,9 +289,6 @@ namespace projetmvcfinale.Controllers
                         exercice = ex,
                         listeLignes = JsonConvert.DeserializeObject<List<LignePerso>>(ex.ExercicesInt)
                     };
-
-
-
                     return View("ModifierInteractif", exerciceModifier);
                 }
                 else

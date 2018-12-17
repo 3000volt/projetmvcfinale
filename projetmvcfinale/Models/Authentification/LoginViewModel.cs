@@ -9,7 +9,7 @@ namespace projetmvcfinale.Models.Authentification
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
+        [Display(Name = "Courriel")]
         public string UserName { get; set; }
 
         [Required]

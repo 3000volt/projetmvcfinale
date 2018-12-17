@@ -21,8 +21,6 @@ namespace projetmvcfinale.Models.Authentification
         [Display(Name = "Date d'enregistrement")]
         public DateTime RegistrerDate { get; set; }
 
-        [Display(Name = "Téléphone")]
-        public string Telephone { get; set; }
         [Display(Name = "Role")]
         public string Role { get; set; }
 
