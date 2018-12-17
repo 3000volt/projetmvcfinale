@@ -68,11 +68,11 @@
                     }
                     else if (item.ExercicesInt != null && item.TypeExercice == "Interactif")
                     {
-                        <a class="btn btn-info" asp-action="AfficherExercice" asp-route-id="@item.Idexercice"><i class="fas fa-external-link-square-alt"></i> Afficher</a>
+                        <a class="btn btn-info" asp-action="AfficherExercice" asp-route-id="@item.Idexercice"><i class="fas fa-external-link-square-alt"></i> Afficher l'exercice</a>
                     }
                     else if (item.ExercicesInt == null && item.TypeExercice == "Interactif")
                     {
-                        <a class="btn btn-info testing" href="#"><i class="fas fa-external-link-square-alt"></i> Afficher<span>Lien manquant</span></a>
+                        <a class="btn btn-info testing" href="#"><i class="fas fa-external-link-square-alt"></i> Afficher l'exercice<span>Lien manquant</span></a>
                     }
                     |
                     @if (item.IdDocument != null)
