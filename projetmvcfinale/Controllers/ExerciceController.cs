@@ -268,6 +268,103 @@ namespace projetmvcfinale.Controllers
 
         }
 
+        public async Task<IActionResult> ModifierExercice(int id)
+        {
+            if(ModelState.IsValid)
+            {
+                if (id == null)
+                return NotFound();
+
+                Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
+
+                if (ex == null)
+                    return NotFound();
+
+                //envoyer a la bonne vue selon le type d'exercice
+             if(ex.TypeExercice =="Interactif")
+             {
+                testInteractifViewModel test= new testInteractifViewModel()
+                {
+                    
+                };
+
+                return View("ModifierExerciceInt",ex);
+              }
+                else
+                {
+                    //transférer en ViewModel
+                    ExerciceVM exercice = new ExerciceVM()
+                    {
+                        IdExercice = ex.Idexercice,
+                        NomExercices = ex.NomExercices,
+                        IdCateg = ex.IdCateg,
+                        IdDifficulte = ex.IdDifficulte,
+                        TypeExercice = ex.TypeExercice,
+                     };
+                     //conserver le lien
+                    this.HttpContext.Session.SetString("Lien", ex.Lien);
+
+                    ViewBag.Niveau = new SelectList(this.provider.Niveau, "IdDifficulte", "NiveauDifficulte");
+                    ViewBag.Categorie = new SelectList(this.provider.Categorie, "IdCateg", "NomCategorie");
+
+                    return View("ModifierExercice",exercice);
+                }
+            }
+            return BadRequest();
+
+        }
+        /// <summary>
+        /// Modifier un exercice de type normale
+        /// </summary>
+        /// <param name="exerciceVM"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ModifierExerciceNormal(ExerciceVM exerciceVM)
+        {
+            if(ModelState.IsValid)
+            {
+                if (exerciceVM == null)
+                    return NotFound();
+
+                Exercice ex = await provider.Exercice.FindAsync(exerciceVM.IdExercice);
+
+                ex.NomExercices = exerciceVM.NomExercices;
+                ex.IdCateg = exerciceVM.IdCateg;
+                ex.IdDifficulte = exerciceVM.IdDifficulte;
+
+                //vérifier si le lien est null ou non
+                if (exerciceVM.Lien != null)
+                {
+                    ex.Lien = exerciceVM.Lien.FileName;
+
+                    //changer le document associé
+                    if (exerciceVM.Lien != null || exerciceVM.Lien.Length != 0)
+                    {
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", this.HttpContext.Session.GetString("Lien"));
+                        string vieuxChemin = path;
+                        //supprimer le vieux document
+                        if (System.IO.File.Exists(vieuxChemin))
+                        {
+                            System.IO.File.Delete(vieuxChemin);
+                        }
+                        //nouveau lien 
+                        var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", exerciceVM.Lien.FileName);
+                        //inserer le nouveau document
+                        using (var stream = new FileStream(nouveauChemin, FileMode.Create))
+                        {
+                            await exerciceVM.Lien.CopyToAsync(stream);
+                        }
+                    }
+                }
+
+                provider.Exercice.Update(ex);
+                await provider.SaveChangesAsync();
+                return RedirectToAction(nameof(ListeExercice));
+
+            }
+            return BadRequest();
+        }
+
+
         /// <summary>
         /// Affiche la vue pour supprimer un exercice
         /// </summary>
@@ -281,7 +378,7 @@ namespace projetmvcfinale.Controllers
                 return View("\\Views\\Shared\\page_erreur.cshtml");
 
             //aller chercher le cours dans le contexte
-            Exercice ex = await provider.Exercice.FindAsync(id);
+            Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == id);
 
             //vérifier si le cours est null
             if (ex == null)

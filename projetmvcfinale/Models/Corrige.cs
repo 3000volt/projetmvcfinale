@@ -13,7 +13,9 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro de corrigé")]
         public int Idcorrige { get; set; }
         [Display(Name = "Titre")]
+        [Required]
         public string CorrigeDocNom { get; set; }
+        [Required]
         public string Lien { get; set; }
         [Display(Name = "Date d'insertion")]
         public DateTime DateInsertion { get; set; }

@@ -16,7 +16,7 @@ using projetmvcfinale.Models;
 
 namespace projetmvcfinale.Controllers
 {
-    public class NoteDeCoursController : Controller//
+    public class NoteDeCoursController : Controller
     {
         private readonly ProjetFrancaisContext provider;
         private readonly IConfiguration Configuration;
@@ -48,7 +48,10 @@ namespace projetmvcfinale.Controllers
             //    return View(listeNote);
             return View(this.provider.NoteDeCours.Where(x => x.IdSousCategorieNavigation.NomSousCategorie.StartsWith(search) || x.IdCategNavigation.NomCategorie.StartsWith(search) || search == null).ToList());
         }
-
+        /// <summary>
+        /// Afficher la vue pour ajouter une note
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult AjouterNote()
@@ -120,15 +123,11 @@ namespace projetmvcfinale.Controllers
             return View(noteVM);
         }
 
-        public IActionResult InfoNote(int id)
-        {
-
-            if (id == null)
-                return NotFound();
-
-            return View();
-        }
-
+        /// <summary>
+        /// Modifier une note éxistante
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult ModifierNote(int id)
@@ -163,45 +162,43 @@ namespace projetmvcfinale.Controllers
             NoteDeCours noteDeCours = this.provider.NoteDeCours.ToList().Find(x => x.IdDocument == id);
             //Changer les valeurs
             noteDeCours.IdCateg = noteVM.IdCateg;
+            noteDeCours.NomNote = noteVM.NomNote;
+            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
+           
+            //S'il y a eu des modifications dans les liens
             if (noteVM.Lien != null)
             {
                 noteDeCours.Lien = noteVM.Lien.FileName;
-            }
-
-            noteDeCours.NomNote = noteVM.NomNote;
-            noteDeCours.IdSousCategorie = this.provider.SousCategorie.ToList().Find(x => x.NomSousCategorie == noteVM.SousCategorie).IdSousCategorie;
-            //Mettre le document a jour
-            //S'il y a eu des modifications dans les liens
-            if (noteDeCours.Lien == null || noteDeCours.Lien.Length == 0)
-            {
-            }
-
-            else //(noteDeCours.Lien != null || noteDeCours.Lien.Length != 0)
-            {
                 //Supprimer le vieu document
                 var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", this.HttpContext.Session.GetString("Link"));
-                string fullPath = chemin;
-                if (System.IO.File.Exists(fullPath))
+
+                if (System.IO.File.Exists(chemin))
                 {
-                    System.IO.File.Delete(fullPath);
+                    System.IO.File.Delete(chemin);
                 }
                 //https://stackoverflow.com/questions/22650740/asp-net-mvc-5-delete-file-from-server
                 var nouveauChemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\NoteDeCours", noteDeCours.Lien);
                 //ajouter le lien à la base de données
                 noteDeCours.Lien = nouveauChemin;
-                //provider.Exercice.Update(ex);
+
                 await provider.SaveChangesAsync();
                 using (var stream = new FileStream(nouveauChemin, FileMode.Create))
                 {
                     await noteVM.Lien.CopyToAsync(stream);
                 }
             }
+
             //Sauvegarder dans la bd
             provider.Update(noteDeCours);
             await provider.SaveChangesAsync();
             return RedirectToAction(nameof(ListeNoteDeCours));
         }
 
+        /// <summary>
+        /// afficher la note a supprimer
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult SupprimerNote(int id)
@@ -225,7 +222,11 @@ namespace projetmvcfinale.Controllers
             //Retourenr la vue permettant de modifier
             return View(noteVM);
         }
-
+        /// <summary>
+        /// Supprimer la note ainsi que son document
+        /// </summary>
+        /// <param name="noteVM"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SupprimerNote(NotesViewModel noteVM)
@@ -249,7 +250,7 @@ namespace projetmvcfinale.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Retourne la vue pour ajouter un document
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
@@ -259,7 +260,7 @@ namespace projetmvcfinale.Controllers
             return View();
         }
         /// <summary>
-        /// 
+        /// téléverser le document
         /// </summary>
         /// <param name="Lien"></param>
         /// <returns></returns>
@@ -267,11 +268,14 @@ namespace projetmvcfinale.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadNote(IFormFile Lien)
         {
+            //Trouver la bonne note
             NoteDeCours note = JsonConvert.DeserializeObject<NoteDeCours>(this.HttpContext.Session.GetString("NoteDeCours"));
 
+            //vérifier si le lien est null
             if (Lien == null || Lien.Length == 0)
                 return Content("Aucun fichier sélectionné");
 
+            //créer le chemin
             var chemin = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Documents\\Exercices", Lien.FileName);
 
             note.Lien = chemin;
@@ -285,7 +289,12 @@ namespace projetmvcfinale.Controllers
 
             return Ok("Fichier téléversé avec succès!");
         }
-
+        /// <summary>
+        /// Retrier une sous-catégorie
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public List<string> RetirerSousCateg(int id)
         {
@@ -296,7 +305,10 @@ namespace projetmvcfinale.Controllers
             return sousCategorie;
         }
 
-
+        /// <summary>
+        /// Créer un document pdf
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult creerpdf()

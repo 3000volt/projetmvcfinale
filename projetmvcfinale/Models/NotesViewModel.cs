@@ -14,7 +14,6 @@ namespace projetmvcfinale.Models
         [Required(ErrorMessage = "Ce champs est requis")]
         public string NomNote { get; set; }
         [Display(Name = "Lien : ")]
-        [Required(ErrorMessage = "Ce champs est requis")]
         public IFormFile Lien { get; set; }
         [Display(Name = "Catégorie : ")]
         [Required(ErrorMessage = "Ce champs est requis")]

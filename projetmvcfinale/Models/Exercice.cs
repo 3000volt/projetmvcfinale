@@ -13,7 +13,9 @@ namespace projetmvcfinale.Models
         [Display(Name = "Numéro")]
         public int Idexercice { get; set; }
         [Display(Name = "Titre")]
+        [Required]
         public string NomExercices { get; set; }
+        [Required]
         public string Lien { get; set; }
         [Display(Name = "")]//pas sur c'est quoi celui la
         public string ExercicesInt { get; set; }
@@ -24,6 +26,7 @@ namespace projetmvcfinale.Models
         [Display(Name = "Courriel")]
         public string AdresseCourriel { get; set; }
         [Display(Name = "Difficulté")]
+        [Required]
         public int IdDifficulte { get; set; }
         [Display(Name = "Corrigé")]
         public int? Idcorrige { get; set; }

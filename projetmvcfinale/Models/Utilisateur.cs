@@ -12,15 +12,19 @@ namespace projetmvcfinale.Models
             Exercice = new HashSet<Exercice>();
             NoteDeCours = new HashSet<NoteDeCours>();
         }
-
-        [Display(Name = "Courriel")]
+       [Display(Name ="Courriel")]   
         public string AdresseCourriel { get; set; }
         public string Nom { get; set; }
+        [Display(Name = "Prénom")]
         public string Prenom { get; set; }
+        [Display(Name = "Date d'enregistrement")]
         public DateTime RegistrerDate { get; set; }
 
+
         public ICollection<Commentaires> Commentaires { get; set; }
+        [Display(Name = "")]
         public ICollection<Exercice> Exercice { get; set; }
+        [Display(Name = "Note de cours")]
         public ICollection<NoteDeCours> NoteDeCours { get; set; }
     }
 }

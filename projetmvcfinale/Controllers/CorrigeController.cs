@@ -70,6 +70,7 @@ namespace projetmvcfinale.Controllers
         {
             if (ModelState.IsValid)
             {
+                //conversion du ViewModel en corrigé
                 Corrige corrige = new Corrige()
                 {
                     CorrigeDocNom = corrigeVM.CorrigeDocNom,
@@ -77,11 +78,10 @@ namespace projetmvcfinale.Controllers
                     DateInsertion = DateTime.Now,
                     Idexercice = corrigeVM.Idexercice
                 };
-
+                //ajoute le corrige
                 provider.Add(corrige);
                 await provider.SaveChangesAsync();
-                /*HttpContext.Session.SetString("Corrige", JsonConvert.SerializeObject(corrige));*///pour aller le chercher pour l'upload
-
+                //associer
                 Exercice ex = this.provider.Exercice.ToList().Find(x => x.Idexercice == corrige.Idexercice);
                 ex.Idcorrige = corrige.Idcorrige;
                 provider.Exercice.Update(ex);
@@ -106,7 +106,10 @@ namespace projetmvcfinale.Controllers
             }
             return RedirectToAction(nameof(ListeCorrige));
         }
-
+        /// <summary>
+        /// Afficher la vue pour téléverser un corrigé
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult UploadCorrige()
@@ -151,25 +154,6 @@ namespace projetmvcfinale.Controllers
             }
             
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin")]
-        public async Task <ActionResult> InfoCorrige(int id)
-        {
-            if (id.ToString() == null)
-                return View("\\Views\\Shared\\page_erreur.cshtml");
-
-            Corrige cr = await provider.Corrige.FindAsync(id);
-
-            if (cr == null)
-                return NotFound();
-
-            return View(cr);
-        }
-
         /// <summary>
         /// Afficher la vue pour modifier un corrige
         /// </summary>
@@ -263,6 +247,7 @@ namespace projetmvcfinale.Controllers
         [HttpGet]
         public async Task<IActionResult> SupprimerCorrige(int id)
         {
+
             if(ModelState.IsValid)
             {
               if (id.ToString() == null)
