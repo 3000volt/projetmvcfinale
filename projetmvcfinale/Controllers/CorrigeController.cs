@@ -245,7 +245,7 @@ namespace projetmvcfinale.Controllers
                 cr.CorrigeDocNom = corrigeVM.CorrigeDocNom;
                 cr.Idexercice = corrigeVM.Idexercice;
 
-                //vérifier si le lien est null ou non
+                //vérifier si le lien est existant ou non
                 if (corrigeVM.Lien != null)
                 {
                     cr.Lien = corrigeVM.Lien.FileName;
