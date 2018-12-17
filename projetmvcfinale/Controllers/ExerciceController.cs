@@ -53,6 +53,7 @@ namespace projetmvcfinale.Controllers
             try
             {
                 ViewBag.listecorriger = this.provider.Corrige.ToList();
+                ViewBag.listedocument = this.provider.NoteDeCours.ToList();
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
                 ViewBag.model = new AssocierDoc();
@@ -75,6 +76,7 @@ namespace projetmvcfinale.Controllers
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
                 ViewBag.model = new AssocierDoc();
+                ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
                 int categorie = this.provider.Categorie.ToList().Find(x => x.NomCategorie == categ).IdCateg;
                 int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
                 if (interactif == false)
