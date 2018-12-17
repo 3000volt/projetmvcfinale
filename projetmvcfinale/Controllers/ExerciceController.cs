@@ -55,7 +55,7 @@ namespace projetmvcfinale.Controllers
                 ViewBag.listecorriger = this.provider.Corrige.ToList();
                 ViewBag.listedocument = this.provider.NoteDeCours.ToList();
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
-                ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
+                ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours.ToList().FindAll(x => x.Lien != ""), "IdDocument", "NomNote");
                 ViewBag.model = new AssocierDoc();
                 return View(this.provider.Exercice.Where(x => x.NomExercices.StartsWith(search) || search == null).ToList());
             }
@@ -76,7 +76,7 @@ namespace projetmvcfinale.Controllers
                 ViewBag.Idexercice = new SelectList(this.provider.Exercice, "Idexercice", "NomExercices");
                 ViewBag.Idcorrige = new SelectList(this.provider.Corrige, "Idcorrige", "CorrigeDocNom");
                 ViewBag.model = new AssocierDoc();
-                ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours, "IdDocument", "NomNote");
+                ViewBag.IdDocument = new SelectList(this.provider.NoteDeCours.ToList().FindAll(x => x.Lien != ""), "IdDocument", "NomNote");
                 int categorie = this.provider.Categorie.ToList().Find(x => x.NomCategorie == categ).IdCateg;
                 int difficulte = this.provider.Niveau.ToList().Find(x => x.NiveauDifficulte == diff).IdDifficulte;
                 if (interactif == false)
@@ -726,9 +726,6 @@ namespace projetmvcfinale.Controllers
 
         }
 
-
-
-
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public bool VerifierNumero(string numero)
@@ -891,13 +888,15 @@ namespace projetmvcfinale.Controllers
         {
             try
             {
-                //updater manuellement dans la BD l'id du corrigé associé
-                string query = @"UPDATE Exercice SET IdDocument = '" + associer.IdDocument + "' WHERE IdExercice = '" + associer.Idexercice + "'";
-                SqlCommand commande = new SqlCommand(query, sqlConnection);
-                sqlConnection.Open();
-                SqlDataReader reader = commande.ExecuteReader();
-                sqlConnection.Close();
-
+                if (ModelState.IsValid)
+                {
+                    //updater manuellement dans la BD l'id du corrigé associé
+                    string query = @"UPDATE Exercice SET IdDocument = '" + associer.IdDocument + "' WHERE IdExercice = '" + associer.Idexercice + "'";
+                    SqlCommand commande = new SqlCommand(query, sqlConnection);
+                    sqlConnection.Open();
+                    SqlDataReader reader = commande.ExecuteReader();
+                    sqlConnection.Close();
+                }
                 return RedirectToAction(nameof(ListeExercice));
             }
             catch (Exception e)
